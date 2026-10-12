@@ -1,1 +1,1079 @@
 
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#080a18">
+  <meta name="description" content="欢迎来到 BzAxu 的个人空间，一个记录兴趣、项目与灵感的地方。">
+  <title>BzAxu — Personal Space</title>
+
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #080a18;
+      --panel: rgba(20, 24, 48, .65);
+      --line: rgba(160, 160, 255, .16);
+      --text: #f1f0ff;
+      --muted: #9298b9;
+      --purple: #a78bfa;
+      --blue: #69b7ff;
+      --pink: #ed9dff;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      scroll-padding-top: 90px;
+    }
+
+    body {
+      min-height: 100vh;
+      overflow-x: hidden;
+      background:
+        radial-gradient(ellipse at 15% 15%, #252052 0, transparent 38%),
+        radial-gradient(ellipse at 90% 35%, #14284b 0, transparent 34%),
+        var(--bg);
+      color: var(--text);
+      font-family: system-ui, -apple-system, "Segoe UI",
+        "PingFang SC", "Microsoft YaHei", sans-serif;
+      line-height: 1.7;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    button {
+      font: inherit;
+    }
+
+    #stars {
+      position: fixed;
+      inset: 0;
+      z-index: -1;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+    }
+
+    .aurora {
+      position: fixed;
+      z-index: -1;
+      width: 320px;
+      height: 320px;
+      border-radius: 50%;
+      filter: blur(100px);
+      opacity: .14;
+      pointer-events: none;
+      animation: float 12s ease-in-out infinite alternate;
+    }
+
+    .aurora.one {
+      top: 10%;
+      left: -180px;
+      background: #7959ff;
+    }
+
+    .aurora.two {
+      right: -200px;
+      top: 48%;
+      background: #338fff;
+      animation-delay: -5s;
+    }
+
+    @keyframes float {
+      to {
+        transform: translate(70px, 55px) scale(1.2);
+      }
+    }
+
+    .container {
+      width: min(1080px, calc(100% - 40px));
+      margin: 0 auto;
+    }
+
+    /* 顶部导航 */
+    .navbar {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      border-bottom: 1px solid rgba(255,255,255,.06);
+      background: rgba(8, 10, 24, .78);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+    }
+
+    .nav-inner {
+      min-height: 68px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+    }
+
+    .brand {
+      font-size: 20px;
+      font-weight: 800;
+      letter-spacing: 1px;
+      background: linear-gradient(110deg, #fff, #b9a5ff, #78c7ff);
+      background-clip: text;
+      -webkit-background-clip: text;
+      color: transparent;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 26px;
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    .nav-links a {
+      transition: color .2s;
+    }
+
+    .nav-links a:hover {
+      color: white;
+    }
+
+    /* 首屏 */
+    .hero {
+      min-height: 610px;
+      display: grid;
+      grid-template-columns: 1.15fr .85fr;
+      align-items: center;
+      gap: 55px;
+      padding-top: 65px;
+      padding-bottom: 65px;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 9px;
+      padding: 7px 13px;
+      border: 1px solid var(--line);
+      border-radius: 99px;
+      background: rgba(130, 110, 255, .08);
+      color: #c8c1ff;
+      font-size: 12px;
+      letter-spacing: 1px;
+    }
+
+    .status-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #82f5bc;
+      box-shadow: 0 0 12px #82f5bc;
+    }
+
+    h1 {
+      margin-top: 24px;
+      font-size: clamp(48px, 8vw, 82px);
+      line-height: 1.12;
+      letter-spacing: -3px;
+      font-weight: 850;
+    }
+
+    .gradient-text {
+      background: linear-gradient(110deg, #c4a7ff, #7cc8ff 65%, #e4adff);
+      background-clip: text;
+      -webkit-background-clip: text;
+      color: transparent;
+    }
+
+    .hero-subtitle {
+      margin-top: 20px;
+      color: #c2c5df;
+      font-size: clamp(15px, 2vw, 18px);
+    }
+
+    .hero-desc {
+      max-width: 480px;
+      margin-top: 13px;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 30px;
+    }
+
+    .btn {
+      min-height: 44px;
+      display: inline-flex;
+      justify-content: center;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 19px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: rgba(255,255,255,.035);
+      color: #eae8ff;
+      font-size: 13px;
+      cursor: pointer;
+      transition: transform .2s, background .2s, border-color .2s;
+    }
+
+    .btn:hover {
+      transform: translateY(-2px);
+      border-color: rgba(180,160,255,.5);
+      background: rgba(145,125,255,.12);
+    }
+
+    .btn.primary {
+      border: none;
+      background: linear-gradient(110deg, #8265ed, #537ce8);
+      box-shadow: 0 8px 28px rgba(102, 96, 230, .23);
+      color: white;
+    }
+
+    /* 角色头像区域：之后可替换成自己的图片 */
+    .character-area {
+      position: relative;
+      display: grid;
+      place-items: center;
+      min-height: 380px;
+    }
+
+    .orbit {
+      position: absolute;
+      width: min(320px, 82vw);
+      aspect-ratio: 1;
+      border: 1px solid rgba(162, 143, 255, .22);
+      border-radius: 50%;
+      animation: rotate 30s linear infinite;
+    }
+
+    .orbit::before,
+    .orbit::after {
+      content: "";
+      position: absolute;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #b9a5ff;
+      box-shadow: 0 0 20px #a58aff;
+    }
+
+    .orbit::before {
+      top: 13%;
+      left: 18%;
+    }
+
+    .orbit::after {
+      right: 5%;
+      bottom: 30%;
+      background: #77caff;
+      box-shadow: 0 0 20px #77caff;
+    }
+
+    .orbit.inner {
+      width: min(255px, 68vw);
+      border-style: dashed;
+      border-color: rgba(113, 175, 255, .22);
+      animation-direction: reverse;
+      animation-duration: 38s;
+    }
+
+    @keyframes rotate {
+      to { transform: rotate(360deg); }
+    }
+
+    .avatar-frame {
+      position: relative;
+      width: min(230px, 62vw);
+      aspect-ratio: 4 / 5;
+      overflow: hidden;
+      display: grid;
+      place-items: center;
+      border: 1px solid rgba(187, 164, 255, .48);
+      border-radius: 48% 48% 35% 35% / 36% 36% 24% 24%;
+      background:
+        radial-gradient(ellipse at 50% 38%, rgba(149, 121, 255, .3), transparent 55%),
+        linear-gradient(150deg, rgba(77, 87, 154, .3), rgba(18, 23, 48, .92));
+      box-shadow:
+        0 0 55px rgba(130, 98, 255, .18),
+        inset 0 0 40px rgba(111, 119, 255, .08);
+    }
+
+    .avatar-frame svg {
+      width: 100%;
+      height: 100%;
+    }
+
+    .avatar-label {
+      position: absolute;
+      bottom: 16px;
+      left: 0;
+      right: 0;
+      text-align: center;
+      color: #c8c5f5;
+      font-size: 10px;
+      letter-spacing: 3px;
+      text-shadow: 0 0 12px #7774ff;
+    }
+
+    .float-tag {
+      position: absolute;
+      padding: 9px 13px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: rgba(16, 20, 43, .84);
+      color: #d7d5ff;
+      font-size: 11px;
+      box-shadow: 0 8px 30px rgba(0,0,0,.15);
+      backdrop-filter: blur(12px);
+      animation: bob 4s ease-in-out infinite;
+    }
+
+    .float-tag.tag-a {
+      top: 13%;
+      right: 0;
+    }
+
+    .float-tag.tag-b {
+      bottom: 14%;
+      left: -5px;
+      animation-delay: -2s;
+    }
+
+    @keyframes bob {
+      50% { transform: translateY(-8px); }
+    }
+
+    /* 通用区块 */
+    section {
+      padding: 55px 0;
+    }
+
+    .section-heading {
+      margin-bottom: 25px;
+    }
+
+    .section-kicker {
+      color: #a9a2ff;
+      font-size: 11px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+    }
+
+    .section-title {
+      margin-top: 5px;
+      font-size: clamp(25px, 4vw, 34px);
+      letter-spacing: -.7px;
+    }
+
+    .section-desc {
+      margin-top: 6px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .glass {
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      background: linear-gradient(145deg, rgba(27, 31, 62, .7), rgba(12, 16, 34, .64));
+      box-shadow: 0 18px 50px rgba(0,0,0,.12);
+      backdrop-filter: blur(15px);
+      -webkit-backdrop-filter: blur(15px);
+    }
+
+    /* 关于我 */
+    .about-grid {
+      display: grid;
+      grid-template-columns: 1.15fr .85fr;
+      gap: 18px;
+    }
+
+    .about-card {
+      padding: 27px;
+    }
+
+    .about-card h3 {
+      margin-bottom: 12px;
+      font-size: 18px;
+    }
+
+    .about-card p {
+      color: #aeb3d1;
+      font-size: 13px;
+      line-height: 2;
+    }
+
+    .chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 9px;
+      margin-top: 20px;
+    }
+
+    .chip {
+      padding: 6px 11px;
+      border: 1px solid rgba(153, 143, 255, .19);
+      border-radius: 8px;
+      background: rgba(132, 112, 255, .08);
+      color: #c9c5ff;
+      font-size: 11px;
+    }
+
+    .info-list {
+      display: grid;
+      gap: 16px;
+      margin-top: 5px;
+    }
+
+    .info-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 15px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid rgba(255,255,255,.06);
+      font-size: 12px;
+    }
+
+    .info-row:last-child {
+      border-bottom: 0;
+    }
+
+    .info-row span:first-child {
+      color: var(--muted);
+    }
+
+    .info-row span:last-child {
+      color: #e0ddff;
+      text-align: right;
+    }
+
+    /* 项目卡片 */
+    .project-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    .project-card {
+      min-height: 205px;
+      padding: 23px;
+      transition: transform .25s, border-color .25s;
+    }
+
+    .project-card:hover {
+      transform: translateY(-5px);
+      border-color: rgba(166, 145, 255, .42);
+    }
+
+    .project-icon {
+      width: 43px;
+      height: 43px;
+      display: grid;
+      place-items: center;
+      border: 1px solid rgba(159, 143, 255, .22);
+      border-radius: 13px;
+      background: rgba(138, 119, 255, .12);
+      font-size: 20px;
+    }
+
+    .project-card h3 {
+      margin-top: 18px;
+      font-size: 15px;
+    }
+
+    .project-card p {
+      margin-top: 7px;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.9;
+    }
+
+    .project-status {
+      display: inline-block;
+      margin-top: 14px;
+      color: #a7a4d8;
+      font-size: 10px;
+    }
+
+    /* 页脚 */
+    footer {
+      margin-top: 40px;
+      padding: 28px 0 35px;
+      border-top: 1px solid rgba(255,255,255,.07);
+      text-align: center;
+      color: #737b9e;
+      font-size: 11px;
+    }
+
+    footer .footer-brand {
+      margin-bottom: 7px;
+      color: #c7c1ff;
+      font-size: 15px;
+      font-weight: 700;
+      letter-spacing: 2px;
+    }
+
+    .clock {
+      margin-top: 8px;
+      color: #9298bd;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .reveal {
+      opacity: 0;
+      transform: translateY(18px);
+      transition: opacity .7s ease, transform .7s ease;
+    }
+
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        scroll-behavior: auto !important;
+        animation-duration: .01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: .01ms !important;
+      }
+
+      .reveal {
+        opacity: 1;
+        transform: none;
+      }
+    }
+
+    @media (max-width: 760px) {
+      .container {
+        width: calc(100% - 32px);
+      }
+
+      .nav-inner {
+        min-height: 60px;
+      }
+
+      .nav-links {
+        gap: 14px;
+        font-size: 11px;
+      }
+
+      .hero {
+        min-height: auto;
+        grid-template-columns: 1fr;
+        gap: 15px;
+        padding-top: 65px;
+        padding-bottom: 45px;
+      }
+
+      .hero-copy {
+        text-align: center;
+      }
+
+      .hero-desc {
+        margin-left: auto;
+        margin-right: auto;
+      }
+
+      .hero-actions {
+        justify-content: center;
+      }
+
+      h1 {
+        font-size: clamp(46px, 13vw, 70px);
+        letter-spacing: -2px;
+      }
+
+      .character-area {
+        min-height: 355px;
+      }
+
+      .about-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .project-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .project-card {
+        min-height: 0;
+      }
+
+      section {
+        padding: 38px 0;
+      }
+
+      .about-card {
+        padding: 22px;
+      }
+
+      .float-tag.tag-a {
+        right: 2%;
+      }
+
+      .float-tag.tag-b {
+        left: 1%;
+      }
+    }
+
+    @media (max-width: 390px) {
+      .nav-links {
+        gap: 10px;
+      }
+
+      .nav-links a {
+        font-size: 10px;
+      }
+
+      .brand {
+        font-size: 17px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <canvas id="stars" aria-hidden="true"></canvas>
+  <div class="aurora one"></div>
+  <div class="aurora two"></div>
+
+  <!-- 顶部导航 -->
+  <header class="navbar">
+    <div class="container nav-inner">
+      <a class="brand" href="#home">BzAxu<span style="color:#80c9ff">.</span></a>
+      <nav class="nav-links" aria-label="主导航">
+        <a href="#home">首页</a>
+        <a href="#about">关于</a>
+        <a href="#projects">项目</a>
+        <a href="#contact">联系</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <!-- 首屏：修改昵称、签名和简介 -->
+    <section class="container hero" id="home">
+      <div class="hero-copy">
+        <div class="eyebrow">
+          <span class="status-dot"></span>
+          PERSONAL SPACE · 个人空间
+        </div>
+
+        <h1>
+          Hello,<br>
+          I'm <span class="gradient-text">BzAxu</span>
+        </h1>
+
+        <p class="hero-subtitle">
+          在代码与星空之间，寻找有趣的可能。
+        </p>
+
+        <p class="hero-desc">
+          欢迎来到我的个人空间。这里记录我的兴趣、正在进行的项目，
+          以及那些突然出现的灵感。愿每一次探索，都能发现一点新的光。
+        </p>
+
+        <div class="hero-actions">
+          <a class="btn primary" href="#about">✦ 认识一下</a>
+          <a class="btn" href="#projects">⌘ 探索项目</a>
+          <button class="btn" id="copyUrl" type="button">↗ 复制主页网址</button>
+        </div>
+      </div>
+
+      <!-- 二次元头像占位：可替换为自己的图片 -->
+      <div class="character-area" aria-label="二次元角色头像展示区">
+        <div class="orbit"></div>
+        <div class="orbit inner"></div>
+
+        <div class="avatar-frame">
+          <!-- 内置原创风格的简易角色剪影，不需要外部图片 -->
+          <svg viewBox="0 0 230 288" xmlns="http://www.w3.org/2000/svg"
+               role="img" aria-label="二次元角色占位插画">
+            <defs>
+              <linearGradient id="hair" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0%" stop-color="#c4a9ff"/>
+                <stop offset="50%" stop-color="#7777d8"/>
+                <stop offset="100%" stop-color="#3a4b85"/>
+              </linearGradient>
+              <linearGradient id="coat" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0%" stop-color="#454e86"/>
+                <stop offset="100%" stop-color="#1b2347"/>
+              </linearGradient>
+              <radialGradient id="glow">
+                <stop offset="0%" stop-color="#a98aff" stop-opacity=".6"/>
+                <stop offset="100%" stop-color="#8e7aff" stop-opacity="0"/>
+              </radialGradient>
+            </defs>
+
+            <ellipse cx="115" cy="148" rx="93" ry="110" fill="url(#glow)"/>
+
+            <!-- 头发后侧 -->
+            <path d="M55 101 Q39 41 96 30 Q150 15 174 59
+                     Q192 92 170 145 L166 203 L62 202 L61 151Z"
+                  fill="#45467e" stroke="#9c9bff" stroke-opacity=".45"/>
+
+            <!-- 身体 -->
+            <path d="M57 210 Q72 191 92 189 L137 189
+                     Q161 196 176 219 L193 288 L34 288Z"
+                  fill="url(#coat)" stroke="#7f8de5" stroke-opacity=".6"/>
+
+            <!-- 领口 -->
+            <path d="M90 189 L115 225 L140 189
+                     L130 178 L100 178Z"
+                  fill="#d5d3ff"/>
+            <path d="M115 225 L106 248 L115 260 L124 248Z"
+                  fill="#8d83ff"/>
+
+            <!-- 脖子 -->
+            <path d="M96 164 L95 193 Q115 212 135 192
+                     L134 163Z" fill="#e3c9e5"/>
+
+            <!-- 脸部 -->
+            <path d="M72 92 Q71 49 115 47
+                     Q160 49 158 95 L151 144
+                     Q140 172 115 175 Q90 170 79 143Z"
+                  fill="#f0d9ec"/>
+
+            <!-- 刘海 -->
+            <path d="M65 112 Q48 63 80 39
+                     Q116 8 151 37 Q179 56 161 111
+                     L145 84 L132 64
+                     Q117 89 88 92 L79 119 L76 91Z"
+                  fill="url(#hair)" stroke="#a9a7ff" stroke-width="1.5"/>
+
+            <!-- 侧发 -->
+            <path d="M66 87 Q55 135 77 175 L63 188
+                     Q43 151 51 106Z" fill="#7275c9"/>
+            <path d="M159 85 Q174 132 151 175 L166 188
+                     Q188 143 175 102Z" fill="#5d68b6"/>
+
+            <!-- 眼睛 -->
+            <path d="M83 121 Q95 110 106 121 Q96 139 84 126Z"
+                  fill="#6267b5"/>
+            <path d="M125 121 Q137 110 148 121 Q137 139 126 126Z"
+                  fill="#6267b5"/>
+            <circle cx="97" cy="122" r="3" fill="#d7f1ff"/>
+            <circle cx="139" cy="122" r="3" fill="#d7f1ff"/>
+
+            <!-- 嘴部 -->
+            <path d="M108 148 Q115 153 122 148"
+                  fill="none" stroke="#b77fba" stroke-width="1.5"
+                  stroke-linecap="round"/>
+
+            <!-- 发饰 -->
+            <path d="M151 54 L165 43 L161 62 L174 69 L157 73Z"
+                  fill="#83cfff"/>
+            <circle cx="157" cy="62" r="4" fill="#e6f4ff"/>
+
+            <!-- 星星装饰 -->
+            <path d="M42 64 L45 72 L53 75 L45 78 L42 86
+                     L39 78 L31 75 L39 72Z" fill="#c7b5ff"/>
+            <path d="M181 176 L184 183 L191 186 L184 189
+                     L181 196 L178 189 L171 186 L178 183Z"
+                  fill="#83cfff"/>
+          </svg>
+          <div class="avatar-label">YOUR OWN UNIVERSE</div>
+        </div>
+
+        <div class="float-tag tag-a">✦ Dream · Create</div>
+        <div class="float-tag tag-b">⌘ Code &amp; Anime</div>
+      </div>
+    </section>
+
+    <!-- 关于我 -->
+    <section class="container reveal" id="about">
+      <div class="section-heading">
+        <div class="section-kicker">01 / ABOUT</div>
+        <h2 class="section-title">关于这个人<span class="gradient-text">。</span></h2>
+        <p class="section-desc">一点点介绍，一点点探索。</p>
+      </div>
+
+      <div class="about-grid">
+        <article class="glass about-card">
+          <h3>✦ 嗨，很高兴认识你</h3>
+          <p>
+            我是 BzAxu，一个喜欢探索技术与创意的人。
+            对新鲜事物保持好奇，也喜欢把脑海中的想法变成真实的作品。
+          </p>
+          <p style="margin-top:10px">
+            这个主页还在不断成长。未来会在这里分享我的项目、
+            喜欢的事物，以及值得记录的每一个瞬间。
+          </p>
+
+          <div class="chips">
+            <span class="chip">🎮 游戏</span>
+            <span class="chip">💻 编程</span>
+            <span class="chip">🌌 科技</span>
+            <span class="chip">🎧 音乐</span>
+            <span class="chip">✨ 二次元</span>
+          </div>
+        </article>
+
+        <article class="glass about-card">
+          <h3>⌘ 个人档案</h3>
+          <div class="info-list">
+            <div class="info-row">
+              <span>昵称</span>
+              <span>BzAxu</span>
+            </div>
+            <div class="info-row">
+              <span>当前状态</span>
+              <span>✦ 持续探索中</span>
+            </div>
+            <div class="info-row">
+              <span>兴趣方向</span>
+              <span>技术 · 创意 · 游戏</span>
+            </div>
+            <div class="info-row">
+              <span>本站用途</span>
+              <span>个人主页 / 项目展示</span>
+            </div>
+            <div class="info-row">
+              <span>时区时间</span>
+              <span id="localTime">正在获取…</span>
+            </div>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <!-- 项目展示：可逐步替换成真实项目 -->
+    <section class="container reveal" id="projects">
+      <div class="section-heading">
+        <div class="section-kicker">02 / PROJECTS</div>
+        <h2 class="section-title">正在探索<span class="gradient-text">的世界</span></h2>
+        <p class="section-desc">这里是我的作品展示区，未来会持续更新。</p>
+      </div>
+
+      <div class="project-grid">
+        <article class="glass project-card">
+          <div class="project-icon">⌘</div>
+          <h3>个人主页</h3>
+          <p>从零搭建自己的网络空间，记录兴趣、想法与成长。</p>
+          <span class="project-status">● 当前项目 · 持续完善</span>
+        </article>
+
+        <article class="glass project-card">
+          <div class="project-icon">✧</div>
+          <h3>创意实验室</h3>
+          <p>收集有趣的点子，尝试把灵感转化为可以使用的小工具。</p>
+          <span class="project-status">○ 计划中</span>
+        </article>
+
+        <article class="glass project-card">
+          <div class="project-icon">◈</div>
+          <h3>未来项目</h3>
+          <p>新的想法正在路上。这里将成为记录每一次尝试的地方。</p>
+          <span class="project-status">○ 敬请期待</span>
+        </article>
+      </div>
+    </section>
+
+    <!-- 联系方式：请自行替换为真实链接 -->
+    <section class="container reveal" id="contact">
+      <div class="section-heading">
+        <div class="section-kicker">03 / CONNECT</div>
+        <h2 class="section-title">保持联系<span class="gradient-text">。</span></h2>
+        <p class="section-desc">欢迎来访，也欢迎交流有趣的想法。</p>
+      </div>
+
+      <div class="glass about-card">
+        <h3>🌌 让我们在网络中相遇</h3>
+        <p>
+          你可以在这里放置 GitHub、博客或其他公开主页的链接。
+          暂时还没有配置的社交链接，就先留在这里等待更新。
+        </p>
+        <div class="hero-actions" style="margin-top:20px">
+          <!-- 将下面的 # 替换成自己的真实个人主页地址 -->
+          <a class="btn primary" href="https://github.com/BzAxu"
+             target="_blank" rel="noopener noreferrer">⌘ 我的 GitHub</a>
+          <button class="btn" id="backToTop" type="button">↑ 回到顶部</button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container">
+      <div class="footer-brand">BzAxu.</div>
+      <p>Made with curiosity &amp; a little stardust.</p>
+      <div class="clock" id="footerTime"></div>
+      <p style="margin-top:10px">© <span id="year"></span> BzAxu · All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script>
+    "use strict";
+
+    // ===== 实时时间 =====
+    const localTime = document.getElementById("localTime");
+    const footerTime = document.getElementById("footerTime");
+
+    function updateTime() {
+      const now = new Date();
+
+      const time = now.toLocaleString("zh-CN", {
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit",
+        hour12: false
+      });
+
+      localTime.textContent = time;
+      footerTime.textContent = "本地时间 · " + time;
+      document.getElementById("year").textContent = now.getFullYear();
+    }
+
+    updateTime();
+    setInterval(updateTime, 1000);
+
+    // ===== 复制当前网页地址 =====
+    document.getElementById("copyUrl").addEventListener("click", async () => {
+      const button = document.getElementById("copyUrl");
+      const original = "↗ 复制主页网址";
+
+      try {
+        if (navigator.clipboard && window.isSecureContext) {
+          await navigator.clipboard.writeText(location.href);
+        } else {
+          const input = document.createElement("textarea");
+          input.value = location.href;
+          input.style.position = "fixed";
+          input.style.opacity = "0";
+          document.body.appendChild(input);
+          input.select();
+
+          const success = document.execCommand("copy");
+          input.remove();
+
+          if (!success) throw new Error("Copy failed");
+        }
+
+        button.textContent = "✓ 已复制网址";
+      } catch (error) {
+        button.textContent = "请手动复制浏览器地址";
+      }
+
+      setTimeout(() => {
+        button.textContent = original;
+      }, 2200);
+    });
+
+    // ===== 返回顶部 =====
+    document.getElementById("backToTop").addEventListener("click", () => {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    });
+
+    // ===== 区块进入视口时淡入 =====
+    const revealItems = document.querySelectorAll(".reveal");
+
+    if ("IntersectionObserver" in window) {
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("visible");
+            observer.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.08 });
+
+      revealItems.forEach((item) => observer.observe(item));
+    } else {
+      revealItems.forEach((item) => item.classList.add("visible"));
+    }
+
+    // ===== 星空背景：使用 Canvas 绘制，不依赖外部图片 =====
+    const canvas = document.getElementById("stars");
+    const ctx = canvas.getContext("2d");
+
+    let stars = [];
+    let width = 0;
+    let height = 0;
+    let frame = 0;
+
+    const reducedMotion = window.matchMedia(
+      "(prefers-reduced-motion: reduce)"
+    ).matches;
+
+    function resizeStars() {
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+
+      width = window.innerWidth;
+      height = window.innerHeight;
+
+      canvas.width = Math.floor(width * dpr);
+      canvas.height = Math.floor(height * dpr);
+      canvas.style.width = width + "px";
+      canvas.style.height = height + "px";
+
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+      const count = Math.min(
+        110,
+        Math.max(40, Math.floor(width * height / 9500))
+      );
+
+      stars = Array.from({ length: count }, () => ({
+        x: Math.random() * width,
+        y: Math.random() * height,
+        radius: Math.random() * 1.3 + 0.25,
+        alpha: Math.random() * 0.6 + 0.15,
+        speed: Math.random() * 0.22 + 0.035,
+        phase: Math.random() * Math.PI * 2
+      }));
+    }
+
+    function drawStars() {
+      ctx.clearRect(0, 0, width, height);
+      frame += 0.016;
+
+      for (const star of stars) {
+        const pulse = reducedMotion
+          ? 1
+          : 0.65 + Math.sin(frame * star.speed * 7 + star.phase) * 0.3;
+
+        ctx.beginPath();
+        ctx.arc(star.x, star.y, star.radius, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(196, 196, 255, ${star.alpha * pulse})`;
+        ctx.fill();
+
+        if (!reducedMotion) {
+          star.y -= star.speed * 0.18;
+
+          if (star.y < -2) {
+            star.y = height + 2;
+            star.x = Math.random() * width;
+          }
+        }
+      }
+
+      if (!reducedMotion) {
+        requestAnimationFrame(drawStars);
+      }
+    }
+
+    resizeStars();
+    drawStars();
+
+    let resizeTimer;
+    window.addEventListener("resize", () => {
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(resizeStars, 150);
+    });
+  </script>
+</body>
+</html>

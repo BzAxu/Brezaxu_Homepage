@@ -233,6 +233,17 @@
       background: rgba(145,125,255,.12);
     }
 
+    .btn:active {
+      transform: translateY(0) scale(.975);
+      transition-duration: 100ms;
+    }
+
+    .btn:focus-visible,
+    .nav-links a:focus-visible {
+      outline: 2px solid rgba(172, 153, 255, .9);
+      outline-offset: 4px;
+    }
+
     .btn.primary {
       border: none;
       background: linear-gradient(110deg, #8265ed, #537ce8);
@@ -465,14 +476,52 @@
     }
 
     .project-card {
+      --tilt-x: 0deg;
+      --tilt-y: 0deg;
+      --lift: 0px;
+      --glow-x: 50%;
+      --glow-y: 50%;
+      position: relative;
+      isolation: isolate;
+      overflow: hidden;
       min-height: 205px;
       padding: 23px;
-      transition: transform .25s, border-color .25s;
+      transform: perspective(900px) rotateX(var(--tilt-y)) rotateY(var(--tilt-x)) translateY(var(--lift));
+      transform-style: preserve-3d;
+      transition:
+        transform 420ms cubic-bezier(.2, .75, .25, 1),
+        border-color 260ms ease,
+        box-shadow 260ms ease;
+      will-change: transform;
+    }
+
+    .project-card::before {
+      content: "";
+      position: absolute;
+      z-index: -1;
+      inset: 0;
+      pointer-events: none;
+      opacity: 0;
+      background: radial-gradient(
+        circle at var(--glow-x) var(--glow-y),
+        rgba(139, 128, 255, .17),
+        transparent 58%
+      );
+      transition: opacity 260ms ease;
     }
 
     .project-card:hover {
-      transform: translateY(-5px);
-      border-color: rgba(166, 145, 255, .42);
+      --lift: -5px;
+      border-color: rgba(166, 145, 255, .48);
+      box-shadow: 0 22px 52px rgba(56, 48, 125, .2);
+    }
+
+    .project-card:hover::before {
+      opacity: 1;
+    }
+
+    .project-card > * {
+      transform: translateZ(16px);
     }
 
     .project-icon {
@@ -977,6 +1026,44 @@
     document.getElementById("backToTop").addEventListener("click", () => {
       window.scrollTo({ top: 0, behavior: "smooth" });
     });
+
+    // ===== 项目卡片：轻量 3D 倾斜 + 跟随光效 =====
+    // 使用 CSS transition 处理进入/离开状态；鼠标移开时从当前角度平滑归零。
+    const projectCards = document.querySelectorAll(".project-card");
+    const finePointer = window.matchMedia("(hover: hover) and (pointer: fine)").matches;
+    const motionPreference = window.matchMedia("(prefers-reduced-motion: reduce)");
+
+    if (finePointer && !motionPreference.matches) {
+      projectCards.forEach((card) => {
+        let resetTimer;
+
+        card.addEventListener("pointermove", (event) => {
+          const rect = card.getBoundingClientRect();
+          const x = (event.clientX - rect.left) / rect.width;
+          const y = (event.clientY - rect.top) / rect.height;
+
+          card.style.setProperty("--tilt-x", ((x - 0.5) * 7).toFixed(2) + "deg");
+          card.style.setProperty("--tilt-y", ((0.5 - y) * 7).toFixed(2) + "deg");
+          card.style.setProperty("--glow-x", (x * 100).toFixed(1) + "%");
+          card.style.setProperty("--glow-y", (y * 100).toFixed(1) + "%");
+        });
+
+        card.addEventListener("pointerleave", () => {
+          card.style.setProperty("--tilt-x", "0deg");
+          card.style.setProperty("--tilt-y", "0deg");
+          card.style.setProperty("--glow-x", "50%");
+          card.style.setProperty("--glow-y", "50%");
+        });
+
+        card.addEventListener("pointerdown", () => {
+          card.style.transitionDuration = "100ms";
+          clearTimeout(resetTimer);
+          resetTimer = setTimeout(() => {
+            card.style.transitionDuration = "";
+          }, 180);
+        });
+      });
+    }
 
     // ===== 区块进入视口时淡入 =====
     const revealItems = document.querySelectorAll(".reveal");

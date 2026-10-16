@@ -34,7 +34,7 @@
       galleryPage.hidden = !isGallery;
       if (footer) footer.hidden = isGallery;
       document.body.classList.toggle("gallery-open", false);
-      window.scrollTo({ top: 0, behavior: "instant" });
+      window.scrollTo({ top: 0, behavior: "auto" });
       if (updateHistory) {
         const url = new URL(window.location.href);
         if (isGallery) url.searchParams.set("page", "gallery");
@@ -55,7 +55,7 @@
     const home = event.target.closest("[data-gallery-home]");
     if (home && currentRoute === "gallery") {
       event.preventDefault();
-      history.pushState({ view: "home" }, "", window.location.pathname + window.location.hash);
+      history.replaceState({ view: "home" }, "", window.location.pathname + window.location.hash);
       renderRoute("home");
     }
   });

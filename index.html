@@ -141,7 +141,8 @@
       <p>连接 Pixiv App API，浏览推荐插画或读取你自己的收藏。需要先在 Cloudflare 配置授权令牌。</p>
       <div class="gallery-mode-switch" role="group" aria-label="画廊内容来源">
         <button class="gallery-mode is-active" id="galleryRecommended" type="button" data-gallery-mode="recommended" aria-pressed="true">推荐作品</button>
-        <button class="gallery-mode" id="galleryBookmarks" type="button" data-gallery-mode="bookmarks" aria-pressed="false">我的收藏</button>
+        <button class="gallery-mode" id="galleryPublicBookmarks" type="button" data-gallery-mode="bookmarks-public" aria-pressed="false">公开收藏</button>
+        <button class="gallery-mode" id="galleryPrivateBookmarks" type="button" data-gallery-mode="bookmarks-private" aria-pressed="false">私人收藏</button>
       </div>
       <div class="gallery-toolbar">
         <span class="gallery-status" id="galleryStatus" role="status" aria-live="polite">准备连接 Pixiv…</span>

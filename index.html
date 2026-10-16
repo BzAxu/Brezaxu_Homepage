@@ -95,7 +95,7 @@
     }
     .profile { padding: 24px; overflow: hidden; position: relative; }
     .avatar-row { display: flex; align-items: center; gap: 15px; position: relative; }
-    /* 替换头像：将 .avatar-placeholder 换成 <img class="avatar" src="你的图床直链" alt="BzAxu 的头像"> */
+    /* 头像使用仓库根目录中的 Avatar.jpg，与本站同源加载。 */
     .avatar, .avatar-placeholder {
       width: 76px; height: 76px; flex: 0 0 76px; border-radius: 23px;
       border: 1px solid rgba(197, 188, 255, .35);
@@ -415,7 +415,7 @@
     <aside class="sidebar" aria-label="个人资料与社交账号">
       <section class="panel profile">
         <div class="avatar-row">
-          <div class="avatar-placeholder" role="img" aria-label="头像占位，之后替换为个人头像"><span>BA</span></div>
+          <img class="avatar" src="./Avatar.jpg" alt="BzAxu 的头像" width="76" height="76">
           <div>
             <div class="name">BzAxu</div>
             <div class="handle">@Bz_Axu · 个人空间</div>

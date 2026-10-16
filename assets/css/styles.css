@@ -268,7 +268,7 @@
       --lg-edge-red: rgb(163 135 255 / .42);
       --lg-edge-cyan: rgb(82 218 255 / .42);
       --lg-shadow: 0 22px 65px rgb(0 0 0 / .28);
-      --lg-scene-background: url("./background.svg");
+      --lg-scene-background: url("../images/background.svg");
       background: linear-gradient(135deg, rgba(255,255,255,.105), rgba(255,255,255,.025) 44%, rgba(120,145,255,.055));
       border-color: rgba(225,232,255,.22);
       border-top-color: rgba(255,255,255,.46);

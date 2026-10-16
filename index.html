@@ -144,6 +144,11 @@
         <button class="gallery-mode" id="galleryPublicBookmarks" type="button" data-gallery-mode="bookmarks-public" aria-pressed="false">公开收藏</button>
         <button class="gallery-mode" id="galleryPrivateBookmarks" type="button" data-gallery-mode="bookmarks-private" aria-pressed="false">私人收藏</button>
       </div>
+      <form class="gallery-private-access" id="galleryPrivateAccess" hidden>
+        <label for="galleryPrivateKey">私人收藏访问密钥</label>
+        <div class="gallery-private-access-row"><input id="galleryPrivateKey" type="password" autocomplete="off" placeholder="输入 Cloudflare 中设置的访问密钥"><button class="button" type="submit">解锁</button></div>
+        <p>密钥仅在当前页面内存中使用，不会写入源码。</p>
+      </form>
       <div class="gallery-toolbar">
         <span class="gallery-status" id="galleryStatus" role="status" aria-live="polite">准备连接 Pixiv…</span>
         <button class="button gallery-refresh" id="galleryRefresh" type="button">↻ 刷新</button>

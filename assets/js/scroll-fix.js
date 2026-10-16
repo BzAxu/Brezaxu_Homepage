@@ -1,17 +1,27 @@
-/* Prevent browsers from restoring an old scroll position after refresh.
-   Keep hash-based in-page navigation intact. Load synchronously from <head>. */
+/* On refresh, discard the previous fragment and scroll position.
+   Keep normal in-page anchor navigation on non-reload visits. */
 (() => {
-  if ("scrollRestoration" in history) {
-    history.scrollRestoration = "manual";
+  if ("scrollRestoration" in history) history.scrollRestoration = "manual";
+
+  const navigation = performance.getEntriesByType("navigation")[0];
+  const isReload = navigation && navigation.type === "reload";
+
+  if (isReload) {
+    // Replace the URL without reloading so a stale #contact/#projects fragment
+    // cannot force the browser to restore the previous section.
+    history.replaceState(null, "", location.pathname + location.search);
   }
 
-  const goToTopUnlessHash = () => {
-    if (!window.location.hash) {
+  const resetScroll = () => {
+    if (!isReload) return;
+    document.documentElement.style.scrollBehavior = "auto";
+    window.scrollTo(0, 0);
+    requestAnimationFrame(() => {
       window.scrollTo(0, 0);
-    }
+      document.documentElement.style.removeProperty("scroll-behavior");
+    });
   };
 
-  // Run once during parsing and again when the document is shown from reload/BFCache.
-  goToTopUnlessHash();
-  window.addEventListener("pageshow", goToTopUnlessHash, { once: true });
+  resetScroll();
+  window.addEventListener("pageshow", resetScroll);
 })();

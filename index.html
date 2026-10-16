@@ -645,8 +645,9 @@
         if (!pendingUrl) return;
         const destination = pendingUrl;
         closeDialog();
-        const opened = window.open(destination, "_blank", "noopener,noreferrer");
-        if (!opened) window.location.assign(destination);
+        const opened = window.open(destination, "_blank");
+        if (opened) opened.opener = null;
+        else window.location.assign(destination);
       });
 
       document.addEventListener("keydown", (event) => {

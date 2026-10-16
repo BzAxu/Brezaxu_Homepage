@@ -382,6 +382,15 @@
     .external-dialog__continue { background: linear-gradient(135deg, rgba(169,155,255,.26), rgba(109,143,224,.16)); border-color: rgba(169,155,255,.35) !important; color: #e7e2ff !important; }
     .external-dialog__continue:hover { background: rgba(169,155,255,.24); }
     .external-dialog__note { margin-top: 14px !important; color: #818ba6 !important; font-size: 10px !important; }
+    .external-dialog__destination { min-width: 0; }
+    .external-dialog__url-row { display: flex; align-items: flex-start; gap: 10px; min-width: 0; }
+    .external-dialog__host { flex: 1; min-width: 0; overflow-wrap: anywhere; word-break: break-word; font-size: 12px; line-height: 1.7; user-select: text; }
+    .icon-copy { display: inline-grid; place-items: center; flex: 0 0 34px; width: 34px; height: 34px; padding: 7px; border: 1px solid rgba(220,228,255,.17); border-radius: 9px; background: rgba(255,255,255,.055); color: #d9d3ff; cursor: pointer; transition: background .18s ease, border-color .18s ease, transform .18s ease; }
+    .icon-copy:hover { background: rgba(169,155,255,.16); border-color: rgba(169,155,255,.4); transform: translateY(-1px); }
+    .icon-copy svg { display: block; width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
+    .qq-contact { cursor: default; }
+    .qq-contact:hover { transform: none; border-color: rgba(220,228,255,.11); background: linear-gradient(135deg, rgba(255,255,255,.065), rgba(255,255,255,.018)); box-shadow: inset 0 1px 0 rgba(255,255,255,.035); }
+    .qq-contact .social-id { line-height: 1.7; }
     body.external-dialog-open { overflow: hidden; }
     @keyframes externalFade { from { opacity: 0; } to { opacity: 1; } }
     @keyframes externalCardIn { from { opacity: 0; transform: translateY(8px) scale(.985); } to { opacity: 1; transform: translateY(0) scale(1); } }
@@ -423,9 +432,10 @@
           <a class="social-link" href="https://github.com/BzAxu" target="_blank" rel="noopener noreferrer">
             <span class="social-icon">GH</span><span class="social-copy"><span class="social-name">GitHub</span><br><span class="social-id">BzAxu</span></span><span class="external">↗</span>
           </a>
-          <a class="social-link" href="https://wpa.qq.com/msgrd?v=3&amp;uin=1593107836&amp;site=qq&amp;menu=yes" target="_blank" rel="noopener noreferrer">
-            <span class="social-icon">QQ</span><span class="social-copy"><span class="social-name">QQ</span><br><span class="social-id">1593107836</span></span><span class="external">↗</span>
-          </a>
+          <div class="social-link qq-contact">
+            <span class="social-icon">QQ</span><span class="social-copy"><span class="social-name">QQ 联系</span><br><span class="social-id">QQ 号：1593107836<br>请在 QQ 中搜索该号码添加好友</span></span>
+            <button class="icon-copy" type="button" data-copy-text="1593107836" aria-label="复制 QQ 号" title="复制 QQ 号"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="8" y="8" width="12" height="12" rx="2"></rect><path d="M16 8V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h3"></path></svg></button>
+          </div>
           <a class="social-link" href="https://b23.tv/cNg72Py" target="_blank" rel="noopener noreferrer">
             <span class="social-icon">B</span><span class="social-copy"><span class="social-name">哔哩哔哩</span><br><span class="social-id">BrezAxu</span></span><span class="external">↗</span>
           </a>
@@ -539,8 +549,11 @@
       <h2 id="externalDialogTitle">即将跳转到站外网站</h2>
       <p id="externalDialogDescription">你正在离开 BzAxu 的个人空间。请确认目标网站地址，注意保护个人信息。</p>
       <div class="external-dialog__destination">
-        <span class="external-dialog__destination-label">跳转目标</span>
-        <span id="externalLinkHost" class="external-dialog__host"></span>
+        <span class="external-dialog__destination-label">完整跳转链接</span>
+        <div class="external-dialog__url-row">
+          <span id="externalLinkHost" class="external-dialog__host"></span>
+          <button class="icon-copy external-dialog__copy" id="copyExternalLink" type="button" aria-label="复制完整链接" title="复制完整链接"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="8" y="8" width="12" height="12" rx="2"></rect><path d="M16 8V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h3"></path></svg></button>
+        </div>
       </div>
       <div class="external-dialog__actions">
         <button class="external-dialog__cancel" type="button" data-external-cancel>留在本站</button>
@@ -565,26 +578,42 @@
       toastTimer = setTimeout(() => toast.classList.remove("show"), 2200);
     }
 
+    async function copyText(text) {
+      if (navigator.clipboard && window.isSecureContext) {
+        await navigator.clipboard.writeText(text);
+        return;
+      }
+      const field = document.createElement("textarea");
+      field.value = text;
+      field.setAttribute("readonly", "");
+      field.style.position = "fixed";
+      field.style.left = "-9999px";
+      field.style.opacity = "0";
+      document.body.appendChild(field);
+      field.select();
+      const copied = document.execCommand("copy");
+      field.remove();
+      if (!copied) throw new Error("copy failed");
+    }
+
     document.getElementById("copyPage").addEventListener("click", async () => {
       try {
-        if (navigator.clipboard && window.isSecureContext) {
-          await navigator.clipboard.writeText(window.location.href);
-        } else {
-          const field = document.createElement("textarea");
-          field.value = window.location.href;
-          field.setAttribute("readonly", "");
-          field.style.position = "fixed";
-          field.style.opacity = "0";
-          document.body.appendChild(field);
-          field.select();
-          const copied = document.execCommand("copy");
-          field.remove();
-          if (!copied) throw new Error("copy failed");
-        }
+        await copyText(window.location.href);
         showToast("主页链接已复制");
       } catch {
         showToast("复制失败，请手动复制浏览器地址");
       }
+    });
+
+    document.querySelectorAll("[data-copy-text]").forEach((button) => {
+      button.addEventListener("click", async () => {
+        try {
+          await copyText(button.dataset.copyText);
+          showToast(button.dataset.copyText === "1593107836" ? "QQ 号已复制" : "内容已复制");
+        } catch {
+          showToast("复制失败，请手动选择并复制");
+        }
+      });
     });
   </script>
   <script type="module">
@@ -611,8 +640,19 @@
       const dialog = document.getElementById("externalLinkDialog");
       const hostLabel = document.getElementById("externalLinkHost");
       const continueButton = document.getElementById("externalLinkContinue");
+      const copyExternalLink = document.getElementById("copyExternalLink");
       let pendingUrl = "";
       let previousFocus = null;
+
+      copyExternalLink.addEventListener("click", async () => {
+        if (!pendingUrl) return;
+        try {
+          await copyText(pendingUrl);
+          showToast("完整跳转链接已复制");
+        } catch {
+          showToast("复制失败，请手动选择链接复制");
+        }
+      });
 
       function closeDialog() {
         dialog.hidden = true;
@@ -634,7 +674,7 @@
         event.preventDefault();
         pendingUrl = destination.href;
         previousFocus = document.activeElement;
-        hostLabel.textContent = destination.hostname;
+        hostLabel.textContent = destination.href;
         dialog.hidden = false;
         document.body.classList.add("external-dialog-open");
         continueButton.focus();

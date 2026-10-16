@@ -175,12 +175,18 @@
       if (!nextCursor) status.textContent += " · 已到末页";
     } catch (error) {
       console.warn("Pixiv gallery request failed:", error);
+      if (currentMode === "bookmarks-private" && error.status === 403) {
+        galleryKey = "";
+        privateKeyInput.value = "";
+        privateAccess.hidden = false;
+        status.textContent = "访问密钥不正确，请重新输入。";
+      }
       if (!grid.children.length) {
         empty.hidden = false;
         emptyTitle.textContent = error.status === 503 ? "还差一步：配置 Pixiv 授权" : "暂时无法连接 Pixiv";
         emptyText.textContent = error.message || "请检查 Cloudflare Functions 部署和授权配置后重试。";
       }
-      status.textContent = grid.children.length ? "加载失败，可重试" : "Pixiv 连接失败";
+      status.textContent = grid.children.length ? "加载失败，可重试" : (error.status === 403 ? "私人收藏密钥错误" : "Pixiv 连接失败");
     } finally {
       setLoading(false);
       moreButton.disabled = !nextCursor || loading;

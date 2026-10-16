@@ -86,7 +86,7 @@ async function getAccessToken(refreshToken) {
 }
 
 function cleanIllustrations(items, origin) {
-  return (items || []).map((item) => ({
+  return (items || []).filter((item) => Number(item.x_restrict ?? 0) === 0).map((item) => ({
     id: item.id,
     title: item.title || "未命名作品",
     author: item.user?.name || "Pixiv 用户",
@@ -109,6 +109,12 @@ export async function onRequestGet({ request, env }) {
   const url = new URL(request.url);
   const requestedMode = url.searchParams.get("mode");
   const mode = requestedMode === "bookmarks-public" || requestedMode === "bookmarks-private" ? requestedMode : "recommended";
+  if (mode === "bookmarks-private") {
+    if (!env.PIXIV_GALLERY_KEY) return json({ error: "尚未配置私人收藏访问密钥", message: "请在 Cloudflare 中设置 PIXIV_GALLERY_KEY。" }, 503);
+    if (request.headers.get("X-Gallery-Key") !== env.PIXIV_GALLERY_KEY) {
+      return json({ error: "私人收藏访问密钥不正确", message: "请检查访问密钥后重试。" }, 403);
+    }
+  }
   const cursor = url.searchParams.get("cursor");
   try {
     const token = await getAccessToken(env.PIXIV_REFRESH_TOKEN);

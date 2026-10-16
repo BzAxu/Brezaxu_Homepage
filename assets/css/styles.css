@@ -517,3 +517,60 @@
     animation-duration: .01ms !important;
   }
 }
+
+
+/* Softer, rounder visual language across the whole interface. */
+:root { --radius: 26px; }
+.panel,
+.cover,
+.post,
+.feature,
+.repo-card,
+.repo-link,
+.contact-card,
+.profile-card {
+  border-radius: 26px;
+}
+.avatar,
+.avatar-placeholder {
+  border-radius: 25px;
+}
+.social-action,
+.button,
+.pill,
+.status-pill,
+.tag,
+.post-badge,
+.post-tags span,
+.feature-icon,
+.repo-icon,
+.external-dialog__icon {
+  border-radius: 15px;
+}
+.topbar-inner,
+.top-nav a,
+.external-dialog__destination {
+  border-radius: 18px;
+}
+.external-dialog__card {
+  border-radius: 28px;
+}
+.external-dialog__actions button {
+  border-radius: 15px;
+}
+.icon-copy {
+  border-radius: 13px;
+}
+@media (max-width: 600px) {
+  .panel,
+  .cover,
+  .post,
+  .feature,
+  .repo-card,
+  .repo-link,
+  .contact-card,
+  .profile-card {
+    border-radius: 23px;
+  }
+  .external-dialog__card { border-radius: 25px; }
+}

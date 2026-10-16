@@ -574,3 +574,41 @@
   }
   .external-dialog__card { border-radius: 25px; }
 }
+
+
+/* Card motion: gentle lift on hover, tactile press feedback on activation. */
+:where(.panel, .cover, .post, .feature, .contact-strip, .side-card, .profile-card, .contact-card) {
+  transform: translate3d(0, 0, 0);
+  transition:
+    transform 260ms cubic-bezier(.2,.75,.25,1),
+    box-shadow 280ms ease,
+    border-color 240ms ease,
+    filter 240ms ease;
+  will-change: transform;
+}
+@media (hover: hover) and (pointer: fine) {
+  :where(.panel, .cover, .post, .feature, .contact-strip, .side-card, .profile-card, .contact-card):hover {
+    transform: translate3d(0, -5px, 0);
+    border-color: rgba(169, 155, 255, .32);
+    box-shadow:
+      0 25px 68px rgba(0, 0, 0, .27),
+      0 0 0 1px rgba(169, 155, 255, .045),
+      0 0 28px rgba(122, 111, 255, .085),
+      inset 0 1px 0 rgba(255, 255, 255, .12);
+    filter: brightness(1.035);
+  }
+  .post:hover, .feature:hover, .contact-strip:hover, .side-card:hover {
+    transform: translate3d(0, -4px, 0);
+  }
+}
+:where(.panel, .cover, .post, .feature, .contact-strip, .side-card, .profile-card, .contact-card):active {
+  transform: translate3d(0, -1px, 0) scale(.992);
+  filter: brightness(1.08);
+  transition-duration: 100ms;
+}
+@media (prefers-reduced-motion: reduce) {
+  :where(.panel, .cover, .post, .feature, .contact-strip, .side-card, .profile-card, .contact-card) {
+    transform: none !important;
+    will-change: auto;
+  }
+}

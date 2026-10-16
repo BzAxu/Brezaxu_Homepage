@@ -107,7 +107,8 @@ export async function onRequestGet({ request, env }) {
   }
 
   const url = new URL(request.url);
-  const mode = url.searchParams.get("mode") === "bookmarks" ? "bookmarks" : "recommended";
+  const requestedMode = url.searchParams.get("mode");
+  const mode = requestedMode === "bookmarks-public" || requestedMode === "bookmarks-private" ? requestedMode : "recommended";
   const cursor = url.searchParams.get("cursor");
   try {
     const token = await getAccessToken(env.PIXIV_REFRESH_TOKEN);
@@ -119,11 +120,11 @@ export async function onRequestGet({ request, env }) {
         return json({ error: "无效的分页地址" }, 400);
       }
       apiUrl = next;
-    } else if (mode === "bookmarks") {
+    } else if (mode === "bookmarks-public" || mode === "bookmarks-private") {
       if (!token.user?.id) return json({ error: "Pixiv 未返回当前用户 ID" }, 502);
       apiUrl = new URL("/v1/user/bookmarks/illust", API);
       apiUrl.searchParams.set("user_id", String(token.user.id));
-      apiUrl.searchParams.set("restrict", "private");
+      apiUrl.searchParams.set("restrict", mode === "bookmarks-private" ? "private" : "public");
       apiUrl.searchParams.set("type", "illust");
     } else {
       apiUrl = new URL("/v1/illust/recommended", API);

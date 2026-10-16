@@ -388,8 +388,8 @@
     .icon-copy { display: inline-grid; place-items: center; flex: 0 0 34px; width: 34px; height: 34px; padding: 7px; border: 1px solid rgba(220,228,255,.17); border-radius: 9px; background: rgba(255,255,255,.055); color: #d9d3ff; cursor: pointer; transition: background .18s ease, border-color .18s ease, transform .18s ease; }
     .icon-copy:hover { background: rgba(169,155,255,.16); border-color: rgba(169,155,255,.4); transform: translateY(-1px); }
     .icon-copy svg { display: block; width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
-    .qq-contact { cursor: default; }
-    .qq-contact:hover { transform: none; border-color: rgba(220,228,255,.11); background: linear-gradient(135deg, rgba(255,255,255,.065), rgba(255,255,255,.018)); box-shadow: inset 0 1px 0 rgba(255,255,255,.035); }
+    .qq-contact { width: 100%; text-align: left; color: inherit; cursor: pointer; font: inherit; }
+    .qq-contact:hover { transform: translateX(3px); border-color: rgba(169,155,255,.42); background: linear-gradient(135deg, rgba(169,155,255,.13), rgba(255,255,255,.025)); box-shadow: inset 0 1px 0 rgba(255,255,255,.08), 0 8px 24px rgba(0,0,0,.12); }
     .qq-contact .social-id { line-height: 1.7; }
     body.external-dialog-open { overflow: hidden; }
     @keyframes externalFade { from { opacity: 0; } to { opacity: 1; } }
@@ -432,10 +432,9 @@
           <a class="social-link" href="https://github.com/BzAxu" target="_blank" rel="noopener noreferrer">
             <span class="social-icon">GH</span><span class="social-copy"><span class="social-name">GitHub</span><br><span class="social-id">开源项目</span></span><span class="external">↗</span>
           </a>
-          <div class="social-link qq-contact">
-            <span class="social-icon">QQ</span><span class="social-copy"><span class="social-name">QQ 联系</span><br><span class="social-id">QQ 号：1593107836<br>请在 QQ 中搜索该号码添加好友</span></span>
-            <button class="icon-copy" type="button" data-copy-text="1593107836" aria-label="复制 QQ 号" title="复制 QQ 号"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="8" y="8" width="12" height="12" rx="2"></rect><path d="M16 8V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h3"></path></svg></button>
-          </div>
+          <button class="social-link qq-contact" type="button" data-qq-contact aria-haspopup="dialog" aria-controls="externalLinkDialog">
+            <span class="social-icon">QQ</span><span class="social-copy"><span class="social-name">QQ 联系</span><br><span class="social-id">添加好友</span></span><span class="external" aria-hidden="true">↗</span>
+          </button>
           <a class="social-link" href="https://b23.tv/cNg72Py" target="_blank" rel="noopener noreferrer">
             <span class="social-icon">B</span><span class="social-copy"><span class="social-name">哔哩哔哩</span><br><span class="social-id">视频动态</span></span><span class="external">↗</span>
           </a>
@@ -545,11 +544,11 @@
     <button class="external-dialog__backdrop" type="button" data-external-cancel aria-label="取消跳转"></button>
     <div class="external-dialog__card">
       <div class="external-dialog__icon" aria-hidden="true">↗</div>
-      <div class="external-dialog__eyebrow">EXTERNAL LINK</div>
+      <div class="external-dialog__eyebrow" id="externalDialogEyebrow">EXTERNAL LINK</div>
       <h2 id="externalDialogTitle">即将访问</h2>
       <p id="externalDialogDescription">目标链接如下。</p>
       <div class="external-dialog__destination">
-        <span class="external-dialog__destination-label">完整链接</span>
+        <span class="external-dialog__destination-label" id="externalDestinationLabel">完整链接</span>
         <div class="external-dialog__url-row">
           <span id="externalLinkHost" class="external-dialog__host"></span>
           <button class="icon-copy external-dialog__copy" id="copyExternalLink" type="button" aria-label="复制完整链接" title="复制完整链接"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="8" y="8" width="12" height="12" rx="2"></rect><path d="M16 8V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h3"></path></svg></button>
@@ -640,25 +639,55 @@
       const hostLabel = document.getElementById("externalLinkHost");
       const continueButton = document.getElementById("externalLinkContinue");
       const copyExternalLink = document.getElementById("copyExternalLink");
+      const dialogEyebrow = document.getElementById("externalDialogEyebrow");
+      const destinationLabel = document.getElementById("externalDestinationLabel");
+      const dialogTitle = document.getElementById("externalDialogTitle");
+      const dialogDescription = document.getElementById("externalDialogDescription");
       let pendingUrl = "";
+      let qqContactMode = false;
       let previousFocus = null;
 
-      copyExternalLink.addEventListener("click", async () => {
-        if (!pendingUrl) return;
+      async function copyDialogValue() {
+        const value = qqContactMode ? "1593107836" : pendingUrl;
+        if (!value) return;
         try {
-          await copyText(pendingUrl);
-          showToast("完整跳转链接已复制");
+          await copyText(value);
+          showToast(qqContactMode ? "QQ 号已复制" : "完整跳转链接已复制");
+          if (qqContactMode) closeDialog();
         } catch {
-          showToast("复制失败，请手动选择链接复制");
+          showToast("复制失败，请手动选择并复制");
         }
-      });
+      }
+      copyExternalLink.addEventListener("click", copyDialogValue);
+
+      function openDialog({ url = "", qq = false, trigger = document.activeElement } = {}) {
+        pendingUrl = url;
+        qqContactMode = qq;
+        previousFocus = trigger;
+        dialogEyebrow.textContent = qq ? "QQ CONTACT" : "EXTERNAL LINK";
+        dialogTitle.textContent = qq ? "添加 QQ 好友" : "即将访问";
+        dialogDescription.textContent = qq ? "请打开 QQ，在搜索中输入下方号码并添加好友。" : "目标链接如下。";
+        destinationLabel.textContent = qq ? "QQ 号" : "完整链接";
+        hostLabel.textContent = qq ? "1593107836" : url;
+        copyExternalLink.setAttribute("aria-label", qq ? "复制 QQ 号" : "复制完整链接");
+        copyExternalLink.title = qq ? "复制 QQ 号" : "复制完整链接";
+        continueButton.innerHTML = qq ? '复制 QQ 号 <span aria-hidden="true">⧉</span>' : '继续访问 <span aria-hidden="true">↗</span>';
+        dialog.hidden = false;
+        document.body.classList.add("external-dialog-open");
+        continueButton.focus();
+      }
 
       function closeDialog() {
         dialog.hidden = true;
         document.body.classList.remove("external-dialog-open");
         pendingUrl = "";
+        qqContactMode = false;
         if (previousFocus && typeof previousFocus.focus === "function") previousFocus.focus();
       }
+
+      document.querySelector("[data-qq-contact]").addEventListener("click", (event) => {
+        openDialog({ qq: true, trigger: event.currentTarget });
+      });
 
       document.addEventListener("click", (event) => {
         const link = event.target.closest("a[href]");
@@ -671,16 +700,15 @@
         if (destination.origin === window.location.origin) return;
 
         event.preventDefault();
-        pendingUrl = destination.href;
-        previousFocus = document.activeElement;
-        hostLabel.textContent = destination.href;
-        dialog.hidden = false;
-        document.body.classList.add("external-dialog-open");
-        continueButton.focus();
+        openDialog({ url: destination.href, trigger: document.activeElement });
       });
 
       dialog.querySelectorAll("[data-external-cancel]").forEach((button) => button.addEventListener("click", closeDialog));
       continueButton.addEventListener("click", () => {
+        if (qqContactMode) {
+          copyDialogValue();
+          return;
+        }
         if (!pendingUrl) return;
         const destination = pendingUrl;
         closeDialog();

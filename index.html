@@ -165,9 +165,8 @@
     .post { padding: 22px 24px; }
     .post-head { display: flex; align-items: center; gap: 11px; margin-bottom: 15px; }
     .mini-avatar {
-      width: 38px; height: 38px; display: grid; place-items: center; flex: 0 0 38px;
-      border-radius: 13px; color: #fff; font-size: 12px; font-weight: 900;
-      background: linear-gradient(145deg, #a99bff, #587ab6);
+      width: 38px; height: 38px; display: block; object-fit: cover; flex: 0 0 38px;
+      border-radius: 13px; border: 1px solid rgba(220,228,255,.14);
     }
     .post-author { font-size: 12px; font-weight: 750; }
     .post-time { color: var(--muted); font-size: 11px; }
@@ -522,7 +521,7 @@
 
       <article class="panel post fade-in">
         <div class="post-head">
-          <div class="mini-avatar">BA</div>
+          <img class="mini-avatar" src="./Avatar.jpg" alt="BzAxu 的头像" width="38" height="38">
           <div><div class="post-author">BzAxu</div><div class="post-time">置顶 · 关于这个空间</div></div>
           <span class="post-badge">置顶</span>
         </div>
@@ -534,7 +533,7 @@
 
       <article class="panel post fade-in">
         <div class="post-head">
-          <div class="mini-avatar">BA</div>
+          <img class="mini-avatar" src="./Avatar.jpg" alt="BzAxu 的头像" width="38" height="38">
           <div><div class="post-author">BzAxu</div><div class="post-time">项目记录</div></div>
           <span class="post-badge">开发中</span>
         </div>

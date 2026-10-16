@@ -16,6 +16,9 @@
   const lightboxTitle = document.getElementById("galleryLightboxTitle");
   const pixivLink = document.getElementById("galleryPixivLink");
   const modeButtons = [...document.querySelectorAll("[data-gallery-mode]")];
+  const privateAccess = document.getElementById("galleryPrivateAccess");
+  const privateKeyInput = document.getElementById("galleryPrivateKey");
+  let galleryKey = "";
   if (!homePage || !galleryPage || !grid) return;
 
   const seen = new Set();
@@ -148,8 +151,10 @@
     try {
       const params = new URLSearchParams({ mode: currentMode });
       if (!reset && nextCursor) params.set("cursor", nextCursor);
+      const requestHeaders = { "Accept": "application/json" };
+      if (currentMode === "bookmarks-private" && galleryKey) requestHeaders["X-Gallery-Key"] = galleryKey;
       const response = await fetch("/api/pixiv?" + params.toString(), {
-        headers: { "Accept": "application/json" },
+        headers: requestHeaders,
         credentials: "same-origin"
       });
       const data = await response.json().catch(() => ({}));
@@ -211,8 +216,34 @@
   retryButton.addEventListener("click", () => loadImages({ reset: grid.children.length === 0 }));
   moreButton.addEventListener("click", () => loadImages());
   modeButtons.forEach((button) => button.addEventListener("click", () => {
-    if (button.dataset.galleryMode !== currentMode) loadImages({ reset: true, mode: button.dataset.galleryMode });
+    const mode = button.dataset.galleryMode;
+    if (mode === "bookmarks-private" && !galleryKey) {
+      currentMode = mode;
+      modeButtons.forEach((item) => {
+        const active = item.dataset.galleryMode === mode;
+        item.classList.toggle("is-active", active);
+        item.setAttribute("aria-pressed", String(active));
+      });
+      privateAccess.hidden = false;
+      status.textContent = "输入私人收藏访问密钥后继续。";
+      privateKeyInput.focus();
+      return;
+    }
+    privateAccess.hidden = mode !== "bookmarks-private";
+    if (mode !== currentMode) loadImages({ reset: true, mode });
   }));
+  privateAccess.addEventListener("submit", (event) => {
+    event.preventDefault();
+    const value = privateKeyInput.value.trim();
+    if (!value) {
+      status.textContent = "请输入访问密钥。";
+      privateKeyInput.focus();
+      return;
+    }
+    galleryKey = value;
+    privateAccess.hidden = true;
+    loadImages({ reset: true, mode: "bookmarks-private" });
+  });
 
   const initialRoute = new URL(window.location.href).searchParams.get("page") === "gallery" ? "gallery" : "home";
   renderRoute(initialRoute, { replace: true });

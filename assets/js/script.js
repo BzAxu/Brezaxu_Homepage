@@ -1,9 +1,13 @@
-// Main page interactions and liquid-glass initialization.
-// Kept as a single native ES module so the static site needs no build step.
-import { injectLiquidGlassFilter } from "https://cdn.jsdelivr.net/npm/@dpawlikowski/liquid-glass@0.3.0/dist/index.js";
-
+// Main page interactions and optional liquid-glass enhancement.
+// External-link confirmation must keep working even if the CDN is unavailable.
+import("https://cdn.jsdelivr.net/npm/@dpawlikowski/liquid-glass@0.3.0/dist/index.js")
+  .then(({ injectLiquidGlassFilter }) => {
     // Static optics: no animated turbulence and no moving page background.
-    injectLiquidGlassFilter({ animate: false, scale: 18 });
+    try {
+      injectLiquidGlassFilter({ animate: false, scale: 18 });
+    } catch (error) {
+      console.warn("Liquid-glass filter unavailable; continuing without refraction.", error);
+    }
 
     document.querySelectorAll(".panel").forEach((panel) => {
       panel.classList.add("liquid-glass", "liquid-glass--vivid", "liquid-glass--static");
@@ -16,6 +20,12 @@ import { injectLiquidGlassFilter } from "https://cdn.jsdelivr.net/npm/@dpawlikow
       while (panel.firstChild) content.append(panel.firstChild);
       panel.append(refraction, content);
     });
+  })
+  .catch((error) => {
+    // The confirmation dialog, QQ prompt, copy buttons and tactile feedback
+    // do not depend on the optional visual-effects CDN.
+    console.warn("Liquid-glass enhancement failed; core interactions remain active.", error);
+  });
 
 // Copy buttons and toast notifications.
 "use strict";

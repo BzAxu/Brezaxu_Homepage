@@ -166,3 +166,51 @@ import { injectLiquidGlassFilter } from "https://cdn.jsdelivr.net/npm/@dpawlikow
         }
       });
     })();
+
+
+// Tactile feedback for every button/link, including disabled controls where the
+// browser exposes pointer events. Delegation also covers dynamically added UI.
+(() => {
+  const selector = "button, a[href], [role='button'], input[type='button'], input[type='submit']";
+  let activePointerTarget = null;
+
+  document.addEventListener("pointerdown", (event) => {
+    const control = event.target.closest(selector);
+    if (!control) return;
+    activePointerTarget = control;
+    control.classList.add("feedback-pressed");
+
+    if (event.pointerType === "mouse" && event.button !== 0) return;
+    if (control.matches(".external-dialog__backdrop")) return;
+
+    const rect = control.getBoundingClientRect();
+    const ripple = document.createElement("span");
+    ripple.className = "feedback-ripple";
+    ripple.setAttribute("aria-hidden", "true");
+    ripple.style.left = (event.clientX - rect.left) + "px";
+    ripple.style.top = (event.clientY - rect.top) + "px";
+    control.append(ripple);
+    ripple.addEventListener("animationend", () => ripple.remove(), { once: true });
+  }, { passive: true, capture: true });
+
+  const release = () => {
+    if (activePointerTarget) {
+      activePointerTarget.classList.remove("feedback-pressed");
+      activePointerTarget = null;
+    }
+  };
+  document.addEventListener("pointerup", release, { passive: true, capture: true });
+  document.addEventListener("pointercancel", release, { passive: true, capture: true });
+  window.addEventListener("blur", release);
+
+  // Keyboard activation gets an equivalent short pulse.
+  document.addEventListener("keydown", (event) => {
+    if (event.repeat || (event.key !== "Enter" && event.key !== " ")) return;
+    const control = event.target.closest(selector);
+    if (!control) return;
+    control.classList.remove("feedback-confirmed");
+    void control.offsetWidth;
+    control.classList.add("feedback-confirmed");
+    control.addEventListener("animationend", () => control.classList.remove("feedback-confirmed"), { once: true });
+  }, true);
+})();

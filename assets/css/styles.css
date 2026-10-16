@@ -437,3 +437,78 @@
     @keyframes externalCardIn { from { opacity: 0; transform: translateY(8px) scale(.985); } to { opacity: 1; transform: translateY(0) scale(1); } }
     @media (max-width: 360px) { .external-dialog { padding: 12px; } .external-dialog__card { padding: 20px; } .external-dialog__actions { grid-template-columns: 1fr; } }
     @media (prefers-reduced-motion: reduce) { .external-dialog__backdrop, .external-dialog__card { animation: none; } }
+
+
+/* Global tactile feedback: quick compression, light bloom and a soft ripple. */
+:where(button, a[href], [role="button"], input[type="button"], input[type="submit"]) {
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+  transition:
+    transform 180ms cubic-bezier(.2,.8,.2,1),
+    filter 180ms ease,
+    box-shadow 220ms ease,
+    border-color 220ms ease,
+    background-color 220ms ease;
+}
+:where(button, a[href], [role="button"], input[type="button"], input[type="submit"]):active,
+:where(button, a[href], [role="button"], input[type="button"], input[type="submit"]).feedback-pressed {
+  transform: scale(.965);
+  filter: brightness(1.22) saturate(1.12);
+  box-shadow: 0 0 0 1px rgba(190,178,255,.18), 0 0 24px rgba(140,126,255,.16);
+}
+:where(button, a[href], [role="button"], input[type="button"], input[type="submit"]):focus-visible {
+  outline: 2px solid rgba(181,169,255,.92);
+  outline-offset: 4px;
+  box-shadow: 0 0 0 5px rgba(169,155,255,.12), 0 0 24px rgba(140,126,255,.15);
+}
+:where(button, a[href], [role="button"], input[type="button"], input[type="submit"]) .feedback-ripple {
+  position: absolute;
+  z-index: 0;
+  pointer-events: none;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(231,226,255,.58) 0%, rgba(169,155,255,.28) 38%, rgba(169,155,255,0) 72%);
+  transform: translate(-50%, -50%) scale(0);
+  animation: tactileRipple 620ms cubic-bezier(.15,.65,.3,1) forwards;
+}
+:where(button, a[href], [role="button"], input[type="button"], input[type="submit"]) {
+  position: relative;
+  isolation: isolate;
+}
+:where(button, a[href], [role="button"], input[type="button"], input[type="submit"]) > :not(.feedback-ripple) {
+  position: relative;
+}
+@keyframes tactileRipple {
+  0% { opacity: .9; transform: translate(-50%, -50%) scale(0); }
+  65% { opacity: .34; }
+  100% { opacity: 0; transform: translate(-50%, -50%) scale(18); }
+}
+@keyframes tactileNudge {
+  0% { transform: scale(1); }
+  38% { transform: scale(.955); }
+  72% { transform: scale(1.018); }
+  100% { transform: scale(1); }
+}
+.feedback-confirmed { animation: tactileNudge 360ms cubic-bezier(.2,.8,.2,1); }
+:where(button, a[href], [role="button"], input[type="button"], input[type="submit"]):disabled,
+:where(button, a[href], [role="button"], input[type="button"], input[type="submit"])[aria-disabled="true"] {
+  cursor: not-allowed;
+}
+:where(button, a[href], [role="button"], input[type="button"], input[type="submit"]):disabled:active,
+:where(button, a[href], [role="button"], input[type="button"], input[type="submit"])[aria-disabled="true"]:active {
+  filter: brightness(1.12);
+}
+@media (hover: hover) {
+  :where(button, a[href], [role="button"], input[type="button"], input[type="submit"]):not(:disabled):not([aria-disabled="true"]):hover {
+    filter: brightness(1.06);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  :where(button, a[href], [role="button"], input[type="button"], input[type="submit"]),
+  :where(button, a[href], [role="button"], input[type="button"], input[type="submit"])::before,
+  :where(button, a[href], [role="button"], input[type="button"], input[type="submit"])::after {
+    transition-duration: .01ms !important;
+    animation-duration: .01ms !important;
+  }
+}

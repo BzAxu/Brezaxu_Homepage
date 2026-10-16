@@ -741,3 +741,21 @@ body.gallery-open { overflow: hidden; }
   margin-left: 8px;
 }
 .gallery-lightbox-caption a:hover { text-decoration: underline; }
+
+
+.gallery-private-access {
+  margin-top: 16px;
+  padding: 16px;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  background: rgba(12,15,28,.42);
+}
+.gallery-private-access label { display: block; margin-bottom: 8px; color: var(--soft); font-size: 13px; }
+.gallery-private-access-row { display: flex; gap: 8px; }
+.gallery-private-access input {
+  flex: 1; min-width: 0; padding: 10px 13px;
+  border: 1px solid var(--line); border-radius: 12px;
+  background: rgba(255,255,255,.045); color: var(--text); font: inherit;
+}
+.gallery-private-access input:focus { outline: 2px solid rgba(169,155,255,.5); outline-offset: 2px; }
+.gallery-private-access p { margin: 8px 0 0; color: var(--muted); font-size: 12px; }

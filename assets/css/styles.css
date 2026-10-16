@@ -696,3 +696,48 @@ body.gallery-open { overflow: hidden; }
 .gallery-lightbox[hidden] {
   display: none !important;
 }
+
+
+/* Pixiv gallery source switch */
+.gallery-mode-switch {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 20px;
+}
+.gallery-mode {
+  appearance: none;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 9px 16px;
+  color: var(--muted);
+  background: rgba(255,255,255,.035);
+  font: inherit;
+  font-size: 13px;
+  cursor: pointer;
+  transition: color .22s ease, background .22s ease, border-color .22s ease, transform .22s ease;
+}
+.gallery-mode:hover { transform: translateY(-2px); color: var(--text); border-color: rgba(169,155,255,.45); }
+.gallery-mode.is-active {
+  color: var(--text);
+  background: linear-gradient(120deg, rgba(169,155,255,.22), rgba(138,201,255,.13));
+  border-color: rgba(169,155,255,.5);
+  box-shadow: 0 5px 22px rgba(100,95,210,.12);
+}
+.gallery-mode:disabled { opacity: .55; cursor: wait; transform: none; }
+.gallery-item-caption strong {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.gallery-item-caption span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.gallery-lightbox-caption a {
+  color: var(--accent-2);
+  text-decoration: none;
+  margin-left: 8px;
+}
+.gallery-lightbox-caption a:hover { text-decoration: underline; }

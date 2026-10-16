@@ -472,9 +472,14 @@
   transform: translate(-50%, -50%) scale(0);
   animation: tactileRipple 620ms cubic-bezier(.15,.65,.3,1) forwards;
 }
-:where(button, a[href], [role="button"], input[type="button"], input[type="submit"]) {
+:where(button, a[href], [role="button"], input[type="button"], input[type="submit"]):not(.external-dialog__backdrop) {
   position: relative;
   isolation: isolate;
+}
+.external-dialog__backdrop:active {
+  transform: none;
+  filter: brightness(1.08);
+  background-color: rgba(8, 10, 18, .76);
 }
 :where(button, a[href], [role="button"], input[type="button"], input[type="submit"]) > :not(.feedback-ripple) {
   position: relative;

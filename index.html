@@ -14,11 +14,11 @@
 <body>
   <header class="topbar">
     <div class="topbar-inner">
-      <a class="wordmark" href="#top" aria-label="BzAxu 首页">BzAxu<span>.</span></a>
+      <a class="wordmark" href="#top" data-gallery-home aria-label="BzAxu 首页">BzAxu<span>.</span></a>
       <div class="top-note">个人主页</div>
       <nav class="top-nav" aria-label="页面导航">
-        <a href="#feed">动态</a>
-        <a href="#projects">项目</a>
+        <a href="?page=gallery" data-gallery-open>画廊</a>
+        <a href="#projects">兴趣</a>
         <a href="#contact">联系</a>
       </nav>
     </div>
@@ -61,8 +61,8 @@
       <section class="panel side-card">
         <h2>空间导航</h2>
         <nav class="side-links" aria-label="空间导航">
-          <a href="#feed">↳ 最近动态</a>
-          <a href="#projects">↳ 项目与折腾</a>
+          <a href="?page=gallery" data-gallery-open>↳ 画廊浏览</a>
+          <a href="#projects">↳ 兴趣与项目</a>
           <a href="#about">↳ 关于本站</a>
           <a href="#contact">↳ 留个联系方式</a>
         </nav>
@@ -76,31 +76,20 @@
         <p>BzAxu 的个人主页。</p>
       </section>
 
-      <div class="section-bar" id="feed">
-        <h2>最近动态</h2><span>NOTES & UPDATES</span>
-      </div>
-
-      <article class="panel post fade-in">
-        <div class="post-head">
-          <img class="mini-avatar" src="./assets/images/Avatar.jpg" alt="BzAxu 的头像" width="38" height="38">
-          <div><div class="post-author">BzAxu</div><div class="post-time">置顶 · 关于这个空间</div></div>
-          <span class="post-badge">置顶</span>
+      <a class="panel gallery-promo" href="?page=gallery" data-gallery-open aria-label="打开画廊浏览">
+        <div class="gallery-promo-art" aria-hidden="true">
+          <span class="gallery-orb gallery-orb--one"></span>
+          <span class="gallery-orb gallery-orb--two"></span>
+          <span class="gallery-orb gallery-orb--three"></span>
+          <span class="gallery-promo-symbol">✧</span>
         </div>
-        <h3>欢迎来到我的个人空间 👋</h3>
-        <p>个人信息、社交入口与动态记录。</p>
-        <p>头像与社交入口已更新，后续继续完善。</p>
-        <div class="post-tags"><span>#个人主页</span><span>#持续更新</span><span>#BzAxu</span></div>
-      </article>
-
-      <article class="panel post fade-in">
-        <div class="post-head">
-          <img class="mini-avatar" src="./assets/images/Avatar.jpg" alt="BzAxu 的头像" width="38" height="38">
-          <div><div class="post-author">BzAxu</div><div class="post-time">项目记录</div></div>
-          <span class="post-badge">开发中</span>
+        <div class="gallery-promo-copy">
+          <div class="gallery-promo-kicker">VISUAL COLLECTION</div>
+          <h2>画廊浏览</h2>
+          <p>随机探索二次元插画，点开图片即可沉浸查看。</p>
+          <span class="gallery-promo-cta">进入画廊 <span aria-hidden="true">↗</span></span>
         </div>
-        <h3>把自己的网络空间慢慢搭起来</h3>
-        <p>记录项目进展与日常折腾。</p>
-      </article>
+      </a>
 
       <div class="section-bar" id="projects">
         <h2>兴趣与项目</h2><span>THINGS I LIKE</span>
@@ -143,6 +132,38 @@
       </section>
     </div>
   </main>
+
+  <main class="gallery-page" id="galleryPage" hidden>
+    <section class="panel gallery-hero">
+      <button class="gallery-back" type="button" data-gallery-home><span aria-hidden="true">←</span> 返回个人空间</button>
+      <div class="gallery-promo-kicker">BzAxu / GALLERY</div>
+      <h1>画廊浏览</h1>
+      <p>从公开的 SFW 二次元图片接口随机取图。图片来自第三方服务，内容与可用性由接口决定。</p>
+      <div class="gallery-toolbar">
+        <span class="gallery-status" id="galleryStatus" role="status" aria-live="polite">准备加载图片…</span>
+        <button class="button gallery-refresh" id="galleryRefresh" type="button">↻ 换一批</button>
+      </div>
+    </section>
+    <section class="gallery-grid" id="galleryGrid" aria-label="二次元图片画廊"></section>
+    <div class="gallery-empty" id="galleryEmpty" hidden>
+      <div class="gallery-empty-icon">✧</div>
+      <h2 id="galleryEmptyTitle">正在连接图片接口</h2>
+      <p id="galleryEmptyText">如果加载失败，可以稍后重试；部分网络可能无法访问第三方图片服务。</p>
+      <button class="button" type="button" id="galleryRetry">重新加载</button>
+    </div>
+    <div class="gallery-bottom">
+      <button class="button gallery-more" id="galleryMore" type="button">再看一些 <span aria-hidden="true">↓</span></button>
+    </div>
+  </main>
+
+  <section class="gallery-lightbox" id="galleryLightbox" role="dialog" aria-modal="true" aria-label="图片预览" hidden>
+    <button class="gallery-lightbox-backdrop" type="button" data-gallery-close aria-label="关闭图片预览"></button>
+    <div class="gallery-lightbox-card">
+      <button class="gallery-lightbox-close" type="button" data-gallery-close aria-label="关闭">×</button>
+      <img id="galleryLightboxImage" alt="二次元插画大图">
+      <div class="gallery-lightbox-caption">SFW ANIME ART <span>·</span> 随机插画</div>
+    </div>
+  </section>
 
   <footer><div class="foot-line"></div>© <span id="year"></span> BzAxu · Made with curiosity.</footer>
 

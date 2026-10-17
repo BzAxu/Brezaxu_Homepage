@@ -949,3 +949,20 @@ body.gallery-view-active .top-nav a { padding:7px 9px; font-size:12px; }
   .gallery-grid { column-gap: 9px; }
   .gallery-item { margin-bottom: 9px !important; }
 }
+
+
+/* Explicitly remove every preset crop/ratio from gallery thumbnails. */
+#galleryGrid .gallery-item {
+  height: auto !important;
+  min-height: 0 !important;
+}
+#galleryGrid .gallery-item > img {
+  display: block !important;
+  width: 100% !important;
+  height: auto !important;
+  min-height: 0 !important;
+  max-height: none !important;
+  aspect-ratio: auto !important;
+  object-fit: contain !important;
+  object-position: center top;
+}

@@ -31,6 +31,43 @@
   downloadButton.style.width = "100%";
   lightboxCard.append(downloadButton);
 
+
+  // Secondary settings menu for all gallery information and source controls.
+  const settingsDialog = document.getElementById("gallerySettingsDialog");
+  const settingsOpen = document.getElementById("galleryMenuOpen");
+  let settingsTrigger = null;
+  function openSettings() {
+    if (!settingsDialog) return;
+    settingsTrigger = document.activeElement;
+    settingsDialog.hidden = false;
+    document.body.classList.add("gallery-settings-open");
+    const closeButton = settingsDialog.querySelector(".gallery-settings-close");
+    if (closeButton) closeButton.focus();
+  }
+  function closeSettings() {
+    if (!settingsDialog || settingsDialog.hidden) return;
+    settingsDialog.hidden = true;
+    document.body.classList.remove("gallery-settings-open");
+    if (settingsTrigger && typeof settingsTrigger.focus === "function") settingsTrigger.focus();
+  }
+  if (settingsOpen) settingsOpen.addEventListener("click", openSettings);
+  if (settingsDialog) {
+    settingsDialog.querySelectorAll("[data-gallery-settings-close]").forEach((button) => button.addEventListener("click", closeSettings));
+    document.addEventListener("keydown", (event) => {
+      if (settingsDialog.hidden) return;
+      if (event.key === "Escape") {
+        event.preventDefault();
+        closeSettings();
+      } else if (event.key === "Tab") {
+        const controls = [...settingsDialog.querySelectorAll("button, select")].filter((el) => !el.disabled);
+        if (!controls.length) return;
+        const first = controls[0], last = controls[controls.length - 1];
+        if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last.focus(); }
+        else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first.focus(); }
+      }
+    });
+  }
+
   const seen = new Set();
   let loading = false;
   let currentRoute = "home";

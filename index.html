@@ -18,8 +18,8 @@
       <div class="top-note">个人主页</div>
       <nav class="top-nav" aria-label="页面导航">
         <a href="?page=gallery" data-gallery-open>画廊</a>
-        <button type="button" data-info-open="interests">兴趣</button>
-        <button type="button" data-info-open="contact">联系</button>
+        <a href="#projects">兴趣</a>
+        <a href="#contact">联系</a>
       </nav>
     </div>
   </header>
@@ -51,16 +51,20 @@
             </nav>
           </div>
         </div>
+        <p class="profile-bio">技术折腾 · 项目记录 · 日常分享</p>
+        <div class="profile-meta">
+          <span class="tag"><span class="tag-dot"></span>持续探索中</span>
+          <span class="tag">⌘ 技术 / 创意</span>
+        </div>
       </section>
 
       <section class="panel side-card">
-        <h2>探索空间</h2>
-        <p class="side-card-note">更多信息收纳在弹窗中，保持主页简洁。</p>
-        <nav class="side-links" aria-label="空间菜单">
-          <a href="?page=gallery" data-gallery-open>↗ 画廊浏览</a>
-          <button type="button" data-info-open="interests">↗ 兴趣与项目</button>
-          <button type="button" data-info-open="about">↗ 关于本站</button>
-          <button type="button" data-info-open="contact">↗ 联系方式</button>
+        <h2>空间导航</h2>
+        <nav class="side-links" aria-label="空间导航">
+          <a href="?page=gallery" data-gallery-open>↳ 画廊浏览</a>
+          <a href="#projects">↳ 兴趣与项目</a>
+          <a href="#about">↳ 关于本站</a>
+          <a href="#contact">↳ 留个联系方式</a>
         </nav>
       </section>
     </aside>
@@ -72,28 +76,60 @@
         <p>BzAxu 的个人主页。</p>
       </section>
 
-      <div class="info-menu-grid" aria-label="更多信息">
-        <button class="panel info-menu-card" type="button" data-info-open="interests">
-          <span class="info-menu-icon" aria-hidden="true">⌘</span>
-          <span class="info-menu-copy"><strong>兴趣与项目</strong><small>开源、科技、音乐与日常</small></span>
-          <span class="info-menu-arrow" aria-hidden="true">↗</span>
-        </button>
-        <button class="panel info-menu-card" type="button" data-info-open="about">
-          <span class="info-menu-icon" aria-hidden="true">i</span>
-          <span class="info-menu-copy"><strong>关于本站</strong><small>了解这个个人空间</small></span>
-          <span class="info-menu-arrow" aria-hidden="true">↗</span>
-        </button>
-        <button class="panel info-menu-card" type="button" data-info-open="contact">
-          <span class="info-menu-icon" aria-hidden="true">✉</span>
-          <span class="info-menu-copy"><strong>联系方式</strong><small>查看社交平台与联系方法</small></span>
-          <span class="info-menu-arrow" aria-hidden="true">↗</span>
-        </button>
-        <a class="panel info-menu-card" href="?page=gallery" data-gallery-open>
-          <span class="info-menu-icon" aria-hidden="true">✧</span>
-          <span class="info-menu-copy"><strong>画廊浏览</strong><small>随机探索公开插画</small></span>
-          <span class="info-menu-arrow" aria-hidden="true">↗</span>
-        </a>
+      <a class="panel gallery-promo" href="?page=gallery" data-gallery-open aria-label="打开画廊浏览">
+        <div class="gallery-promo-art" aria-hidden="true">
+          <span class="gallery-orb gallery-orb--one"></span>
+          <span class="gallery-orb gallery-orb--two"></span>
+          <span class="gallery-orb gallery-orb--three"></span>
+          <span class="gallery-promo-symbol">✧</span>
+        </div>
+        <div class="gallery-promo-copy">
+          <div class="gallery-promo-kicker">VISUAL COLLECTION</div>
+          <h2>画廊浏览</h2>
+          <p>随机探索二次元插画，点开图片即可沉浸查看。</p>
+          <span class="gallery-promo-cta">进入画廊 <span aria-hidden="true">↗</span></span>
+        </div>
+      </a>
+
+      <div class="section-bar" id="projects">
+        <h2>兴趣与项目</h2><span>THINGS I LIKE</span>
       </div>
+      <div class="feature-grid">
+        <article class="panel feature">
+          <div class="feature-icon">⌘</div>
+          <h3>开源与编程</h3>
+          <p>开源项目与编程记录。</p>
+        </article>
+        <article class="panel feature">
+          <div class="feature-icon">◈</div>
+          <h3>设备与科技</h3>
+          <p>软件与设备折腾。</p>
+        </article>
+        <article class="panel feature">
+          <div class="feature-icon">♫</div>
+          <h3>音乐与日常</h3>
+          <p>音乐与生活灵感。</p>
+        </article>
+        <article class="panel feature">
+          <div class="feature-icon">✧</div>
+          <h3>新鲜事物</h3>
+          <p>发现有趣的新事物。</p>
+        </article>
+      </div>
+
+      <section class="panel post" id="about">
+        <div class="post-head">
+          <div class="mini-avatar">i</div>
+          <div><div class="post-author">关于本站</div><div class="post-time">ABOUT THIS SPACE</div></div>
+        </div>
+        <h3>关于我的小空间。</h3>
+        <p>静态主页 · 多端适配 · 持续更新。</p>
+      </section>
+
+      <section class="panel contact-strip" id="contact">
+        <div><h2>联系我</h2><p>选择常用平台。</p></div>
+        <button class="button" id="copyPage" type="button">↗ 复制本站链接</button>
+      </section>
     </div>
   </main>
 
@@ -172,43 +208,6 @@
       <div class="external-dialog__actions">
         <button class="external-dialog__cancel" type="button" data-external-cancel>留在本站</button>
         <button class="external-dialog__continue" id="externalLinkContinue" type="button">继续访问 <span aria-hidden="true">↗</span></button>
-      </div>
-    </div>
-  </section>
-
-  <section class="info-dialog" id="infoDialog" role="dialog" aria-modal="true" aria-labelledby="infoDialogTitle" aria-describedby="infoDialogDescription" hidden>
-    <button class="info-dialog__backdrop" type="button" data-info-close aria-label="关闭信息弹窗"></button>
-    <div class="info-dialog__card">
-      <button class="info-dialog__x" type="button" data-info-close aria-label="关闭">×</button>
-      <div class="info-dialog__eyebrow" id="infoDialogEyebrow">PERSONAL SPACE</div>
-      <h2 id="infoDialogTitle">更多信息</h2>
-      <p class="info-dialog__description" id="infoDialogDescription">选择一个栏目了解更多。</p>
-      <div class="info-dialog__content">
-        <section data-info-panel="interests" hidden>
-          <div class="info-detail-row"><span class="info-detail-icon">⌘</span><div><strong>开源与编程</strong><p>关注开源项目、编程实践与工具体验。</p></div></div>
-          <div class="info-detail-row"><span class="info-detail-icon">◈</span><div><strong>设备与科技</strong><p>喜欢探索软件、设备与数字工具。</p></div></div>
-          <div class="info-detail-row"><span class="info-detail-icon">♫</span><div><strong>音乐与日常</strong><p>收集喜欢的音乐，也记录生活里的灵感。</p></div></div>
-          <div class="info-detail-row"><span class="info-detail-icon">✧</span><div><strong>新鲜事物</strong><p>持续发现有趣的项目和新工具。</p></div></div>
-        </section>
-        <section data-info-panel="about" hidden>
-          <div class="info-detail-row"><span class="info-detail-icon">i</span><div><strong>一个个人小空间</strong><p>用于展示兴趣、记录项目与分享日常。</p></div></div>
-          <div class="info-detail-row"><span class="info-detail-icon">⌘</span><div><strong>简洁 · 响应式 · 持续更新</strong><p>采用静态网页构建，适配手机与桌面浏览。</p></div></div>
-          <div class="info-detail-tags"><span>技术折腾</span><span>项目记录</span><span>日常分享</span></div>
-        </section>
-        <section data-info-panel="contact" hidden>
-          <p class="info-contact-note">选择个人主页顶部的社交图标，查看跳转提示后继续访问对应平台。</p>
-          <div class="info-contact-list">
-            <a href="https://github.com/BzAxu">GitHub <span>@BzAxu ↗</span></a>
-            <a href="https://b23.tv/cNg72Py">哔哩哔哩 <span>个人空间 ↗</span></a>
-            <a href="https://t.me/bzaxu">Telegram <span>@bzaxu ↗</span></a>
-            <a href="https://x.com/Bz_Axu">X <span>@Bz_Axu ↗</span></a>
-            <button type="button" data-qq-contact>QQ <span>添加好友 ↗</span></button>
-          </div>
-          <button class="button info-copy-page" id="copyPage" type="button">↗ 复制本站链接</button>
-        </section>
-      </div>
-      <div class="info-dialog__actions">
-        <button class="external-dialog__cancel" type="button" data-info-close>返回主页</button>
       </div>
     </div>
   </section>

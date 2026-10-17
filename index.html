@@ -138,20 +138,43 @@
       <button class="gallery-back" type="button" data-gallery-home><span aria-hidden="true">←</span> 返回个人空间</button>
       <div class="gallery-promo-kicker">BzAxu / GALLERY</div>
       <h1>画廊浏览</h1>
-      <p>无需登录，随机浏览公开插画。点击图片可放大预览。</p>
-      <div class="gallery-toolbar">
+      <div class="gallery-hero-intro">
+        <p>无需登录，随机浏览公开插画。点击图片可放大预览。</p>
+        <button class="button gallery-menu-trigger" id="galleryMenuOpen" type="button" aria-haspopup="dialog" aria-controls="gallerySettingsDialog">
+          <span aria-hidden="true">☷</span> 画廊设置 <span class="gallery-menu-trigger-arrow" aria-hidden="true">↗</span>
+        </button>
+      </div>
+    </section>
+    <section class="gallery-grid" id="galleryGrid" aria-label="二次元图片画廊"></section>
+    <div class="gallery-empty" id="galleryEmpty" hidden>
+      <div class="gallery-empty-icon">✧</div>
+      <h2 id="galleryEmptyTitle">正在连接图片接口</h2>
+      <p id="galleryEmptyText">如果加载失败，可以稍后重试；部分网络可能无法访问第三方图片服务。</p>
+      <button class="button" type="button" id="galleryRetry">重新加载</button>
+    </div>
+    <div class="gallery-bottom">
+      <button class="button gallery-more" id="galleryMore" type="button">再看一些 <span aria-hidden="true">↓</span></button>
+    </div>
+  </main>
+
+  <section class="gallery-settings-dialog" id="gallerySettingsDialog" role="dialog" aria-modal="true" aria-labelledby="gallerySettingsTitle" hidden>
+    <button class="gallery-settings-backdrop" type="button" data-gallery-settings-close aria-label="关闭画廊设置"></button>
+    <div class="gallery-settings-card">
+      <button class="gallery-settings-close" type="button" data-gallery-settings-close aria-label="关闭">×</button>
+      <div class="gallery-settings-eyebrow">GALLERY / SETTINGS</div>
+      <h2 id="gallerySettingsTitle">画廊设置</h2>
+      <p class="gallery-settings-description">管理图片来源、刷新图片，并查看各服务的连接状态。</p>
+      <div class="gallery-settings-section">
+        <label class="gallery-source-label" for="gallerySourceSelect">图片源
+          <select class="gallery-source-select" id="gallerySourceSelect">
+            <option value="auto">自动选择 / 故障切换</option>
+            <option value="nekosapi">Nekos API</option>
+            <option value="nekosbest">NEKOS.BEST</option>
+            <option value="icatw">Anime Image Gateway</option>
+          </select>
+        </label>
+        <button class="button gallery-refresh" id="galleryRefresh" type="button">↻ 刷新</button>
         <span class="gallery-status" id="galleryStatus" role="status" aria-live="polite">正在检测图片源…</span>
-        <div class="gallery-toolbar-actions">
-          <label class="gallery-source-label" for="gallerySourceSelect">图片源
-            <select class="gallery-source-select" id="gallerySourceSelect">
-              <option value="auto">自动选择 / 故障切换</option>
-              <option value="nekosapi">Nekos API</option>
-              <option value="nekosbest">NEKOS.BEST</option>
-              <option value="icatw">Anime Image Gateway</option>
-            </select>
-          </label>
-          <button class="button gallery-refresh" id="galleryRefresh" type="button">↻ 刷新图片</button>
-        </div>
       </div>
       <details class="gallery-provider-panel">
         <summary class="gallery-provider-summary">
@@ -167,18 +190,8 @@
           <p class="gallery-provider-note">延迟是本站服务器到图片 API 的响应时间，不代表图片文件本身的加载速度。</p>
         </div>
       </details>
-    </section>
-    <section class="gallery-grid" id="galleryGrid" aria-label="二次元图片画廊"></section>
-    <div class="gallery-empty" id="galleryEmpty" hidden>
-      <div class="gallery-empty-icon">✧</div>
-      <h2 id="galleryEmptyTitle">正在连接图片接口</h2>
-      <p id="galleryEmptyText">如果加载失败，可以稍后重试；部分网络可能无法访问第三方图片服务。</p>
-      <button class="button" type="button" id="galleryRetry">重新加载</button>
     </div>
-    <div class="gallery-bottom">
-      <button class="button gallery-more" id="galleryMore" type="button">再看一些 <span aria-hidden="true">↓</span></button>
-    </div>
-  </main>
+  </section>
 
   <section class="gallery-lightbox" id="galleryLightbox" role="dialog" aria-modal="true" aria-label="图片预览" hidden>
     <button class="gallery-lightbox-backdrop" type="button" data-gallery-close aria-label="关闭图片预览"></button>

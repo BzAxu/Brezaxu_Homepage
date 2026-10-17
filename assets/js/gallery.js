@@ -22,6 +22,108 @@
   const sourceLink = document.getElementById("galleryPixivLink");
   if (!homePage || !galleryPage || !grid) return;
 
+  // Custom theme-matched dropdowns; native selects remain as the state bridge.
+  function enhanceSelect(select, key) {
+    if (!select || select.dataset.customized === "true") return;
+    select.dataset.customized = "true";
+    select.classList.add("gallery-native-select");
+    const wrapper = document.createElement("div");
+    wrapper.className = "gallery-custom-select";
+    wrapper.dataset.selectKey = key;
+    const trigger = document.createElement("button");
+    trigger.type = "button";
+    trigger.className = "gallery-custom-select-trigger";
+    trigger.setAttribute("aria-haspopup", "listbox");
+    trigger.setAttribute("aria-expanded", "false");
+    const valueText = document.createElement("span");
+    valueText.className = "gallery-custom-select-value";
+    const chevron = document.createElement("span");
+    chevron.className = "gallery-custom-select-chevron";
+    chevron.setAttribute("aria-hidden", "true");
+    chevron.textContent = "⌄";
+    trigger.append(valueText, chevron);
+    const menu = document.createElement("div");
+    menu.className = "gallery-custom-select-menu";
+    menu.setAttribute("role", "listbox");
+    menu.hidden = true;
+    const options = [...select.options].map((option) => {
+      const item = document.createElement("button");
+      item.type = "button";
+      item.className = "gallery-custom-select-option";
+      item.setAttribute("role", "option");
+      item.dataset.value = option.value;
+      item.textContent = option.textContent;
+      item.addEventListener("click", () => {
+        select.value = option.value;
+        select.dispatchEvent(new Event("change", { bubbles: true }));
+        sync();
+        close();
+        trigger.focus();
+      });
+      menu.append(item);
+      return { option, item };
+    });
+    function sync() {
+      const selected = options.find(({ option }) => option.value === select.value) || options[0];
+      valueText.textContent = selected ? selected.option.textContent : "";
+      options.forEach(({ option, item }) => {
+        const active = option.value === select.value;
+        item.classList.toggle("is-selected", active);
+        item.setAttribute("aria-selected", String(active));
+      });
+    }
+    function close() {
+      menu.hidden = true;
+      wrapper.classList.remove("is-open");
+      trigger.setAttribute("aria-expanded", "false");
+    }
+    trigger.addEventListener("click", () => {
+      const opening = menu.hidden;
+      document.querySelectorAll(".gallery-custom-select.is-open").forEach((other) => {
+        other.classList.remove("is-open");
+        const otherMenu = other.querySelector(".gallery-custom-select-menu");
+        const otherTrigger = other.querySelector(".gallery-custom-select-trigger");
+        if (otherMenu) otherMenu.hidden = true;
+        if (otherTrigger) otherTrigger.setAttribute("aria-expanded", "false");
+      });
+      if (opening) {
+        menu.hidden = false;
+        wrapper.classList.add("is-open");
+        trigger.setAttribute("aria-expanded", "true");
+      } else close();
+    });
+    wrapper.append(trigger, menu);
+    select.insertAdjacentElement("afterend", wrapper);
+    sync();
+    select.addEventListener("change", sync);
+    document.addEventListener("click", (event) => {
+      if (!wrapper.contains(event.target)) close();
+    });
+    trigger.addEventListener("keydown", (event) => {
+      if (event.key === "Escape") close();
+      if (event.key === "ArrowDown" && menu.hidden) {
+        event.preventDefault();
+        trigger.click();
+        const selected = options.find(({ option }) => option.value === select.value);
+        if (selected) selected.item.focus();
+      }
+    });
+    menu.addEventListener("keydown", (event) => {
+      const current = options.findIndex(({ item }) => item === document.activeElement);
+      if (event.key === "Escape") { event.preventDefault(); close(); trigger.focus(); }
+      else if (event.key === "ArrowDown" || event.key === "ArrowUp") {
+        event.preventDefault();
+        const next = (current + (event.key === "ArrowDown" ? 1 : -1) + options.length) % options.length;
+        options[next].item.focus();
+      } else if (event.key === "Enter" || event.key === " ") {
+        event.preventDefault();
+        if (current >= 0) options[current].item.click();
+      }
+    });
+  }
+  enhanceSelect(columnsSelect, "columns");
+  enhanceSelect(sourceSelect, "source");
+
   // Keep each thumbnail's natural aspect ratio and allow users to choose a masonry column count.
   const columnsStorageKey = "bzaxu-gallery-columns";
   function applyColumnCount(value) {

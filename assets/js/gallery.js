@@ -12,6 +12,7 @@
   const retryButton = document.getElementById("galleryRetry");
   const moreButton = document.getElementById("galleryMore");
   const sourceSelect = document.getElementById("gallerySourceSelect");
+  const columnsSelect = document.getElementById("galleryColumnsSelect");
   const providerStatusList = document.getElementById("galleryProviderStatusList");
   const providerStatusRefresh = document.getElementById("galleryProviderStatusRefresh");
   const providerStatusSummary = document.getElementById("galleryProviderStatusSummary");
@@ -20,6 +21,30 @@
   const lightboxTitle = document.getElementById("galleryLightboxTitle");
   const sourceLink = document.getElementById("galleryPixivLink");
   if (!homePage || !galleryPage || !grid) return;
+
+  // Keep each thumbnail's natural aspect ratio and allow users to choose a masonry column count.
+  const columnsStorageKey = "bzaxu-gallery-columns";
+  function applyColumnCount(value) {
+    if (!grid) return;
+    if (value === "auto" || !["2", "3", "4", "5"].includes(value)) {
+      grid.style.removeProperty("--gallery-columns");
+      if (columnsSelect) columnsSelect.value = "auto";
+      try { localStorage.removeItem(columnsStorageKey); } catch (_) {}
+      return;
+    }
+    grid.style.setProperty("--gallery-columns", value);
+    if (columnsSelect) columnsSelect.value = value;
+    try { localStorage.setItem(columnsStorageKey, value); } catch (_) {}
+  }
+  if (columnsSelect) {
+    let savedColumns = "auto";
+    try {
+      const saved = localStorage.getItem(columnsStorageKey);
+      if (saved && ["2", "3", "4", "5"].includes(saved)) savedColumns = saved;
+    } catch (_) {}
+    applyColumnCount(savedColumns);
+    columnsSelect.addEventListener("change", () => applyColumnCount(columnsSelect.value));
+  }
 
   // Add a download action to the image preview without changing the page template.
   const lightboxCard = lightbox.querySelector(".gallery-lightbox-card");

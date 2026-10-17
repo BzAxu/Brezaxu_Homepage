@@ -1141,8 +1141,9 @@ body.gallery-view-active .top-nav a { padding:7px 9px; font-size:12px; }
 .email-contact-copy { display: grid; gap: 5px; min-width: 0; }
 .email-contact-label { color: #858eaa; font-size: 10px; letter-spacing: .5px; }
 .email-contact-address { color: var(--text); font-size: 12px; overflow-wrap: anywhere; }
-.email-copy-button { flex: 0 0 auto; min-height: 36px; padding: 8px 12px; border: 1px solid rgba(169,155,255,.3); border-radius: 11px; color: var(--text); background: linear-gradient(135deg,rgba(169,155,255,.16),rgba(138,201,255,.07)); font: inherit; font-size: 12px; cursor: pointer; }
-.email-copy-button:hover, .email-copy-button:focus-visible { border-color: rgba(169,155,255,.7); background: rgba(169,155,255,.18); }
+.email-copy-button { flex: 0 0 auto; min-width: 0; min-height: 43px; padding: 10px 12px; border: 1px solid rgba(169,155,255,.35); border-radius: 15px; color: #e7e2ff; background: linear-gradient(135deg, rgba(169,155,255,.26), rgba(109,143,224,.16)); font: inherit; font-size: 12px; font-weight: 700; cursor: pointer; transition: background .18s ease, transform .18s ease, border-color .18s ease; }
+.email-copy-button:hover, .email-copy-button:focus-visible { transform: translateY(-1px); border-color: rgba(169,155,255,.6); background: rgba(169,155,255,.24); }
+.email-copy-button:focus-visible { outline: 2px solid var(--accent-2); outline-offset: 2px; }
 .email-contact-note { margin: 1px 0 0 !important; color: #aeb7d0 !important; font-size: 11px !important; }
 #copyExternalLink[hidden], #externalLinkContinue[hidden] { display: none !important; }
 @media (max-width: 420px) { .social-action { border-radius: 12px !important; } .email-contact-option { align-items: flex-start; } .email-contact-address { font-size: 11px; } .email-copy-button { min-height: 34px; padding: 7px 10px; } }

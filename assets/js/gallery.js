@@ -169,7 +169,15 @@
     img.alt = "随机插画";
     img.className = "is-loading";
     img.src = url;
-    img.addEventListener("load", () => img.classList.remove("is-loading"), { once: true });
+    img.addEventListener("load", () => {
+      // Use the decoded file's real dimensions, not a preset thumbnail ratio.
+      if (img.naturalWidth > 0 && img.naturalHeight > 0) {
+        img.style.aspectRatio = img.naturalWidth + " / " + img.naturalHeight;
+        img.style.height = "auto";
+        img.dataset.naturalRatio = img.naturalWidth + ":" + img.naturalHeight;
+      }
+      img.classList.remove("is-loading");
+    }, { once: true });
     img.addEventListener("error", () => {
       img.classList.remove("is-loading");
       img.classList.add("is-broken");

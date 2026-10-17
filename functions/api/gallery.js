@@ -14,6 +14,7 @@ const PROVIDERS = [
     kind: "SFW 动漫图 / GIF",
     url: "https://nekos.best/api/v2/neko?amount=10",
     headers: { "Accept": "application/json", "User-Agent": "BzAxuHomepage/1.0 (public SFW gallery)" },
+    batchSize: 10,
     parse: (data) => Array.isArray(data.results) ? data.results.map((item) => item.url) : []
   },
   {
@@ -83,10 +84,29 @@ async function requestProvider(provider) {
   }
 }
 
+async function collectProviderImages(provider, count) {
+  const results = [];
+  const maxRequests = Math.min(count, 100);
+  // Request in small parallel groups to avoid overwhelming public APIs.
+  const perCall = provider.batchSize || 1;
+  const callsNeeded = Math.ceil(maxRequests / perCall);
+  for (let offset = 0; offset < callsNeeded && results.length < maxRequests; offset += 5) {
+    const groupSize = Math.min(5, callsNeeded - offset);
+    const group = await Promise.all(Array.from({ length: groupSize }, () => requestProvider(provider)));
+    for (const result of group) {
+      if (result.ok && Array.isArray(result.files)) results.push(...result.files);
+    }
+  }
+  const unique = [...new Set(results)];
+  return unique.slice(0, maxRequests);
+}
+
 export async function onRequestGet({ request }) {
   const url = new URL(request.url);
   const mode = url.searchParams.get("mode");
   const selected = url.searchParams.get("source") || "auto";
+  const requestedCount = Number.parseInt(url.searchParams.get("count") || "100", 10);
+  const count = Number.isFinite(requestedCount) ? Math.max(1, Math.min(100, requestedCount)) : 100;
 
   if (mode === "status") {
     const results = await Promise.all(PROVIDERS.map(requestProvider));
@@ -107,18 +127,18 @@ export async function onRequestGet({ request }) {
 
   const failures = [];
   for (const provider of candidates) {
-    const result = await requestProvider(provider);
-    if (result.ok) {
+    const files = await collectProviderImages(provider, count);
+    if (files.length) {
       return json({
-        files: result.files,
+        files,
         source: result.provider,
         sourceName: result.name,
-        latency: result.latency,
+        latency: null,
         fallback: selected === "auto" && failures.length > 0,
         failures
       });
     }
-    failures.push({ source: result.provider, name: result.name, error: result.error, latency: result.latency });
+    failures.push({ source: provider.id, name: provider.name, error: "未能获取图片", latency: null });
     if (selected !== "auto") break;
   }
 

@@ -1,5 +1,14 @@
 const PROVIDERS = [
   {
+    id: "nekosapi",
+    name: "Nekos API",
+    kind: "开源动漫图 · safe 筛选",
+    url: "https://api.nekosapi.com/v4/images/random/file?rating=safe",
+    headers: { "Accept": "image/*" },
+    directImage: true,
+    parse: () => []
+  },
+  {
     id: "nekosbest",
     name: "NEKOS.BEST",
     kind: "SFW 动漫图 / GIF",
@@ -46,6 +55,14 @@ async function requestProvider(provider) {
     const elapsed = Date.now() - started;
     if (!response.ok) {
       return { provider: provider.id, name: provider.name, ok: false, latency: elapsed, error: "HTTP " + response.status };
+    }
+    if (provider.directImage) {
+      const imageUrl = response.url;
+      if (response.body) response.body.cancel().catch(() => {});
+      if (typeof imageUrl === "string" && imageUrl.startsWith("https://")) {
+        return { provider: provider.id, name: provider.name, ok: true, latency: elapsed, files: [imageUrl] };
+      }
+      return { provider: provider.id, name: provider.name, ok: false, latency: elapsed, error: "没有取得图片地址" };
     }
     const data = await response.json();
     const urls = provider.parse(data).filter((url) => typeof url === "string" && url.startsWith("https://"));

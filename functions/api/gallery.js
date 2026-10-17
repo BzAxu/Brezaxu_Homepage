@@ -108,6 +108,60 @@ export async function onRequestGet({ request }) {
   const requestedCount = Number.parseInt(url.searchParams.get("count") || "100", 10);
   const count = Number.isFinite(requestedCount) ? Math.max(1, Math.min(100, requestedCount)) : 100;
 
+  if (mode === "download") {
+    const rawImageUrl = url.searchParams.get("url");
+    let imageUrl;
+    try {
+      imageUrl = new URL(rawImageUrl || "");
+    } catch (_) {
+      return json({ error: "无效的图片地址" }, 400);
+    }
+    const isPublicHttps = (candidate) => {
+      const hostname = candidate.hostname.toLowerCase();
+      const isIpLiteral = /^\\d{1,3}(\\.\\d{1,3}){3}$/.test(hostname) || hostname.includes(":");
+      return candidate.protocol === "https:" &&
+        !candidate.username && !candidate.password &&
+        !isIpLiteral && hostname.includes(".") &&
+        !["localhost", "local", "internal"].some((part) => hostname === part || hostname.endsWith("." + part)) &&
+        ["443", ""].includes(candidate.port);
+    };
+    if (!isPublicHttps(imageUrl)) return json({ error: "仅支持公开 HTTPS 图片地址" }, 400);
+    try {
+      const controller = new AbortController();
+      const timer = setTimeout(() => controller.abort(), TIMEOUT_MS);
+      let imageResponse;
+      try {
+        imageResponse = await fetch(imageUrl.href, {
+          headers: { "Accept": "image/avif,image/webp,image/apng,image/*,*/*;q=0.8" },
+          signal: controller.signal,
+          redirect: "follow"
+        });
+      } finally {
+        clearTimeout(timer);
+      }
+      const finalUrl = new URL(imageResponse.url);
+      if (!isPublicHttps(finalUrl)) return json({ error: "图片重定向地址不受支持" }, 400);
+      if (!imageResponse.ok) return json({ error: "图片服务器返回 HTTP " + imageResponse.status }, 502);
+      const contentType = imageResponse.headers.get("content-type") || "application/octet-stream";
+      if (!contentType.toLowerCase().startsWith("image/")) {
+        return json({ error: "目标地址没有返回图片文件" }, 415);
+      }
+      const extension = contentType.toLowerCase().includes("png") ? "png" :
+        contentType.toLowerCase().includes("webp") ? "webp" :
+        contentType.toLowerCase().includes("gif") ? "gif" :
+        contentType.toLowerCase().includes("avif") ? "avif" : "jpg";
+      const headers = new Headers({
+        "Content-Type": contentType,
+        "Content-Disposition": 'attachment; filename="BzAxu-illustration.' + extension + '"',
+        "Cache-Control": "no-store",
+        "X-Content-Type-Options": "nosniff"
+      });
+      return new Response(imageResponse.body, { status: 200, headers });
+    } catch (error) {
+      return json({ error: error && error.name === "AbortError" ? "下载图片超时" : "图片服务器暂时无法下载" }, 502);
+    }
+  }
+
   if (mode === "status") {
     const results = await Promise.all(PROVIDERS.map(requestProvider));
     return json({

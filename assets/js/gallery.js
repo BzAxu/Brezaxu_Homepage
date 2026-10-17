@@ -242,6 +242,11 @@
   });
 
   window.addEventListener("popstate", () => {
+    // A Back action should dismiss the open image preview before leaving the gallery.
+    if (!lightbox.hidden) {
+      closeLightbox({ fromHistory: true });
+      return;
+    }
     renderRoute(new URL(window.location.href).searchParams.get("page") === "gallery" ? "gallery" : "home");
   });
 
@@ -306,6 +311,10 @@
       downloadButton.textContent = "↓ 下载图片";
       lightbox.hidden = false;
       document.body.classList.add("gallery-open");
+      // Give the preview its own history entry so Android/browser Back closes it first.
+      if (!history.state || !history.state.galleryLightbox) {
+        history.pushState({ ...(history.state || {}), view: "gallery", galleryLightbox: true }, "", window.location.href);
+      }
       lightbox.querySelector("[data-gallery-close]").focus();
     });
     grid.append(card);
@@ -425,14 +434,17 @@
     }
   });
 
-  function closeLightbox() {
+  function closeLightbox({ fromHistory = false } = {}) {
+    if (lightbox.hidden) return;
     lightbox.hidden = true;
     lightboxImage.removeAttribute("src");
     document.body.classList.remove("gallery-open");
     if (lightboxTrigger) lightboxTrigger.focus();
     lightboxTrigger = null;
+    // When the user taps the close button, remove the preview's history entry too.
+    if (!fromHistory && history.state && history.state.galleryLightbox) history.back();
   }
-  lightbox.querySelectorAll("[data-gallery-close]").forEach((button) => button.addEventListener("click", closeLightbox));
+  lightbox.querySelectorAll("[data-gallery-close]").forEach((button) => button.addEventListener("click", () => closeLightbox()));
   document.addEventListener("keydown", (event) => {
     if (lightbox.hidden) return;
     if (event.key === "Escape") closeLightbox();

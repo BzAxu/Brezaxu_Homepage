@@ -172,13 +172,11 @@
         emptyText.textContent = (error instanceof Error ? error.message : "图片服务连接失败") + "。请检查网络后重试。";
       }
       status.textContent = grid.children.length ? "加载失败，可重试" : "图片服务连接失败";
-      if (dataFailures(error).length && providerStatusSummary) providerStatusSummary.textContent = "所选图片源不可用，请查看下方状态或切换到自动模式。";
+      if (providerStatusSummary) providerStatusSummary.textContent = "当前请求失败；可查看各源状态，或切换到自动模式。";
     } finally {
       setLoading(false);
     }
   }
-
-  function dataFailures(error) { return error && Array.isArray(error.failures) ? error.failures : []; }
 
   async function checkProviderStatus() {
     if (!providerStatusList || checkingProviders) return;

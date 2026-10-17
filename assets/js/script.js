@@ -88,6 +88,8 @@ import("https://cdn.jsdelivr.net/npm/@dpawlikowski/liquid-glass@0.3.0/dist/index
       const destinationLabel = document.getElementById("externalDestinationLabel");
       const dialogTitle = document.getElementById("externalDialogTitle");
       const dialogDescription = document.getElementById("externalDialogDescription");
+      const destination = dialog.querySelector(".external-dialog__destination");
+      const emailContactMenu = document.getElementById("emailContactMenu");
       let pendingUrl = "";
       let contactMode = "";
       let contactValue = "";
@@ -96,12 +98,13 @@ import("https://cdn.jsdelivr.net/npm/@dpawlikowski/liquid-glass@0.3.0/dist/index
       const contactLabels = {
         qq: { eyebrow: "QQ CONTACT", title: "添加 QQ 好友", label: "QQ 号", value: "1593107836", description: "请打开 QQ，在搜索中输入下方号码并添加好友。", copyLabel: "复制 QQ 号", toast: "QQ 号已复制" },
         wechat: { eyebrow: "WECHAT CONTACT", title: "添加微信好友", label: "微信号", description: "请打开微信，通过下方微信号搜索并添加好友。", copyLabel: "复制微信号", toast: "微信号已复制" },
-        email: { eyebrow: "EMAIL CONTACT", title: "联系邮箱", label: "邮箱地址", description: "复制下方邮箱地址，可在邮件应用中向我发送邮件。", copyLabel: "复制邮箱地址", toast: "邮箱地址已复制" }
+        email: { eyebrow: "EMAIL CONTACT", title: "联系邮箱", label: "邮箱地址", description: "复制下方邮箱地址，可在邮件应用中向我发送邮件。", copyLabel: "复制邮箱地址", toast: "邮箱地址已复制" },
+        "email-menu": { eyebrow: "EMAIL CONTACT", title: "选择联系邮箱", description: "选择一个邮箱地址，可单独复制后使用邮件应用联系我。" }
       };
 
       async function copyDialogValue() {
         const value = contactMode ? (contactValue || contactLabels[contactMode]?.value) : pendingUrl;
-        if (!value) return;
+        if (!value || contactMode === "email-menu") return;
         try {
           await copyText(value);
           showToast(contactMode ? contactLabels[contactMode].toast : "完整跳转链接已复制");
@@ -121,14 +124,20 @@ import("https://cdn.jsdelivr.net/npm/@dpawlikowski/liquid-glass@0.3.0/dist/index
         dialogEyebrow.textContent = info ? info.eyebrow : "EXTERNAL LINK";
         dialogTitle.textContent = info ? info.title : "即将访问";
         dialogDescription.textContent = info ? info.description : "目标链接如下。";
-        destinationLabel.textContent = info ? info.label : "完整链接";
+        destinationLabel.textContent = info ? (info.label || "") : "完整链接";
         hostLabel.textContent = info ? contactValue : url;
-        copyExternalLink.setAttribute("aria-label", info ? info.copyLabel : "复制完整链接");
+        const isEmailMenu = contact === "email-menu";
+        destination.hidden = isEmailMenu;
+        emailContactMenu.hidden = !isEmailMenu;
+        copyExternalLink.hidden = isEmailMenu;
+        continueButton.hidden = isEmailMenu;
+        copyExternalLink.setAttribute("aria-label", info ? (info.copyLabel || "复制邮箱地址") : "复制完整链接");
         copyExternalLink.title = info ? info.copyLabel : "复制完整链接";
-        continueButton.innerHTML = info ? info.copyLabel + ' <span aria-hidden="true">⧉</span>' : '继续访问 <span aria-hidden="true">↗</span>';
+        continueButton.innerHTML = info ? (info.copyLabel || "复制邮箱地址") + ' <span aria-hidden="true">⧉</span>' : '继续访问 <span aria-hidden="true">↗</span>';
         dialog.hidden = false;
         document.body.classList.add("external-dialog-open");
-        continueButton.focus();
+        if (isEmailMenu) emailContactMenu.querySelector("button").focus();
+        else continueButton.focus();
       }
 
       function closeDialog() {
@@ -137,11 +146,26 @@ import("https://cdn.jsdelivr.net/npm/@dpawlikowski/liquid-glass@0.3.0/dist/index
         pendingUrl = "";
         contactMode = "";
         contactValue = "";
+        destination.hidden = false;
+        emailContactMenu.hidden = true;
+        copyExternalLink.hidden = false;
+        continueButton.hidden = false;
         if (previousFocus && typeof previousFocus.focus === "function") previousFocus.focus();
       }
 
       document.querySelector("[data-qq-contact]").addEventListener("click", (event) => {
         openDialog({ contact: "qq", trigger: event.currentTarget });
+      });
+
+      emailContactMenu.querySelectorAll("[data-email-copy]").forEach((button) => {
+        button.addEventListener("click", async () => {
+          try {
+            await copyText(button.dataset.emailCopy);
+            showToast(button.dataset.emailCopy + " 已复制");
+          } catch {
+            showToast("复制失败，请手动选择并复制");
+          }
+        });
       });
 
       document.querySelectorAll("[data-contact-type]").forEach((button) => {
@@ -152,6 +176,10 @@ import("https://cdn.jsdelivr.net/npm/@dpawlikowski/liquid-glass@0.3.0/dist/index
             trigger: event.currentTarget
           });
         });
+      });
+
+      document.querySelector("[data-bili-contact]").addEventListener("click", (event) => {
+        openDialog({ url: "https://b23.tv/cNg72Py", trigger: event.currentTarget });
       });
 
       document.addEventListener("click", (event) => {

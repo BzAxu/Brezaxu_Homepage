@@ -832,7 +832,7 @@ body.gallery-open { overflow: hidden; }
 body.gallery-settings-open { overflow:hidden; }
 @keyframes gallerySettingsFade { from { opacity:0; } to { opacity:1; } }
 @keyframes gallerySettingsIn { from { opacity:0; transform:translateY(10px) scale(.985); } to { opacity:1; transform:translateY(0) scale(1); } }
-@media (max-width:520px) { .gallery-hero-intro { align-items:stretch; flex-direction:column; gap:14px; } .gallery-menu-trigger { width:100%; } .gallery-settings-dialog { padding:12px; } .gallery-settings-card { max-height:88vh; padding:22px 17px; border-radius:20px; } .gallery-settings-section { grid-template-columns:minmax(0,1fr); } .gallery-settings-section .gallery-refresh { width:100%; } .gallery-settings-section .gallery-status { grid-column:auto; } }
+@media (max-width:520px) { .gallery-hero-intro { align-items:stretch; flex-direction:column; gap:14px; } .gallery-hero-intro .gallery-menu-trigger { width:100%; } .gallery-settings-dialog { padding:12px; } .gallery-settings-card { max-height:88vh; padding:22px 17px; border-radius:20px; } .gallery-settings-section { grid-template-columns:minmax(0,1fr); } .gallery-settings-section .gallery-refresh { width:100%; } .gallery-settings-section .gallery-status { grid-column:auto; } }
 @media (prefers-reduced-motion:reduce) { .gallery-settings-backdrop,.gallery-settings-card { animation:none !important; } }
 
 /* Compact the top bar only while the gallery view is active. */
@@ -880,6 +880,8 @@ body.gallery-view-active .top-nav a { padding:7px 9px; font-size:12px; }
 /* Icon-only circular gallery settings control. */
 .gallery-hero .gallery-menu-trigger {
   width: 40px;
+  min-width: 40px;
+  max-width: 40px;
   height: 40px;
   min-height: 40px;
   flex: 0 0 40px;
@@ -912,5 +914,5 @@ body.gallery-view-active .top-nav a { padding:7px 9px; font-size:12px; }
 .gallery-menu-trigger:hover .gallery-menu-gear { transform: rotate(35deg); }
 .gallery-hero .gallery-menu-trigger:focus-visible { outline: 2px solid var(--accent-2); outline-offset: 3px; }
 @media (max-width:520px) {
-  .gallery-hero .gallery-menu-trigger { width: 38px; height: 38px; min-height: 38px; flex-basis: 38px; padding: 0; }
+  .gallery-hero .gallery-menu-trigger { width: 38px; min-width: 38px; max-width: 38px; height: 38px; min-height: 38px; flex: 0 0 38px; padding: 0; }
 }

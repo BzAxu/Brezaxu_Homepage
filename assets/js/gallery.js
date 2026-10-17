@@ -1,4 +1,4 @@
-// Pixiv gallery SPA route. Pixiv requests are handled by same-origin Pages Functions.
+// Public, no-login illustration gallery using the SFW waifu.pics endpoint.
 (() => {
   const homePage = document.getElementById("top");
   const galleryPage = document.getElementById("galleryPage");
@@ -14,20 +14,13 @@
   const lightbox = document.getElementById("galleryLightbox");
   const lightboxImage = document.getElementById("galleryLightboxImage");
   const lightboxTitle = document.getElementById("galleryLightboxTitle");
-  const pixivLink = document.getElementById("galleryPixivLink");
-  const modeButtons = [...document.querySelectorAll("[data-gallery-mode]")];
-  const privateAccess = document.getElementById("galleryPrivateAccess");
-  const privateKeyInput = document.getElementById("galleryPrivateKey");
-  let galleryKey = "";
+  const sourceLink = document.getElementById("galleryPixivLink");
   if (!homePage || !galleryPage || !grid) return;
 
   const seen = new Set();
   let loading = false;
   let currentRoute = "home";
-  let currentMode = "recommended";
-  let nextCursor = null;
   let lightboxTrigger = null;
-  let currentImages = [];
 
   function transition(callback) {
     if (document.startViewTransition) document.startViewTransition(callback);
@@ -62,8 +55,7 @@
     const home = event.target.closest("[data-gallery-home]");
     if (home && currentRoute === "gallery") {
       event.preventDefault();
-      history.replaceState({ view: "home" }, "", window.location.pathname + window.location.hash);
-      renderRoute("home");
+      renderRoute("home", { updateHistory: true, replace: true });
     }
   });
 
@@ -74,34 +66,29 @@
   function setLoading(value) {
     loading = value;
     refreshButton.disabled = value;
-    moreButton.disabled = value || !nextCursor;
+    moreButton.disabled = value;
     retryButton.disabled = value;
-    modeButtons.forEach((button) => { button.disabled = value; });
     refreshButton.textContent = value ? "加载中…" : "↻ 刷新";
     moreButton.textContent = value ? "正在加载…" : "再看一些 ↓";
     if (value) {
       empty.hidden = true;
-      status.textContent = "正在连接 Pixiv…";
+      status.textContent = "正在获取公开插画…";
     }
   }
 
-  function proxyImage(url) {
-    return "/api/pixiv-image?url=" + encodeURIComponent(url);
-  }
-
-  function addImage(item) {
-    if (!item?.image || seen.has(String(item.id))) return false;
-    seen.add(String(item.id));
+  function addImage(url) {
+    if (!url || seen.has(url)) return false;
+    seen.add(url);
     const card = document.createElement("button");
     card.type = "button";
     card.className = "gallery-item";
-    card.setAttribute("aria-label", "查看作品：" + (item.title || "Pixiv 插画"));
+    card.setAttribute("aria-label", "查看随机插画");
     const img = document.createElement("img");
     img.loading = "lazy";
     img.decoding = "async";
-    img.alt = item.title || "Pixiv 插画";
+    img.alt = "随机插画";
     img.className = "is-loading";
-    img.src = proxyImage(item.image);
+    img.src = url;
     img.addEventListener("load", () => img.classList.remove("is-loading"), { once: true });
     img.addEventListener("error", () => {
       img.classList.remove("is-loading");
@@ -111,86 +98,59 @@
     const caption = document.createElement("div");
     caption.className = "gallery-item-caption";
     const label = document.createElement("strong");
-    label.textContent = item.title || "未命名作品";
+    label.textContent = "随机插画";
     const author = document.createElement("span");
-    author.textContent = item.author || "Pixiv";
+    author.textContent = "来源：waifu.pics";
     caption.append(label, author);
     card.append(img, caption);
-    card.dataset.pixivUrl = item.pixivUrl || ("https://www.pixiv.net/artworks/" + item.id);
-    card.dataset.title = item.title || "Pixiv 插画";
-    card.dataset.image = img.src;
+    card.dataset.sourceUrl = url;
+    card.dataset.title = "随机插画";
     card.addEventListener("click", () => {
       lightboxTrigger = card;
-      lightboxImage.src = img.src;
+      lightboxImage.src = url;
       lightboxTitle.textContent = card.dataset.title;
-      pixivLink.href = card.dataset.pixivUrl;
+      sourceLink.href = url;
+      sourceLink.textContent = "查看原图 ↗";
       lightbox.hidden = false;
       document.body.classList.add("gallery-open");
       lightbox.querySelector("[data-gallery-close]").focus();
     });
     grid.append(card);
-    currentImages.push(item);
     return true;
   }
 
-  async function loadImages({ reset = false, mode = currentMode } = {}) {
+  async function loadImages({ reset = false } = {}) {
     if (loading) return;
     if (reset) {
       grid.replaceChildren();
       seen.clear();
-      currentImages = [];
-      nextCursor = null;
     }
-    currentMode = mode;
-    modeButtons.forEach((button) => {
-      const active = button.dataset.galleryMode === currentMode;
-      button.classList.toggle("is-active", active);
-      button.setAttribute("aria-pressed", String(active));
-    });
     setLoading(true);
     try {
-      const params = new URLSearchParams({ mode: currentMode });
-      if (!reset && nextCursor) params.set("cursor", nextCursor);
-      const requestHeaders = { "Accept": "application/json" };
-      if (currentMode === "bookmarks-private" && galleryKey) requestHeaders["X-Gallery-Key"] = galleryKey;
-      const response = await fetch("/api/pixiv?" + params.toString(), {
-        headers: requestHeaders,
-        credentials: "same-origin"
+      const response = await fetch("https://api.waifu.pics/many/sfw/waifu", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "Accept": "application/json" },
+        body: JSON.stringify({})
       });
       const data = await response.json().catch(() => ({}));
-      if (!response.ok) {
-        const error = new Error(data.message || data.error || ("HTTP " + response.status));
-        error.status = response.status;
-        throw error;
-      }
-      if (!Array.isArray(data.illustrations)) throw new Error("Pixiv 返回的数据格式不正确");
+      if (!response.ok) throw new Error("图片服务返回 HTTP " + response.status);
+      if (!Array.isArray(data.files)) throw new Error("图片服务返回的数据格式不正确");
       let added = 0;
-      data.illustrations.forEach((item) => { if (addImage(item)) added++; });
-      nextCursor = data.next || null;
-      if (moreButton) moreButton.hidden = !nextCursor;
-      if (!added && !grid.children.length) throw new Error("Pixiv 暂时没有返回作品");
+      data.files.forEach((url) => { if (addImage(url)) added++; });
+      if (!grid.children.length) throw new Error("暂时没有获取到图片，请稍后重试");
       empty.hidden = true;
-      const modeLabel = currentMode === "bookmarks" ? "我的收藏" : "Pixiv 推荐";
-      status.textContent = modeLabel + " · 已加载 " + grid.children.length + " 件作品";
-      if (!nextCursor) status.textContent += " · 已到末页";
+      status.textContent = "公开随机插画 · 已加载 " + grid.children.length + " 张";
+      if (!added) status.textContent += " · 本批没有新图，请再刷新";
     } catch (error) {
-      console.warn("Pixiv gallery request failed:", error);
-      if (currentMode === "bookmarks-private" && error.status === 403) {
-        galleryKey = "";
-        privateKeyInput.value = "";
-        privateAccess.hidden = false;
-        status.textContent = "访问密钥不正确，请重新输入。";
-      }
+      console.warn("Gallery request failed:", error);
       if (!grid.children.length) {
         empty.hidden = false;
-        emptyTitle.textContent = error.status === 503 ? "还差一步：配置 Pixiv 授权" : "暂时无法连接 Pixiv";
-        emptyText.textContent = error.message || "请检查 Cloudflare Functions 部署和授权配置后重试。";
+        emptyTitle.textContent = "暂时无法加载画廊";
+        emptyText.textContent = (error instanceof Error ? error.message : "图片服务连接失败") + "。请检查网络后重试。";
       }
-      status.textContent = grid.children.length ? "加载失败，可重试" : (error.status === 403 ? "私人收藏密钥错误" : "Pixiv 连接失败");
+      status.textContent = grid.children.length ? "加载失败，可重试" : "图片服务连接失败";
     } finally {
       setLoading(false);
-      moreButton.disabled = !nextCursor || loading;
-      if (currentRoute === "gallery") moreButton.hidden = !nextCursor;
     }
   }
 
@@ -211,9 +171,9 @@
       const next = cards[index + (event.key === "ArrowRight" ? 1 : -1)];
       if (next) {
         lightboxTrigger = next;
-        lightboxImage.src = next.dataset.image;
+        lightboxImage.src = next.dataset.sourceUrl;
         lightboxTitle.textContent = next.dataset.title;
-        pixivLink.href = next.dataset.pixivUrl;
+        sourceLink.href = next.dataset.sourceUrl;
       }
     }
   });
@@ -221,35 +181,6 @@
   refreshButton.addEventListener("click", () => loadImages({ reset: true }));
   retryButton.addEventListener("click", () => loadImages({ reset: grid.children.length === 0 }));
   moreButton.addEventListener("click", () => loadImages());
-  modeButtons.forEach((button) => button.addEventListener("click", () => {
-    const mode = button.dataset.galleryMode;
-    if (mode === "bookmarks-private" && !galleryKey) {
-      currentMode = mode;
-      modeButtons.forEach((item) => {
-        const active = item.dataset.galleryMode === mode;
-        item.classList.toggle("is-active", active);
-        item.setAttribute("aria-pressed", String(active));
-      });
-      privateAccess.hidden = false;
-      status.textContent = "输入私人收藏访问密钥后继续。";
-      privateKeyInput.focus();
-      return;
-    }
-    privateAccess.hidden = mode !== "bookmarks-private";
-    if (mode !== currentMode) loadImages({ reset: true, mode });
-  }));
-  privateAccess.addEventListener("submit", (event) => {
-    event.preventDefault();
-    const value = privateKeyInput.value.trim();
-    if (!value) {
-      status.textContent = "请输入访问密钥。";
-      privateKeyInput.focus();
-      return;
-    }
-    galleryKey = value;
-    privateAccess.hidden = true;
-    loadImages({ reset: true, mode: "bookmarks-private" });
-  });
 
   const initialRoute = new URL(window.location.href).searchParams.get("page") === "gallery" ? "gallery" : "home";
   renderRoute(initialRoute, { replace: true });

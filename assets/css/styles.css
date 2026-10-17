@@ -916,3 +916,36 @@ body.gallery-view-active .top-nav a { padding:7px 9px; font-size:12px; }
 @media (max-width:520px) {
   .gallery-hero .gallery-menu-trigger { width: 38px; min-width: 38px; max-width: 38px; height: 38px; min-height: 38px; flex: 0 0 38px; padding: 0; }
 }
+
+
+/* Natural-ratio masonry gallery: fixed column widths, image heights follow intrinsic ratios. */
+.gallery-grid {
+  display: block;
+  column-count: var(--gallery-columns, 3);
+  column-gap: 15px;
+  column-fill: balance;
+}
+.gallery-item {
+  display: inline-block;
+  width: 100%;
+  margin: 0 0 15px !important;
+  break-inside: avoid;
+  vertical-align: top;
+}
+.gallery-item:nth-child(3n + 2),
+.gallery-item:nth-child(even) { margin-top: 0 !important; }
+.gallery-item img {
+  width: 100%;
+  height: auto;
+  aspect-ratio: auto;
+  object-fit: contain;
+}
+@media (max-width: 760px) {
+  .gallery-grid { column-gap: 11px; }
+  .gallery-item { margin-bottom: 11px !important; }
+  .gallery-grid:not([style*="--gallery-columns"]) { column-count: 2; }
+}
+@media (max-width: 520px) {
+  .gallery-grid { column-gap: 9px; }
+  .gallery-item { margin-bottom: 9px !important; }
+}

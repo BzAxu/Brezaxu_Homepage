@@ -1094,3 +1094,32 @@ body.gallery-view-active .top-nav a { padding:7px 9px; font-size:12px; }
   .gallery-loading-grid .gallery-item--pending,
   .gallery-loading-grid .gallery-item--pending::after { animation: none !important; }
 }
+
+
+/* Animate each thumbnail when it enters the finished gallery. */
+#galleryGrid > .gallery-item--loaded {
+  animation: galleryImageAppear 520ms cubic-bezier(.18,.75,.25,1) both;
+  will-change: opacity, transform, filter;
+}
+@keyframes galleryImageAppear {
+  from {
+    opacity: 0;
+    transform: translateY(18px) scale(.965);
+    filter: blur(5px);
+  }
+  65% {
+    opacity: 1;
+    filter: blur(0);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    filter: blur(0);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  #galleryGrid > .gallery-item--loaded {
+    animation: none !important;
+    will-change: auto;
+  }
+}

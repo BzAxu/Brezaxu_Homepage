@@ -4,6 +4,10 @@
   const galleryPage = document.getElementById("galleryPage");
   const footer = document.querySelector("footer");
   const grid = document.getElementById("galleryGrid");
+  const loadingGrid = document.createElement("div");
+  loadingGrid.className = "gallery-grid gallery-loading-grid";
+  loadingGrid.setAttribute("aria-hidden", "true");
+  if (grid) grid.insertAdjacentElement("afterend", loadingGrid);
   const status = document.getElementById("galleryStatus");
   const empty = document.getElementById("galleryEmpty");
   const emptyTitle = document.getElementById("galleryEmptyTitle");
@@ -271,12 +275,18 @@
     card.className = "gallery-item";
     card.setAttribute("aria-label", "查看插画");
     const img = document.createElement("img");
-    img.loading = "lazy";
+    img.loading = "eager";
     img.decoding = "async";
     img.alt = "插画";
     img.className = "is-loading";
+
+    // Keep the unfinished image in a separate loading strip below the gallery.
+    // Only move it into the gallery after the browser has fully loaded it.
+    card.classList.add("gallery-item--pending");
+    card.append(img);
+    loadingGrid.append(card);
+
     img.addEventListener("load", () => {
-      // Use the decoded file's real dimensions, not a preset thumbnail ratio.
       if (img.naturalWidth > 0 && img.naturalHeight > 0) {
         img.style.aspectRatio = img.naturalWidth + " / " + img.naturalHeight;
         img.style.height = "auto";
@@ -284,14 +294,16 @@
       }
       img.classList.remove("is-loading");
       card.classList.remove("gallery-item--pending");
+      card.classList.add("gallery-item--loaded");
+      // Appending on completion means earlier successful loads stay above later ones.
+      grid.append(card);
     }, { once: true });
+
     img.addEventListener("error", () => {
-      // Failed images are removed instead of leaving an empty frame.
       card.remove();
       seen.delete(url);
     }, { once: true });
-    card.classList.add("gallery-item--pending");
-    card.append(img);
+
     img.src = url;
     card.dataset.sourceUrl = url;
     card.dataset.title = "随机插画";
@@ -306,13 +318,11 @@
       downloadButton.textContent = "↓ 下载图片";
       lightbox.hidden = false;
       document.body.classList.add("gallery-open");
-      // Give the preview its own history entry so Android/browser Back closes it first.
       if (!history.state || !history.state.galleryLightbox) {
         history.pushState({ ...(history.state || {}), view: "gallery", galleryLightbox: true }, "", window.location.href);
       }
       lightbox.querySelector("[data-gallery-close]").focus();
     });
-    grid.append(card);
     return true;
   }
 
@@ -320,6 +330,7 @@
     if (loading) return;
     if (reset) {
       grid.replaceChildren();
+      loadingGrid.replaceChildren();
       seen.clear();
     }
     setLoading(true);
@@ -336,19 +347,21 @@
       let added = 0;
       currentSourceName = data.sourceName || "自动切换";
       data.files.forEach((url) => { if (addImage(url, currentSourceName)) added++; });
-      if (!grid.children.length) throw new Error("暂时没有获取到图片，请稍后重试");
+      if (!grid.children.length && !loadingGrid.children.length) throw new Error("暂时没有获取到图片，请稍后重试");
       empty.hidden = true;
-      status.textContent = currentSourceName + " · 已加载 " + grid.children.length + " 张 · API " + (Number.isFinite(data.latency) ? data.latency + " ms" : "响应正常");
+      status.textContent = currentSourceName + " · 已显示 " + grid.children.length + " 张" +
+        (loadingGrid.children.length ? " · 另有 " + loadingGrid.children.length + " 张加载中" : "") +
+        " · API " + (Number.isFinite(data.latency) ? data.latency + " ms" : "响应正常");
       if (data.fallback && Array.isArray(data.failures)) status.textContent += " · 已自动切换备用源";
       if (!added) status.textContent += " · 本批没有新图，请再刷新";
     } catch (error) {
       console.warn("Gallery request failed:", error);
-      if (!grid.children.length) {
+      if (!grid.children.length && !loadingGrid.children.length) {
         empty.hidden = false;
         emptyTitle.textContent = "暂时无法加载画廊";
         emptyText.textContent = (error instanceof Error ? error.message : "图片服务连接失败") + "。请检查网络后重试。";
       }
-      status.textContent = grid.children.length ? "加载失败，可重试" : "图片服务连接失败";
+      status.textContent = grid.children.length || loadingGrid.children.length ? "部分图片加载失败，可重试" : "图片服务连接失败";
       if (providerStatusSummary) providerStatusSummary.textContent = "当前请求失败；可查看各源状态，或切换到自动模式。";
     } finally {
       setLoading(false);

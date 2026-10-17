@@ -127,13 +127,13 @@
     }
     setLoading(true);
     try {
-      const response = await fetch("https://api.waifu.pics/many/sfw/waifu", {
-        method: "POST",
-        headers: { "Content-Type": "application/json", "Accept": "application/json" },
-        body: JSON.stringify({})
+      const response = await fetch("/api/gallery", {
+        method: "GET",
+        headers: { "Accept": "application/json" },
+        cache: "no-store"
       });
       const data = await response.json().catch(() => ({}));
-      if (!response.ok) throw new Error("图片服务返回 HTTP " + response.status);
+      if (!response.ok) throw new Error(data.error || ("图片服务返回 HTTP " + response.status));
       if (!Array.isArray(data.files)) throw new Error("图片服务返回的数据格式不正确");
       let added = 0;
       data.files.forEach((url) => { if (addImage(url)) added++; });

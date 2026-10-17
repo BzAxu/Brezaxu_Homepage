@@ -19,6 +19,7 @@ const PROVIDERS = [
     id: "waifuim",
     name: "Waifu.im（旧源）",
     kind: "旧服务 · 计划停运",
+    retired: true,
     url: "https://api.waifu.im/images?IsNsfw=False&PageSize=10",
     headers: { "Accept": "application/json" },
     parse: (data) => Array.isArray(data.items) ? data.items.map((item) => item.url) : []
@@ -80,9 +81,10 @@ export async function onRequestGet({ request }) {
     });
   }
 
+  const activeProviders = PROVIDERS.filter((provider) => !provider.retired);
   const candidates = selected === "auto"
-    ? [...PROVIDERS].sort(() => Math.random() - 0.5)
-    : PROVIDERS.filter((provider) => provider.id === selected);
+    ? [...activeProviders].sort(() => Math.random() - 0.5)
+    : activeProviders.filter((provider) => provider.id === selected);
 
   if (!candidates.length) return json({ error: "未知的图片源" }, 400);
 

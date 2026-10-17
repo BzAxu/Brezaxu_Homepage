@@ -89,34 +89,43 @@ import("https://cdn.jsdelivr.net/npm/@dpawlikowski/liquid-glass@0.3.0/dist/index
       const dialogTitle = document.getElementById("externalDialogTitle");
       const dialogDescription = document.getElementById("externalDialogDescription");
       let pendingUrl = "";
-      let qqContactMode = false;
+      let contactMode = "";
+      let contactValue = "";
       let previousFocus = null;
 
+      const contactLabels = {
+        qq: { eyebrow: "QQ CONTACT", title: "添加 QQ 好友", label: "QQ 号", value: "1593107836", description: "请打开 QQ，在搜索中输入下方号码并添加好友。", copyLabel: "复制 QQ 号", toast: "QQ 号已复制" },
+        wechat: { eyebrow: "WECHAT CONTACT", title: "添加微信好友", label: "微信号", description: "请打开微信，通过下方微信号搜索并添加好友。", copyLabel: "复制微信号", toast: "微信号已复制" },
+        email: { eyebrow: "EMAIL CONTACT", title: "联系邮箱", label: "邮箱地址", description: "复制下方邮箱地址，可在邮件应用中向我发送邮件。", copyLabel: "复制邮箱地址", toast: "邮箱地址已复制" }
+      };
+
       async function copyDialogValue() {
-        const value = qqContactMode ? "1593107836" : pendingUrl;
+        const value = contactMode ? (contactValue || contactLabels[contactMode]?.value) : pendingUrl;
         if (!value) return;
         try {
           await copyText(value);
-          showToast(qqContactMode ? "QQ 号已复制" : "完整跳转链接已复制");
-          if (qqContactMode) closeDialog();
+          showToast(contactMode ? contactLabels[contactMode].toast : "完整跳转链接已复制");
+          if (contactMode) closeDialog();
         } catch {
           showToast("复制失败，请手动选择并复制");
         }
       }
       copyExternalLink.addEventListener("click", copyDialogValue);
 
-      function openDialog({ url = "", qq = false, trigger = document.activeElement } = {}) {
+      function openDialog({ url = "", contact = "", value = "", trigger = document.activeElement } = {}) {
         pendingUrl = url;
-        qqContactMode = qq;
+        contactMode = contact;
+        contactValue = value || contactLabels[contact]?.value || "";
         previousFocus = trigger;
-        dialogEyebrow.textContent = qq ? "QQ CONTACT" : "EXTERNAL LINK";
-        dialogTitle.textContent = qq ? "添加 QQ 好友" : "即将访问";
-        dialogDescription.textContent = qq ? "请打开 QQ，在搜索中输入下方号码并添加好友。" : "目标链接如下。";
-        destinationLabel.textContent = qq ? "QQ 号" : "完整链接";
-        hostLabel.textContent = qq ? "1593107836" : url;
-        copyExternalLink.setAttribute("aria-label", qq ? "复制 QQ 号" : "复制完整链接");
-        copyExternalLink.title = qq ? "复制 QQ 号" : "复制完整链接";
-        continueButton.innerHTML = qq ? '复制 QQ 号 <span aria-hidden="true">⧉</span>' : '继续访问 <span aria-hidden="true">↗</span>';
+        const info = contactLabels[contact];
+        dialogEyebrow.textContent = info ? info.eyebrow : "EXTERNAL LINK";
+        dialogTitle.textContent = info ? info.title : "即将访问";
+        dialogDescription.textContent = info ? info.description : "目标链接如下。";
+        destinationLabel.textContent = info ? info.label : "完整链接";
+        hostLabel.textContent = info ? contactValue : url;
+        copyExternalLink.setAttribute("aria-label", info ? info.copyLabel : "复制完整链接");
+        copyExternalLink.title = info ? info.copyLabel : "复制完整链接";
+        continueButton.innerHTML = info ? info.copyLabel + ' <span aria-hidden="true">⧉</span>' : '继续访问 <span aria-hidden="true">↗</span>';
         dialog.hidden = false;
         document.body.classList.add("external-dialog-open");
         continueButton.focus();
@@ -126,12 +135,23 @@ import("https://cdn.jsdelivr.net/npm/@dpawlikowski/liquid-glass@0.3.0/dist/index
         dialog.hidden = true;
         document.body.classList.remove("external-dialog-open");
         pendingUrl = "";
-        qqContactMode = false;
+        contactMode = "";
+        contactValue = "";
         if (previousFocus && typeof previousFocus.focus === "function") previousFocus.focus();
       }
 
       document.querySelector("[data-qq-contact]").addEventListener("click", (event) => {
-        openDialog({ qq: true, trigger: event.currentTarget });
+        openDialog({ contact: "qq", trigger: event.currentTarget });
+      });
+
+      document.querySelectorAll("[data-contact-type]").forEach((button) => {
+        button.addEventListener("click", (event) => {
+          openDialog({
+            contact: button.dataset.contactType,
+            value: button.dataset.contactValue,
+            trigger: event.currentTarget
+          });
+        });
       });
 
       document.addEventListener("click", (event) => {
@@ -150,7 +170,7 @@ import("https://cdn.jsdelivr.net/npm/@dpawlikowski/liquid-glass@0.3.0/dist/index
 
       dialog.querySelectorAll("[data-external-cancel]").forEach((button) => button.addEventListener("click", closeDialog));
       continueButton.addEventListener("click", () => {
-        if (qqContactMode) {
+        if (contactMode) {
           copyDialogValue();
           return;
         }

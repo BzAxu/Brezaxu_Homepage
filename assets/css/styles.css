@@ -835,21 +835,20 @@ body.gallery-settings-open { overflow:hidden; }
 @media (max-width:520px) { .gallery-hero-intro { align-items:stretch; flex-direction:column; gap:14px; } .gallery-menu-trigger { width:100%; } .gallery-settings-dialog { padding:12px; } .gallery-settings-card { max-height:88vh; padding:22px 17px; border-radius:20px; } .gallery-settings-section { grid-template-columns:minmax(0,1fr); } .gallery-settings-section .gallery-refresh { width:100%; } .gallery-settings-section .gallery-status { grid-column:auto; } }
 @media (prefers-reduced-motion:reduce) { .gallery-settings-backdrop,.gallery-settings-card { animation:none !important; } }
 
-
-/* Compact single-line top bar: remove the redundant subtitle and prevent wrapping. */
-.topbar-inner { min-height:50px; gap:10px; padding:0; flex-wrap:nowrap; }
-.top-note { display:none !important; }
-.wordmark { flex:0 0 auto; font-size:18px; }
-.top-nav { display:flex; flex:0 1 auto; min-width:0; margin-left:auto; gap:2px; flex-wrap:nowrap; justify-content:flex-end; white-space:nowrap; }
-.top-nav a { padding:7px 9px; font-size:12px; }
+/* Compact the top bar only while the gallery view is active. */
+body.gallery-view-active .topbar-inner { min-height:50px; gap:10px; padding:0; flex-wrap:nowrap; }
+body.gallery-view-active .top-note { display:none !important; }
+body.gallery-view-active .wordmark { flex:0 0 auto; font-size:18px; }
+body.gallery-view-active .top-nav { display:flex; flex:0 1 auto; min-width:0; margin-left:auto; gap:2px; flex-wrap:nowrap; justify-content:flex-end; white-space:nowrap; }
+body.gallery-view-active .top-nav a { padding:7px 9px; font-size:12px; }
 @media (max-width:560px) {
-  .topbar-inner { width:calc(100% - 24px); min-height:46px; gap:4px; flex-wrap:nowrap; padding:0; align-items:center; }
-  .wordmark { font-size:17px; }
-  .top-nav { width:auto; max-width:none; margin-left:auto; flex:0 1 auto; flex-wrap:nowrap; justify-content:flex-end; gap:0; }
-  .top-nav a { padding:6px 7px; font-size:11px; }
+  body.gallery-view-active .topbar-inner { width:calc(100% - 24px); min-height:46px; gap:4px; flex-wrap:nowrap; padding:0; align-items:center; }
+  body.gallery-view-active .wordmark { font-size:17px; }
+  body.gallery-view-active .top-nav { width:auto; max-width:none; margin-left:auto; flex:0 1 auto; flex-wrap:nowrap; justify-content:flex-end; gap:0; }
+  body.gallery-view-active .top-nav a { padding:6px 7px; font-size:11px; }
 }
 @media (max-width:360px) {
-  .topbar-inner { align-items:center; }
-  .top-nav { width:auto; margin-left:auto; justify-content:flex-end; }
-  .top-nav a { padding:5px 5px; font-size:10px; }
+  body.gallery-view-active .topbar-inner { align-items:center; }
+  body.gallery-view-active .top-nav { width:auto; margin-left:auto; justify-content:flex-end; }
+  body.gallery-view-active .top-nav a { padding:5px 5px; font-size:10px; }
 }

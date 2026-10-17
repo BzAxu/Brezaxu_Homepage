@@ -1,31 +1,110 @@
-// Same-origin proxy for Waifu.im's public SFW image API.
-export async function onRequestGet() {
+const PROVIDERS = [
+  {
+    id: "nekosbest",
+    name: "NEKOS.BEST",
+    kind: "SFW 动漫图 / GIF",
+    url: "https://nekos.best/api/v2/neko?amount=10",
+    headers: { "Accept": "application/json", "User-Agent": "BzAxuHomepage/1.0 (public SFW gallery)" },
+    parse: (data) => Array.isArray(data.results) ? data.results.map((item) => item.url) : []
+  },
+  {
+    id: "icatw",
+    name: "Anime Image Gateway",
+    kind: "多源随机动漫图",
+    url: "https://api.icatw.site/api/v1/images/random?category=anime",
+    headers: { "Accept": "application/json" },
+    parse: (data) => data && data.success && data.data && typeof data.data.url === "string" ? [data.data.url] : []
+  },
+  {
+    id: "waifuim",
+    name: "Waifu.im（旧源）",
+    kind: "旧服务 · 计划停运",
+    url: "https://api.waifu.im/images?IsNsfw=False&PageSize=10",
+    headers: { "Accept": "application/json" },
+    parse: (data) => Array.isArray(data.items) ? data.items.map((item) => item.url) : []
+  }
+];
+
+const CACHE_HEADERS = { "Cache-Control": "no-store" };
+const TIMEOUT_MS = 6500;
+
+function json(body, status = 200) {
+  return Response.json(body, { status, headers: CACHE_HEADERS });
+}
+
+async function requestProvider(provider) {
+  const started = Date.now();
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), TIMEOUT_MS);
   try {
-    const upstream = await fetch("https://api.waifu.im/images?IsNsfw=False&PageSize=10", {
-      headers: { "Accept": "application/json" }
+    const response = await fetch(provider.url, {
+      method: "GET",
+      headers: provider.headers,
+      signal: controller.signal
     });
-    const data = await upstream.json().catch(() => ({}));
-    if (!upstream.ok) {
-      return Response.json({
-        error: "图片服务返回 HTTP " + upstream.status
-      }, { status: 502, headers: { "Cache-Control": "no-store" } });
+    const elapsed = Date.now() - started;
+    if (!response.ok) {
+      return { provider: provider.id, name: provider.name, ok: false, latency: elapsed, error: "HTTP " + response.status };
     }
-    const files = Array.isArray(data.items)
-      ? data.items.map((item) => item.url).filter((url) => typeof url === "string" && url.startsWith("https://"))
-      : [];
-    if (!files.length) {
-      return Response.json({ error: "图片服务暂时没有返回可用图片" }, {
-        status: 502,
-        headers: { "Cache-Control": "no-store" }
-      });
+    const data = await response.json();
+    const urls = provider.parse(data).filter((url) => typeof url === "string" && url.startsWith("https://"));
+    if (!urls.length) {
+      return { provider: provider.id, name: provider.name, ok: false, latency: elapsed, error: "返回数据中没有可用图片" };
     }
-    return Response.json({ files }, {
-      headers: { "Cache-Control": "public, max-age=60" }
-    });
-  } catch {
-    return Response.json({ error: "Cloudflare 无法连接图片服务" }, {
-      status: 502,
-      headers: { "Cache-Control": "no-store" }
+    return { provider: provider.id, name: provider.name, ok: true, latency: elapsed, files: urls };
+  } catch (error) {
+    return {
+      provider: provider.id,
+      name: provider.name,
+      ok: false,
+      latency: Date.now() - started,
+      error: error && error.name === "AbortError" ? "请求超时" : "连接失败"
+    };
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
+export async function onRequestGet({ request }) {
+  const url = new URL(request.url);
+  const mode = url.searchParams.get("mode");
+  const selected = url.searchParams.get("source") || "auto";
+
+  if (mode === "status") {
+    const results = await Promise.all(PROVIDERS.map(requestProvider));
+    return json({
+      providers: results.map(({ provider, name, ok, latency, error }) => ({
+        id: provider, name, ok, latency, error: error || null
+      })),
+      checkedAt: new Date().toISOString()
     });
   }
+
+  const candidates = selected === "auto"
+    ? [...PROVIDERS].sort(() => Math.random() - 0.5)
+    : PROVIDERS.filter((provider) => provider.id === selected);
+
+  if (!candidates.length) return json({ error: "未知的图片源" }, 400);
+
+  const failures = [];
+  for (const provider of candidates) {
+    const result = await requestProvider(provider);
+    if (result.ok) {
+      return json({
+        files: result.files,
+        source: result.provider,
+        sourceName: result.name,
+        latency: result.latency,
+        fallback: selected === "auto" && failures.length > 0,
+        failures
+      });
+    }
+    failures.push({ source: result.provider, name: result.name, error: result.error, latency: result.latency });
+    if (selected !== "auto") break;
+  }
+
+  return json({
+    error: "当前没有可用的图片源，请查看各源状态后重试。",
+    failures
+  }, 502);
 }

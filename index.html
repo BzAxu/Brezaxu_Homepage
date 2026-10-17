@@ -14,10 +14,9 @@
 <body>
   <header class="topbar">
     <div class="topbar-inner">
-      <a class="wordmark" href="#top" data-gallery-home aria-label="BzAxu 首页">BzAxu<span>.</span></a>
+      <a class="wordmark" href="#top" aria-label="BzAxu 首页">BzAxu<span>.</span></a>
       <div class="top-note">个人主页</div>
       <nav class="top-nav" aria-label="页面导航">
-        <a href="?page=gallery" data-gallery-open>画廊</a>
         <a href="#projects">兴趣</a>
         <a href="#contact">联系</a>
       </nav>
@@ -39,14 +38,17 @@
               <button class="social-action" type="button" data-qq-contact aria-label="QQ：添加好友" title="QQ · 添加好友" data-tip="QQ · 添加好友" aria-haspopup="dialog" aria-controls="externalLinkDialog">
                 <span class="social-letter social-letter--qq" aria-hidden="true">Q</span>
               </button>
+              <button class="social-action" type="button" data-contact-type="wechat" data-contact-value="bz_Axu1229" aria-label="微信：添加好友" title="微信 · 添加好友" data-tip="微信 · 添加好友" aria-haspopup="dialog" aria-controls="externalLinkDialog">
+                <span class="social-letter social-letter--wechat" aria-hidden="true">微</span>
+              </button>
+              <button class="social-action" type="button" data-contact-type="email" data-contact-value="1593107836@qq.com" aria-label="邮箱：1593107836@qq.com" title="邮箱 · 1593107836@qq.com" data-tip="邮箱 · 1593107836@qq.com" aria-haspopup="dialog" aria-controls="externalLinkDialog">
+                <span class="social-letter social-letter--email" aria-hidden="true">@</span>
+              </button>
+              <button class="social-action" type="button" data-contact-type="email" data-contact-value="1139592577@qq.com" aria-label="邮箱：1139592577@qq.com" title="邮箱 · 1139592577@qq.com" data-tip="邮箱 · 1139592577@qq.com" aria-haspopup="dialog" aria-controls="externalLinkDialog">
+                <span class="social-letter social-letter--email" aria-hidden="true">@</span>
+              </button>
               <a class="social-action" href="https://b23.tv/cNg72Py" aria-label="哔哩哔哩：视频动态" title="哔哩哔哩 · 视频动态" data-tip="哔哩哔哩 · 视频动态">
                 <span class="social-letter social-letter--bili" aria-hidden="true">B</span>
-              </a>
-              <a class="social-action" href="https://t.me/bzaxu" aria-label="Telegram：即时联系" title="Telegram · 即时联系" data-tip="Telegram · 即时联系">
-                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m21.5 3.5-3.3 16c-.2 1.1-.9 1.3-1.8.8l-5-3.7-2.4 2.3c-.3.3-.5.5-1 .5l.4-5.1 9.3-8.4c.4-.4-.1-.6-.6-.2L5.6 12.9.7 11.4c-1.1-.3-1.1-1.1.2-1.6L20 2.3c.9-.3 1.7.2 1.5 1.2Z"/></svg>
-              </a>
-              <a class="social-action" href="https://x.com/Bz_Axu" aria-label="X：日常分享" title="X · 日常分享" data-tip="X · 日常分享">
-                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 3h4.6l11.4 18h-4.6L4 3Z"/><path d="M3.5 21 10 13.2M14 10.2 20.5 3"/></svg>
               </a>
             </nav>
           </div>
@@ -61,7 +63,6 @@
       <section class="panel side-card">
         <h2>空间导航</h2>
         <nav class="side-links" aria-label="空间导航">
-          <a href="?page=gallery" data-gallery-open>↳ 画廊浏览</a>
           <a href="#projects">↳ 兴趣与项目</a>
           <a href="#about">↳ 关于本站</a>
           <a href="#contact">↳ 留个联系方式</a>
@@ -75,21 +76,6 @@
         <h1>把兴趣放在这里，<br>把灵感留给以后。</h1>
         <p>BzAxu 的个人主页。</p>
       </section>
-
-      <a class="panel gallery-promo" href="?page=gallery" data-gallery-open aria-label="打开画廊浏览">
-        <div class="gallery-promo-art" aria-hidden="true">
-          <span class="gallery-orb gallery-orb--one"></span>
-          <span class="gallery-orb gallery-orb--two"></span>
-          <span class="gallery-orb gallery-orb--three"></span>
-          <span class="gallery-promo-symbol">✧</span>
-        </div>
-        <div class="gallery-promo-copy">
-          <div class="gallery-promo-kicker">VISUAL COLLECTION</div>
-          <h2>画廊浏览</h2>
-          <p>随机探索二次元插画，点开图片即可沉浸查看。</p>
-          <span class="gallery-promo-cta">进入画廊 <span aria-hidden="true">↗</span></span>
-        </div>
-      </a>
 
       <div class="section-bar" id="projects">
         <h2>兴趣与项目</h2><span>THINGS I LIKE</span>
@@ -133,85 +119,6 @@
     </div>
   </main>
 
-  <main class="gallery-page" id="galleryPage" hidden>
-    <section class="panel gallery-hero">
-      <div class="gallery-hero-bar">
-        <button class="gallery-back" type="button" data-gallery-home><span aria-hidden="true">←</span><span class="gallery-back-label">返回个人空间</span></button>
-        <h1>画廊浏览</h1>
-        <button class="button gallery-menu-trigger" id="galleryMenuOpen" type="button" aria-haspopup="dialog" aria-controls="gallerySettingsDialog" aria-label="画廊设置" title="画廊设置">
-          <svg class="gallery-menu-gear" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 8.25a3.75 3.75 0 1 0 0 7.5 3.75 3.75 0 0 0 0-7.5Z"/><path d="M19.4 13.5a7.8 7.8 0 0 0 0-3l1.1-.85-1.5-2.6-1.32.5a7.8 7.8 0 0 0-2.6-1.5L14.8 4.7h-3l-.3 1.35a7.8 7.8 0 0 0-2.6 1.5l-1.32-.5-1.5 2.6 1.1.85a7.8 7.8 0 0 0 0 3l-1.1.85 1.5 2.6 1.32-.5a7.8 7.8 0 0 0 2.6 1.5l.3 1.35h3l.3-1.35a7.8 7.8 0 0 0 2.6-1.5l1.32.5 1.5-2.6-1.1-.85Z"/></svg>
-        </button>
-      </div>
-    </section>
-    <section class="gallery-grid" id="galleryGrid" aria-label="二次元图片画廊"></section>
-    <div class="gallery-empty" id="galleryEmpty" hidden>
-      <div class="gallery-empty-icon">✧</div>
-      <h2 id="galleryEmptyTitle">正在连接图片接口</h2>
-      <p id="galleryEmptyText">如果加载失败，可以稍后重试；部分网络可能无法访问第三方图片服务。</p>
-      <button class="button" type="button" id="galleryRetry">重新加载</button>
-    </div>
-    <div class="gallery-bottom">
-      <button class="button gallery-more" id="galleryMore" type="button">再看一些 <span aria-hidden="true">↓</span></button>
-    </div>
-  </main>
-
-  <section class="gallery-settings-dialog" id="gallerySettingsDialog" role="dialog" aria-modal="true" aria-labelledby="gallerySettingsTitle" hidden>
-    <button class="gallery-settings-backdrop" type="button" data-gallery-settings-close aria-label="关闭画廊设置"></button>
-    <div class="gallery-settings-card">
-      <button class="gallery-settings-close" type="button" data-gallery-settings-close aria-label="关闭">×</button>
-      <div class="gallery-settings-eyebrow">GALLERY / SETTINGS</div>
-      <h2 id="gallerySettingsTitle">画廊设置</h2>
-      <p class="gallery-settings-description">管理图片来源、刷新图片，并查看各服务的连接状态。</p>
-      <div class="gallery-settings-section gallery-columns-setting">
-        <label class="gallery-source-label" for="galleryColumnsSelect">缩略图列数
-          <select class="gallery-source-select" id="galleryColumnsSelect">
-            <option value="auto">自动适配</option>
-            <option value="2">2 列</option>
-            <option value="3">3 列</option>
-            <option value="4">4 列</option>
-            <option value="5">5 列</option>
-          </select>
-        </label>
-        <span class="gallery-status">图片按原始长宽比完整显示，不再裁切。</span>
-      </div>
-      <div class="gallery-settings-section">
-        <label class="gallery-source-label" for="gallerySourceSelect">图片源
-          <select class="gallery-source-select" id="gallerySourceSelect">
-            <option value="auto">自动选择 / 故障切换</option>
-            <option value="nekosapi">Nekos API</option>
-            <option value="nekosbest">NEKOS.BEST</option>
-            <option value="icatw">Anime Image Gateway</option>
-          </select>
-        </label>
-        <button class="button gallery-refresh" id="galleryRefresh" type="button">↻ 刷新</button>
-        <span class="gallery-status" id="galleryStatus" role="status" aria-live="polite">正在检测图片源…</span>
-      </div>
-      <details class="gallery-provider-panel">
-        <summary class="gallery-provider-summary">
-          <span class="gallery-provider-summary-title"><span class="gallery-provider-summary-dot" aria-hidden="true"></span><span><strong>图片源状态</strong><small id="galleryProviderStatusSummary" role="status" aria-live="polite">等待检测…</small></span></span>
-          <span class="gallery-provider-summary-actions"><span class="gallery-provider-summary-hint">延迟 / 在线状态</span><span class="gallery-provider-chevron" aria-hidden="true">⌄</span></span>
-        </summary>
-        <div class="gallery-provider-details">
-          <div class="gallery-provider-heading">
-            <strong>各图片源检测结果</strong>
-            <button class="button gallery-provider-refresh" id="galleryProviderStatusRefresh" type="button">重新检测</button>
-          </div>
-          <div class="gallery-provider-list" id="galleryProviderStatusList"></div>
-          <p class="gallery-provider-note">延迟是本站服务器到图片 API 的响应时间，不代表图片文件本身的加载速度。</p>
-        </div>
-      </details>
-    </div>
-  </section>
-
-  <section class="gallery-lightbox" id="galleryLightbox" role="dialog" aria-modal="true" aria-label="图片预览" hidden>
-    <button class="gallery-lightbox-backdrop" type="button" data-gallery-close aria-label="关闭图片预览"></button>
-    <div class="gallery-lightbox-card">
-      <button class="gallery-lightbox-close" type="button" data-gallery-close aria-label="关闭">×</button>
-      <img id="galleryLightboxImage" alt="二次元插画大图">
-      <div class="gallery-lightbox-caption"><span id="galleryLightboxTitle">PIXIV ARTWORK</span> <span>·</span> <a id="galleryPixivLink" href="https://www.pixiv.net/" target="_blank" rel="noopener noreferrer">在 Pixiv 查看 ↗</a></div>
-    </div>
-  </section>
-
   <footer><div class="foot-line"></div>© <span id="year"></span> BzAxu · Made with curiosity.</footer>
 
   <section class="external-dialog" id="externalLinkDialog" role="dialog" aria-modal="true" aria-labelledby="externalDialogTitle" aria-describedby="externalDialogDescription" hidden>
@@ -243,6 +150,5 @@
   
 
   <script type="module" src="./assets/js/script.js"></script>
-  <script type="module" src="./assets/js/gallery.js"></script>
 </body>
 </html>

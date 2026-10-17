@@ -190,9 +190,9 @@ import("https://cdn.jsdelivr.net/npm/@dpawlikowski/liquid-glass@0.3.0/dist/index
         if (previousFocus && typeof previousFocus.focus === "function") previousFocus.focus();
       }
 
-      document.querySelector("[data-qq-contact]").addEventListener("click", (event) => {
+      document.querySelectorAll("[data-qq-contact]").forEach((button) => button.addEventListener("click", (event) => {
         openDialog({ qq: true, trigger: event.currentTarget });
-      });
+      }));
 
       document.addEventListener("click", (event) => {
         const link = event.target.closest("a[href]");

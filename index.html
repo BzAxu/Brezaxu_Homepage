@@ -140,9 +140,27 @@
       <h1>画廊浏览</h1>
       <p>无需登录，随机浏览公开插画。点击图片可放大预览。</p>
       <div class="gallery-toolbar">
-        <span class="gallery-status" id="galleryStatus" role="status" aria-live="polite">准备连接 Pixiv…</span>
-        <button class="button gallery-refresh" id="galleryRefresh" type="button">↻ 刷新</button>
+        <span class="gallery-status" id="galleryStatus" role="status" aria-live="polite">正在检测图片源…</span>
+        <div class="gallery-toolbar-actions">
+          <label class="gallery-source-label" for="gallerySourceSelect">图片源
+            <select class="gallery-source-select" id="gallerySourceSelect">
+              <option value="auto">自动选择 / 故障切换</option>
+              <option value="nekosbest">NEKOS.BEST</option>
+              <option value="icatw">Anime Image Gateway</option>
+              <option value="waifuim">Waifu.im（旧源）</option>
+            </select>
+          </label>
+          <button class="button gallery-refresh" id="galleryRefresh" type="button">↻ 刷新图片</button>
+        </div>
       </div>
+      <section class="gallery-provider-panel" aria-label="图片源状态">
+        <div class="gallery-provider-heading">
+          <div><strong>图片源状态</strong><p id="galleryProviderStatusSummary" role="status" aria-live="polite">等待检测…</p></div>
+          <button class="button gallery-provider-refresh" id="galleryProviderStatusRefresh" type="button">重新检测</button>
+        </div>
+        <div class="gallery-provider-list" id="galleryProviderStatusList"></div>
+        <p class="gallery-provider-note">延迟是本站服务器到图片 API 的响应时间，不代表图片文件本身的加载速度。自动模式会在可用源之间尝试切换。</p>
+      </section>
     </section>
     <section class="gallery-grid" id="galleryGrid" aria-label="二次元图片画廊"></section>
     <div class="gallery-empty" id="galleryEmpty" hidden>

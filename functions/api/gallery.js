@@ -1,13 +1,8 @@
-// Same-origin proxy for the public SFW waifu.pics image API.
+// Same-origin proxy for Waifu.im's public SFW image API.
 export async function onRequestGet() {
   try {
-    const upstream = await fetch("https://api.waifu.pics/many/sfw/waifu", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Accept": "application/json"
-      },
-      body: "{}"
+    const upstream = await fetch("https://api.waifu.im/images?IsNsfw=False&PageSize=10", {
+      headers: { "Accept": "application/json" }
     });
     const data = await upstream.json().catch(() => ({}));
     if (!upstream.ok) {
@@ -15,13 +10,16 @@ export async function onRequestGet() {
         error: "图片服务返回 HTTP " + upstream.status
       }, { status: 502, headers: { "Cache-Control": "no-store" } });
     }
-    if (!Array.isArray(data.files)) {
-      return Response.json({ error: "图片服务返回的数据格式不正确" }, {
+    const files = Array.isArray(data.items)
+      ? data.items.map((item) => item.url).filter((url) => typeof url === "string" && url.startsWith("https://"))
+      : [];
+    if (!files.length) {
+      return Response.json({ error: "图片服务暂时没有返回可用图片" }, {
         status: 502,
         headers: { "Cache-Control": "no-store" }
       });
     }
-    return Response.json({ files: data.files }, {
+    return Response.json({ files }, {
       headers: { "Cache-Control": "public, max-age=60" }
     });
   } catch {

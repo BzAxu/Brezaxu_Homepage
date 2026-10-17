@@ -84,6 +84,7 @@
     currentRoute = route === "gallery" ? "gallery" : "home";
     transition(() => {
       const isGallery = currentRoute === "gallery";
+      document.body.classList.toggle("gallery-view-active", isGallery);
       homePage.hidden = isGallery;
       galleryPage.hidden = !isGallery;
       if (footer) footer.hidden = isGallery;

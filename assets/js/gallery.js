@@ -269,13 +269,12 @@
     const card = document.createElement("button");
     card.type = "button";
     card.className = "gallery-item";
-    card.setAttribute("aria-label", "查看随机插画");
+    card.setAttribute("aria-label", "查看插画");
     const img = document.createElement("img");
     img.loading = "lazy";
     img.decoding = "async";
-    img.alt = "随机插画";
+    img.alt = "插画";
     img.className = "is-loading";
-    img.src = url;
     img.addEventListener("load", () => {
       // Use the decoded file's real dimensions, not a preset thumbnail ratio.
       if (img.naturalWidth > 0 && img.naturalHeight > 0) {
@@ -284,20 +283,16 @@
         img.dataset.naturalRatio = img.naturalWidth + ":" + img.naturalHeight;
       }
       img.classList.remove("is-loading");
+      card.classList.remove("gallery-item--pending");
     }, { once: true });
     img.addEventListener("error", () => {
-      img.classList.remove("is-loading");
-      img.classList.add("is-broken");
-      card.classList.add("gallery-item--broken");
+      // Failed images are removed instead of leaving an empty frame.
+      card.remove();
+      seen.delete(url);
     }, { once: true });
-    const caption = document.createElement("div");
-    caption.className = "gallery-item-caption";
-    const label = document.createElement("strong");
-    label.textContent = "随机插画";
-    const author = document.createElement("span");
-    author.textContent = "来源：" + sourceName;
-    caption.append(label, author);
-    card.append(img, caption);
+    card.classList.add("gallery-item--pending");
+    card.append(img);
+    img.src = url;
     card.dataset.sourceUrl = url;
     card.dataset.title = "随机插画";
     card.addEventListener("click", () => {
@@ -407,14 +402,14 @@
     downloadButton.disabled = true;
     downloadButton.textContent = "正在准备下载…";
     try {
-      const response = await fetch(url, { mode: "cors" });
+      const response = await fetch("/api/gallery?mode=download&url=" + encodeURIComponent(url), { cache: "no-store" });
       if (!response.ok) throw new Error("图片下载失败");
       const blob = await response.blob();
       const objectUrl = URL.createObjectURL(blob);
       const link = document.createElement("a");
       link.href = objectUrl;
       const type = blob.type.toLowerCase();
-      const extension = type.includes("png") ? "png" : type.includes("webp") ? "webp" : type.includes("gif") ? "gif" : "jpg";
+      const extension = type.includes("png") ? "png" : type.includes("webp") ? "webp" : type.includes("gif") ? "gif" : type.includes("avif") ? "avif" : "jpg";
       link.download = "BzAxu-illustration-" + Date.now() + "." + extension;
       document.body.append(link);
       link.click();

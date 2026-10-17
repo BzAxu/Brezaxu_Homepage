@@ -86,7 +86,7 @@ async function requestProvider(provider) {
 
 async function collectProviderImages(provider, count) {
   const results = [];
-  const maxRequests = Math.min(count, 100);
+  const maxRequests = Math.min(count, provider.batchSize ? 100 : 20);
   // Request in small parallel groups to avoid overwhelming public APIs.
   const perCall = provider.batchSize || 1;
   const callsNeeded = Math.ceil(maxRequests / perCall);
@@ -120,20 +120,21 @@ export async function onRequestGet({ request }) {
 
   const activeProviders = PROVIDERS.filter((provider) => !provider.retired);
   const candidates = selected === "auto"
-    ? [...activeProviders].sort(() => Math.random() - 0.5)
+    ? [...activeProviders].sort((a, b) => (b.batchSize || 0) - (a.batchSize || 0))
     : activeProviders.filter((provider) => provider.id === selected);
 
   if (!candidates.length) return json({ error: "未知的图片源" }, 400);
 
   const failures = [];
   for (const provider of candidates) {
+    const started = Date.now();
     const files = await collectProviderImages(provider, count);
     if (files.length) {
       return json({
         files,
-        source: result.provider,
-        sourceName: result.name,
-        latency: null,
+        source: provider.id,
+        sourceName: provider.name,
+        latency: Date.now() - started,
         fallback: selected === "auto" && failures.length > 0,
         failures
       });

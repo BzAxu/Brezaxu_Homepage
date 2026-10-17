@@ -138,17 +138,7 @@
       <button class="gallery-back" type="button" data-gallery-home><span aria-hidden="true">←</span> 返回个人空间</button>
       <div class="gallery-promo-kicker">BzAxu / GALLERY</div>
       <h1>画廊浏览</h1>
-      <p>连接 Pixiv App API，浏览推荐插画或读取你自己的收藏。需要先在 Cloudflare 配置授权令牌。</p>
-      <div class="gallery-mode-switch" role="group" aria-label="画廊内容来源">
-        <button class="gallery-mode is-active" id="galleryRecommended" type="button" data-gallery-mode="recommended" aria-pressed="true">推荐作品</button>
-        <button class="gallery-mode" id="galleryPublicBookmarks" type="button" data-gallery-mode="bookmarks-public" aria-pressed="false">公开收藏</button>
-        <button class="gallery-mode" id="galleryPrivateBookmarks" type="button" data-gallery-mode="bookmarks-private" aria-pressed="false">私人收藏</button>
-      </div>
-      <form class="gallery-private-access" id="galleryPrivateAccess" hidden>
-        <label for="galleryPrivateKey">私人收藏访问密钥</label>
-        <div class="gallery-private-access-row"><input id="galleryPrivateKey" type="password" autocomplete="off" placeholder="输入 Cloudflare 中设置的访问密钥"><button class="button" type="submit">解锁</button></div>
-        <p>密钥仅在当前页面内存中使用，不会写入源码。</p>
-      </form>
+      <p>无需登录，随机浏览公开插画。点击图片可放大预览。</p>
       <div class="gallery-toolbar">
         <span class="gallery-status" id="galleryStatus" role="status" aria-live="polite">准备连接 Pixiv…</span>
         <button class="button gallery-refresh" id="galleryRefresh" type="button">↻ 刷新</button>

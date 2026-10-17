@@ -153,14 +153,20 @@
           <button class="button gallery-refresh" id="galleryRefresh" type="button">↻ 刷新图片</button>
         </div>
       </div>
-      <section class="gallery-provider-panel" aria-label="图片源状态">
-        <div class="gallery-provider-heading">
-          <div><strong>图片源状态</strong><p id="galleryProviderStatusSummary" role="status" aria-live="polite">等待检测…</p></div>
-          <button class="button gallery-provider-refresh" id="galleryProviderStatusRefresh" type="button">重新检测</button>
+      <details class="gallery-provider-panel">
+        <summary class="gallery-provider-summary">
+          <span class="gallery-provider-summary-title"><span class="gallery-provider-summary-dot" aria-hidden="true"></span><span><strong>图片源状态</strong><small id="galleryProviderStatusSummary" role="status" aria-live="polite">等待检测…</small></span></span>
+          <span class="gallery-provider-summary-actions"><span class="gallery-provider-summary-hint">延迟 / 在线状态</span><span class="gallery-provider-chevron" aria-hidden="true">⌄</span></span>
+        </summary>
+        <div class="gallery-provider-details">
+          <div class="gallery-provider-heading">
+            <strong>各图片源检测结果</strong>
+            <button class="button gallery-provider-refresh" id="galleryProviderStatusRefresh" type="button">重新检测</button>
+          </div>
+          <div class="gallery-provider-list" id="galleryProviderStatusList"></div>
+          <p class="gallery-provider-note">延迟是本站服务器到图片 API 的响应时间，不代表图片文件本身的加载速度。</p>
         </div>
-        <div class="gallery-provider-list" id="galleryProviderStatusList"></div>
-        <p class="gallery-provider-note">延迟是本站服务器到图片 API 的响应时间，不代表图片文件本身的加载速度。自动模式会在可用源之间尝试切换。</p>
-      </section>
+      </details>
     </section>
     <section class="gallery-grid" id="galleryGrid" aria-label="二次元图片画廊"></section>
     <div class="gallery-empty" id="galleryEmpty" hidden>

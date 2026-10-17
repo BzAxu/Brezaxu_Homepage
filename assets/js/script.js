@@ -188,7 +188,7 @@ import("https://cdn.jsdelivr.net/npm/@dpawlikowski/liquid-glass@0.3.0/dist/index
           event.preventDefault();
           closeDialog();
         } else if (event.key === "Tab") {
-          const controls = [...dialog.querySelectorAll("button")].filter((el) => !el.disabled);
+          const controls = [...dialog.querySelectorAll("button")].filter((el) => !el.disabled && !el.hidden && el.offsetParent !== null);
           if (!controls.length) return;
           const first = controls[0], last = controls[controls.length - 1];
           if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last.focus(); }

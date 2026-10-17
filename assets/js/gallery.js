@@ -17,6 +17,16 @@
   const sourceLink = document.getElementById("galleryPixivLink");
   if (!homePage || !galleryPage || !grid) return;
 
+  // Add a download action to the image preview without changing the page template.
+  const lightboxCard = lightbox.querySelector(".gallery-lightbox-card");
+  const downloadButton = document.createElement("button");
+  downloadButton.type = "button";
+  downloadButton.className = "button gallery-download";
+  downloadButton.textContent = "↓ 下载图片";
+  downloadButton.style.marginTop = "12px";
+  downloadButton.style.width = "100%";
+  lightboxCard.append(downloadButton);
+
   const seen = new Set();
   let loading = false;
   let currentRoute = "home";
@@ -111,6 +121,9 @@
       lightboxTitle.textContent = card.dataset.title;
       sourceLink.href = url;
       sourceLink.textContent = "查看原图 ↗";
+      downloadButton.dataset.downloadUrl = url;
+      downloadButton.disabled = false;
+      downloadButton.textContent = "↓ 下载图片";
       lightbox.hidden = false;
       document.body.classList.add("gallery-open");
       lightbox.querySelector("[data-gallery-close]").focus();
@@ -154,6 +167,40 @@
     }
   }
 
+  downloadButton.addEventListener("click", async () => {
+    const url = downloadButton.dataset.downloadUrl;
+    if (!url || downloadButton.disabled) return;
+    const originalText = "↓ 下载图片";
+    downloadButton.disabled = true;
+    downloadButton.textContent = "正在准备下载…";
+    try {
+      const response = await fetch(url, { mode: "cors" });
+      if (!response.ok) throw new Error("图片下载失败");
+      const blob = await response.blob();
+      const objectUrl = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = objectUrl;
+      const type = blob.type.toLowerCase();
+      const extension = type.includes("png") ? "png" : type.includes("webp") ? "webp" : type.includes("gif") ? "gif" : "jpg";
+      link.download = "BzAxu-illustration-" + Date.now() + "." + extension;
+      document.body.append(link);
+      link.click();
+      link.remove();
+      window.setTimeout(() => URL.revokeObjectURL(objectUrl), 1000);
+      downloadButton.textContent = "✓ 已开始下载";
+    } catch (error) {
+      console.warn("Image download failed:", error);
+      downloadButton.textContent = "无法直接下载，请点“查看原图”后保存";
+    } finally {
+      window.setTimeout(() => {
+        downloadButton.disabled = false;
+        if (downloadButton.textContent === "✓ 已开始下载" || downloadButton.textContent.startsWith("无法直接下载")) {
+          downloadButton.textContent = originalText;
+        }
+      }, 2200);
+    }
+  });
+
   function closeLightbox() {
     lightbox.hidden = true;
     lightboxImage.removeAttribute("src");
@@ -174,6 +221,9 @@
         lightboxImage.src = next.dataset.sourceUrl;
         lightboxTitle.textContent = next.dataset.title;
         sourceLink.href = next.dataset.sourceUrl;
+        downloadButton.dataset.downloadUrl = next.dataset.sourceUrl;
+        downloadButton.disabled = false;
+        downloadButton.textContent = "↓ 下载图片";
       }
     }
   });

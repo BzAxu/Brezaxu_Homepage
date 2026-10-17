@@ -58,14 +58,14 @@ import("https://cdn.jsdelivr.net/npm/@dpawlikowski/liquid-glass@0.3.0/dist/index
       if (!copied) throw new Error("copy failed");
     }
 
-    document.querySelectorAll("#copyPage").forEach((button) => button.addEventListener("click", async () => {
+    document.getElementById("copyPage").addEventListener("click", async () => {
       try {
         await copyText(window.location.href);
         showToast("主页链接已复制");
       } catch {
         showToast("复制失败，请手动复制浏览器地址");
       }
-    }));
+    });
 
     document.querySelectorAll("[data-copy-text]").forEach((button) => {
       button.addEventListener("click", async () => {
@@ -77,66 +77,6 @@ import("https://cdn.jsdelivr.net/npm/@dpawlikowski/liquid-glass@0.3.0/dist/index
         }
       });
     });
-
-// Secondary information menus use the same modal/prompt visual language.
-(() => {
-  const dialog = document.getElementById("infoDialog");
-  if (!dialog) return;
-  const title = document.getElementById("infoDialogTitle");
-  const eyebrow = document.getElementById("infoDialogEyebrow");
-  const description = document.getElementById("infoDialogDescription");
-  const panels = [...dialog.querySelectorAll("[data-info-panel]")];
-  let previousFocus = null;
-  const copyPageButton = document.getElementById("copyPage");
-
-  const content = {
-    interests: { eyebrow: "INTERESTS / PROJECTS", title: "兴趣与项目", description: "一些持续关注和探索的方向。" },
-    about: { eyebrow: "ABOUT THIS SPACE", title: "关于本站", description: "一个用来收纳兴趣、项目和日常灵感的小空间。" },
-    contact: { eyebrow: "CONTACT / SOCIAL", title: "联系方式", description: "选择平台即可查看跳转确认，再决定是否继续访问。" }
-  };
-
-  function openInfo(key, trigger) {
-    const item = content[key];
-    if (!item) return;
-    previousFocus = trigger;
-    eyebrow.textContent = item.eyebrow;
-    title.textContent = item.title;
-    description.textContent = item.description;
-    panels.forEach(panel => { panel.hidden = panel.dataset.infoPanel !== key; });
-    dialog.hidden = false;
-    document.body.classList.add("info-dialog-open");
-    const firstControl = dialog.querySelector('[data-info-panel="' + key + '"] a, [data-info-panel="' + key + '"] button, [data-info-close]');
-    if (firstControl) firstControl.focus();
-  }
-
-  function closeInfo() {
-    dialog.hidden = true;
-    document.body.classList.remove("info-dialog-open");
-    if (previousFocus && typeof previousFocus.focus === "function") previousFocus.focus();
-  }
-
-  document.addEventListener("click", event => {
-    const trigger = event.target.closest("[data-info-open]");
-    if (trigger) {
-      event.preventDefault();
-      openInfo(trigger.dataset.infoOpen, trigger);
-    }
-  });
-  dialog.querySelectorAll("[data-info-close]").forEach(button => button.addEventListener("click", closeInfo));
-  document.addEventListener("keydown", event => {
-    if (dialog.hidden) return;
-    if (event.key === "Escape") {
-      event.preventDefault();
-      closeInfo();
-    } else if (event.key === "Tab") {
-      const controls = [...dialog.querySelectorAll("button, a[href]")].filter(el => !el.disabled && el.offsetParent !== null);
-      if (!controls.length) return;
-      const first = controls[0], last = controls[controls.length - 1];
-      if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last.focus(); }
-      else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first.focus(); }
-    }
-  });
-})();
 
 // External-link confirmation and QQ contact dialog.
 (() => {
@@ -190,9 +130,9 @@ import("https://cdn.jsdelivr.net/npm/@dpawlikowski/liquid-glass@0.3.0/dist/index
         if (previousFocus && typeof previousFocus.focus === "function") previousFocus.focus();
       }
 
-      document.querySelectorAll("[data-qq-contact]").forEach((button) => button.addEventListener("click", (event) => {
+      document.querySelector("[data-qq-contact]").addEventListener("click", (event) => {
         openDialog({ qq: true, trigger: event.currentTarget });
-      }));
+      });
 
       document.addEventListener("click", (event) => {
         const link = event.target.closest("a[href]");

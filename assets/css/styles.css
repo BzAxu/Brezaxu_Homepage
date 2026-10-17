@@ -1022,3 +1022,20 @@ body.gallery-view-active .top-nav a { padding:7px 9px; font-size:12px; }
   .gallery-custom-select-trigger, .gallery-custom-select-chevron, .gallery-custom-select-option { transition: none; }
   .gallery-custom-select-menu { animation: none; }
 }
+
+
+/* Keep thumbnails completely unobtrusive until the image has loaded. */
+#galleryGrid .gallery-item--pending {
+  opacity: 0 !important;
+  border-color: transparent !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  pointer-events: none !important;
+  transition: opacity .2s ease;
+}
+#galleryGrid .gallery-item--pending > img {
+  visibility: hidden;
+}
+@media (prefers-reduced-motion: reduce) {
+  #galleryGrid .gallery-item--pending { transition: none; }
+}

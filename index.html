@@ -12,6 +12,8 @@
     <link rel="stylesheet" href="./assets/css/styles.css">
 </head>
 <body>
+  <canvas id="ambientParticles" aria-hidden="true"></canvas>
+  
   <header class="topbar">
     <div class="topbar-inner">
       <a class="wordmark" href="#top" aria-label="BzAxu 首页">BzAxu<span>.</span></a>
@@ -59,7 +61,29 @@
 
     <div class="content">
       <section class="panel cover fade-in" aria-label="欢迎">
-        <div class="cover-label">PERSONAL SPACE / 2026</div>
+        <svg class="cover-art" viewBox="0 0 360 260" fill="none" aria-hidden="true">
+          <defs>
+            <radialGradient id="orbShade" cx="0" cy="0" r="1" gradientTransform="matrix(102 94 -93 101 157 93)" gradientUnits="userSpaceOnUse">
+              <stop stop-color="#313653"/><stop offset=".58" stop-color="#171b2b"/><stop offset="1" stop-color="#0a0d16"/>
+            </radialGradient>
+            <linearGradient id="orbRing" x1="38" y1="171" x2="317" y2="82" gradientUnits="userSpaceOnUse">
+              <stop stop-color="#6b6ef4" stop-opacity="0"/><stop offset=".36" stop-color="#8e8bff" stop-opacity=".8"/><stop offset=".7" stop-color="#63d6ee" stop-opacity=".7"/><stop offset="1" stop-color="#63d6ee" stop-opacity="0"/>
+            </linearGradient>
+            <linearGradient id="orbEdge" x1="91" y1="36" x2="239" y2="178" gradientUnits="userSpaceOnUse">
+              <stop stop-color="#a99bff" stop-opacity=".8"/><stop offset="1" stop-color="#61d8e9" stop-opacity=".12"/>
+            </linearGradient>
+          </defs>
+          <circle cx="174" cy="112" r="79" fill="url(#orbShade)" stroke="url(#orbEdge)"/>
+          <path d="M111 61c19-19 48-29 77-25" stroke="#b9b2ff" stroke-opacity=".35" stroke-linecap="round"/>
+          <path d="M105 88c24-29 65-43 101-33M106 106c22-19 47-27 72-26" stroke="#8f9cce" stroke-opacity=".12" stroke-linecap="round"/>
+          <ellipse cx="174" cy="112" rx="143" ry="40" transform="rotate(-19 174 112)" stroke="url(#orbRing)" stroke-width="1.5"/>
+          <ellipse cx="174" cy="112" rx="143" ry="40" transform="rotate(-19 174 112)" stroke="#b4b1ff" stroke-opacity=".11" stroke-width="7"/>
+          <circle cx="44" cy="154" r="3" fill="#8b8aff"/><circle cx="300" cy="69" r="2.5" fill="#75e5ef"/>
+          <circle cx="268" cy="191" r="1.5" fill="#a99bff"/><circle cx="85" cy="37" r="1.5" fill="#d7d4ff"/>
+          <path d="M41 207h76M52 215h42" stroke="#777fa8" stroke-opacity=".22" stroke-linecap="round"/>
+          <path d="M268 32h37M286.5 13.5v37" stroke="#7e8ab6" stroke-opacity=".25" stroke-linecap="round"/>
+        </svg>
+        <div class="cover-label"><span class="cover-label-dot"></span> PERSONAL SPACE <span class="cover-label-year">/ 2026</span></div>
         <h1>把兴趣放在这里，<br>把灵感留给以后。</h1>
         <p>BzAxu 的个人主页。</p>
       </section>
@@ -141,6 +165,71 @@
 
   
 
+  <script>
+  (() => {
+    const canvas = document.getElementById('ambientParticles');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d', { alpha: true });
+    if (!ctx) return;
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    let width = 0, height = 0, particles = [], frame = 0, raf = 0;
+    const random = (min, max) => min + Math.random() * (max - min);
+    function resize() {
+      const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
+      width = window.innerWidth; height = window.innerHeight;
+      canvas.width = Math.round(width * dpr); canvas.height = Math.round(height * dpr);
+      canvas.style.width = width + 'px'; canvas.style.height = height + 'px';
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      const count = Math.min(width < 600 ? 34 : 62, Math.max(22, Math.round(width * height / 19000)));
+      particles = Array.from({ length: count }, () => ({
+        x: random(0, width), y: random(0, height), r: random(.45, 1.45),
+        vx: random(-.11, .11), vy: random(-.13, .08), alpha: random(.18, .58),
+        tint: Math.random() > .72 ? '111, 202, 232' : '165, 155, 255',
+        phase: random(0, Math.PI * 2), twinkle: random(.004, .012)
+      }));
+      draw(0);
+    }
+    function draw(time) {
+      ctx.clearRect(0, 0, width, height);
+      const t = time || 0;
+      for (let i = 0; i < particles.length; i++) {
+        const p = particles[i];
+        if (!reduceMotion && !document.hidden && !document.body.classList.contains('gallery-view-active')) {
+          p.x += p.vx; p.y += p.vy;
+          if (p.x < -3) p.x = width + 3; if (p.x > width + 3) p.x = -3;
+          if (p.y < -3) p.y = height + 3; if (p.y > height + 3) p.y = -3;
+        }
+        const pulse = reduceMotion ? 1 : .76 + Math.sin(t * p.twinkle + p.phase) * .24;
+        ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+        ctx.fillStyle = 'rgba(' + p.tint + ',' + (p.alpha * pulse) + ')'; ctx.fill();
+      }
+      if (!document.body.classList.contains('gallery-view-active')) {
+        for (let i = 0; i < particles.length; i++) {
+          const a = particles[i];
+          for (let j = i + 1; j < particles.length; j++) {
+            const b = particles[j], dx = a.x - b.x, dy = a.y - b.y, d = Math.sqrt(dx * dx + dy * dy);
+            if (d < 82 && (i + j) % 4 === 0) {
+              ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y);
+              ctx.strokeStyle = 'rgba(143, 153, 220,' + ((1 - d / 82) * .075) + ')';
+              ctx.lineWidth = .6; ctx.stroke();
+            }
+          }
+        }
+      }
+      if (!reduceMotion && !document.hidden) raf = requestAnimationFrame(draw);
+    }
+    function start() { if (!reduceMotion && !document.hidden && !raf) raf = requestAnimationFrame(draw); }
+    function stop() { if (raf) cancelAnimationFrame(raf); raf = 0; }
+    document.addEventListener('visibilitychange', () => { if (document.hidden) stop(); else start(); });
+    const observer = new MutationObserver(() => {
+      if (document.body.classList.contains('gallery-view-active')) { canvas.style.opacity = '0'; }
+      else { canvas.style.opacity = '1'; start(); }
+    });
+    observer.observe(document.body, { attributes: true, attributeFilter: ['class'] });
+    window.addEventListener('resize', () => { resize(); stop(); start(); }, { passive: true });
+    resize(); start();
+  })();
+  </script>
   <script type="module" src="./assets/js/script.js"></script>
 </body>
 </html>

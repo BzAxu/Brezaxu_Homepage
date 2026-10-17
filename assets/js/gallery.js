@@ -11,6 +11,10 @@
   const refreshButton = document.getElementById("galleryRefresh");
   const retryButton = document.getElementById("galleryRetry");
   const moreButton = document.getElementById("galleryMore");
+  const sourceSelect = document.getElementById("gallerySourceSelect");
+  const providerStatusList = document.getElementById("galleryProviderStatusList");
+  const providerStatusRefresh = document.getElementById("galleryProviderStatusRefresh");
+  const providerStatusSummary = document.getElementById("galleryProviderStatusSummary");
   const lightbox = document.getElementById("galleryLightbox");
   const lightboxImage = document.getElementById("galleryLightboxImage");
   const lightboxTitle = document.getElementById("galleryLightboxTitle");
@@ -31,6 +35,8 @@
   let loading = false;
   let currentRoute = "home";
   let lightboxTrigger = null;
+  let currentSourceName = "图片源";
+  let checkingProviders = false;
 
   function transition(callback) {
     if (document.startViewTransition) document.startViewTransition(callback);
@@ -53,6 +59,7 @@
       }
     });
     if (currentRoute === "gallery" && !grid.children.length && !loading) loadImages({ reset: true });
+    if (currentRoute === "gallery") checkProviderStatus();
   }
 
   document.addEventListener("click", (event) => {
@@ -86,7 +93,7 @@
     }
   }
 
-  function addImage(url) {
+  function addImage(url, sourceName = "图片源") {
     if (!url || seen.has(url)) return false;
     seen.add(url);
     const card = document.createElement("button");
@@ -110,7 +117,7 @@
     const label = document.createElement("strong");
     label.textContent = "随机插画";
     const author = document.createElement("span");
-    author.textContent = "来源：waifu.pics";
+    author.textContent = "来源：" + sourceName;
     caption.append(label, author);
     card.append(img, caption);
     card.dataset.sourceUrl = url;
@@ -140,7 +147,8 @@
     }
     setLoading(true);
     try {
-      const response = await fetch("/api/gallery", {
+      const source = sourceSelect ? sourceSelect.value : "auto";
+      const response = await fetch("/api/gallery?source=" + encodeURIComponent(source), {
         method: "GET",
         headers: { "Accept": "application/json" },
         cache: "no-store"
@@ -149,10 +157,12 @@
       if (!response.ok) throw new Error(data.error || ("图片服务返回 HTTP " + response.status));
       if (!Array.isArray(data.files)) throw new Error("图片服务返回的数据格式不正确");
       let added = 0;
-      data.files.forEach((url) => { if (addImage(url)) added++; });
+      currentSourceName = data.sourceName || "自动切换";
+      data.files.forEach((url) => { if (addImage(url, currentSourceName)) added++; });
       if (!grid.children.length) throw new Error("暂时没有获取到图片，请稍后重试");
       empty.hidden = true;
-      status.textContent = "公开随机插画 · 已加载 " + grid.children.length + " 张";
+      status.textContent = currentSourceName + " · 已加载 " + grid.children.length + " 张 · API " + (Number.isFinite(data.latency) ? data.latency + " ms" : "响应正常");
+      if (data.fallback && Array.isArray(data.failures)) status.textContent += " · 已自动切换备用源";
       if (!added) status.textContent += " · 本批没有新图，请再刷新";
     } catch (error) {
       console.warn("Gallery request failed:", error);
@@ -162,8 +172,51 @@
         emptyText.textContent = (error instanceof Error ? error.message : "图片服务连接失败") + "。请检查网络后重试。";
       }
       status.textContent = grid.children.length ? "加载失败，可重试" : "图片服务连接失败";
+      if (dataFailures(error).length && providerStatusSummary) providerStatusSummary.textContent = "所选图片源不可用，请查看下方状态或切换到自动模式。";
     } finally {
       setLoading(false);
+    }
+  }
+
+  function dataFailures(error) { return error && Array.isArray(error.failures) ? error.failures : []; }
+
+  async function checkProviderStatus() {
+    if (!providerStatusList || checkingProviders) return;
+    checkingProviders = true;
+    if (providerStatusRefresh) { providerStatusRefresh.disabled = true; providerStatusRefresh.textContent = "检测中…"; }
+    if (providerStatusSummary) providerStatusSummary.textContent = "正在并行检测各图片源的响应速度…";
+    providerStatusList.replaceChildren();
+    try {
+      const response = await fetch("/api/gallery?mode=status", { cache: "no-store", headers: { "Accept": "application/json" } });
+      const data = await response.json().catch(() => ({}));
+      if (!response.ok || !Array.isArray(data.providers)) throw new Error(data.error || "状态接口暂时不可用");
+      let online = 0;
+      data.providers.forEach((provider) => {
+        if (provider.ok) online++;
+        const row = document.createElement("div");
+        row.className = "gallery-provider-row" + (provider.ok ? " is-online" : " is-offline");
+        const main = document.createElement("div");
+        main.className = "gallery-provider-main";
+        const name = document.createElement("strong");
+        name.textContent = provider.name;
+        const detail = document.createElement("span");
+        detail.textContent = provider.ok ? "响应正常" : (provider.error || "不可用");
+        main.append(name, detail);
+        const metric = document.createElement("span");
+        metric.className = "gallery-provider-latency";
+        metric.textContent = Number.isFinite(provider.latency) ? provider.latency + " ms" : "—";
+        const dot = document.createElement("span");
+        dot.className = "gallery-provider-dot";
+        dot.setAttribute("aria-hidden", "true");
+        row.append(dot, main, metric);
+        providerStatusList.append(row);
+      });
+      if (providerStatusSummary) providerStatusSummary.textContent = "在线 " + online + " / " + data.providers.length + " · 检测时间 " + new Date(data.checkedAt || Date.now()).toLocaleTimeString();
+    } catch (error) {
+      if (providerStatusSummary) providerStatusSummary.textContent = "状态检测失败：" + (error instanceof Error ? error.message : "网络错误");
+    } finally {
+      checkingProviders = false;
+      if (providerStatusRefresh) { providerStatusRefresh.disabled = false; providerStatusRefresh.textContent = "重新检测"; }
     }
   }
 
@@ -229,6 +282,8 @@
   });
 
   refreshButton.addEventListener("click", () => loadImages({ reset: true }));
+  if (sourceSelect) sourceSelect.addEventListener("change", () => loadImages({ reset: true }));
+  if (providerStatusRefresh) providerStatusRefresh.addEventListener("click", checkProviderStatus);
   retryButton.addEventListener("click", () => loadImages({ reset: grid.children.length === 0 }));
   moreButton.addEventListener("click", () => loadImages());
 

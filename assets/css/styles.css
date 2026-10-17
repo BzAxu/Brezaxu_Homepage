@@ -366,12 +366,10 @@
     .social-letter { display: block; color: currentColor; font-family: Georgia, "Times New Roman", serif; font-size: 18px; font-weight: 700; font-style: italic; line-height: 1; letter-spacing: -1.2px; transform: translateY(-.3px); user-select: none; }
     .social-letter--qq { font-size: 19px; transform: translate(-1px, -.3px); }
     .social-letter--bili { font-size: 18px; font-family: Georgia, "Times New Roman", serif; font-weight: 800; font-style: italic; transform: translate(-1px, 1px); }
-    .social-action:nth-child(2) svg { width: 17px; height: 17px; fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
-    .social-action:nth-child(2) svg { width: 21px; height: 21px; }
-    .social-action:nth-child(3) svg { width: 17px; height: 17px; fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
-    .social-action:nth-child(3):hover { color: #ff7fa8; border-color: rgba(255,127,168,.55); }
-    .social-action:nth-child(3) svg, .social-action:nth-child(5) svg { fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
-    .social-action:nth-child(4) svg { fill: currentColor; }
+    .social-letter--wechat { font-family: Arial, "Microsoft YaHei", sans-serif; font-size: 14px; font-style: normal; font-weight: 800; letter-spacing: 0; transform: translateY(-.2px); }
+    .social-letter--email { font-family: Arial, sans-serif; font-size: 17px; font-style: normal; font-weight: 700; letter-spacing: 0; }
+    .social-action[data-contact-type="wechat"]:hover { color: #8be6a0; border-color: rgba(139,230,160,.55); }
+    .social-action[data-contact-type="email"]:hover { color: #9cc7ff; border-color: rgba(156,199,255,.55); }
     .social-action:hover, .social-action:focus-visible {
       transform: translateY(-3px); color: #fff; border-color: rgba(169,155,255,.6);
       background: linear-gradient(145deg, rgba(169,155,255,.25), rgba(110,174,255,.1));

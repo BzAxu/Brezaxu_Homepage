@@ -275,3 +275,62 @@ import("https://cdn.jsdelivr.net/npm/@dpawlikowski/liquid-glass@0.3.0/dist/index
     control.addEventListener("animationend", () => control.classList.remove("feedback-confirmed"), { once: true });
   }, true);
 })();
+
+
+// Homepage card entrances: reveal on initial load, scroll-in, and section navigation.
+(() => {
+  const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const cards = [...document.querySelectorAll(".layout .panel, .layout .feature-grid > .feature")]
+    .filter((card) => !card.closest(".external-dialog"));
+  if (!cards.length) return;
+
+  cards.forEach((card, index) => {
+    card.classList.add("homepage-card-reveal");
+    card.style.setProperty("--card-enter-delay", Math.min(index * 65, 390) + "ms");
+  });
+
+  if (reduceMotion || !("IntersectionObserver" in window)) {
+    cards.forEach((card) => card.classList.add("is-card-visible"));
+    return;
+  }
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (!entry.isIntersecting) return;
+      entry.target.classList.add("is-card-visible");
+      observer.unobserve(entry.target);
+    });
+  }, { threshold: 0.12, rootMargin: "0px 0px -3% 0px" });
+
+  cards.forEach((card) => observer.observe(card));
+
+  function replayCard(card) {
+    if (!card) return;
+    card.classList.remove("is-card-visible");
+    // Force a style boundary so the entrance can replay even when the card is already visible.
+    void card.offsetWidth;
+    card.classList.add("is-card-visible");
+  }
+
+  document.querySelectorAll('.top-nav a[href^="#"], .wordmark[href^="#"]').forEach((link) => {
+    link.addEventListener("click", () => {
+      const id = link.getAttribute("href").slice(1);
+      const target = document.getElementById(id);
+      if (!target) return;
+
+      let replayTargets = [];
+      if (id === "projects") {
+        replayTargets = [...document.querySelectorAll(".feature-grid > .feature")];
+      } else if (target.matches(".panel, .feature")) {
+        replayTargets = [target];
+      } else {
+        replayTargets = [...target.querySelectorAll(".panel, .feature")];
+      }
+
+      replayTargets.forEach((card, index) => {
+        card.style.setProperty("--card-enter-delay", Math.min(index * 65, 390) + "ms");
+        replayCard(card);
+      });
+    });
+  });
+})();

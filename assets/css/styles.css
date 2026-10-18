@@ -1176,10 +1176,10 @@ body .topbar {
 }
 
 
-/* Slightly increase vertical spacing between homepage cards. */
+/* Increase vertical spacing between homepage cards a little further. */
 body .content {
-  row-gap: 20px;
+  row-gap: 24px;
 }
 body .layout {
-  row-gap: 18px;
+  row-gap: 22px;
 }

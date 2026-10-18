@@ -20,7 +20,7 @@
         document.documentElement.style.setProperty("--wallpaper-image", 'url("' + selected + '")');
       })();
     </script>
-  <link rel="stylesheet" href="./assets/css/styles.css?v=20261018-R8N2">
+  <link rel="stylesheet" href="./assets/css/styles.css?v=20261018-P4X9">
 </head>
 <body>
   <div id="backgroundLayers" aria-hidden="true">
@@ -307,7 +307,7 @@
     (() => {
       const profileCard = document.querySelector(".panel.profile");
       if (!profileCard) return;
-      const version = "v2026.10.18-R8N2";
+      const version = "v2026.10.18-P4X9";
       let taps = 0;
       let resetTimer = 0;
       let noticeTimer = 0;
@@ -318,7 +318,7 @@
         notice.setAttribute("role", "status");
         notice.setAttribute("aria-live", "polite");
         notice.hidden = true;
-        profileCard.appendChild(notice);
+        document.body.appendChild(notice);
       }
       profileCard.addEventListener("click", (event) => {
         if (event.target.closest("a, button, input, textarea, select, [role='button']")) return;

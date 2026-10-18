@@ -831,11 +831,16 @@ body .contact-strip {
   }
 }
 body :where(.panel, .cover, .post, .feature, .contact-strip, .side-card, .profile-card, .contact-card):active {
-  transform: translate3d(0, -1px, 0) scale(.99) !important;
-  filter: brightness(1.04) !important;
-  border-color: rgba(190,178,255,.32) !important;
-  box-shadow: 0 8px 22px rgba(0,0,0,.18) !important;
-  transition-duration: 140ms !important;
+  transform: translate3d(0, -1px, 0) scale(.965) !important;
+  filter: brightness(1.20) saturate(1.15) !important;
+  border-color: rgba(210,198,255,.9) !important;
+  box-shadow:
+    0 0 0 2px rgba(190,178,255,.40),
+    0 0 0 7px rgba(169,155,255,.13),
+    0 12px 32px rgba(0,0,0,.22),
+    0 0 30px rgba(122,111,255,.25),
+    inset 0 1px 0 rgba(255,255,255,.22) !important;
+  transition-duration: 480ms !important;
 }
 @media (prefers-reduced-motion: reduce) {
   :where(button, a[href], [role="button"], input[type="button"], input[type="submit"]) {

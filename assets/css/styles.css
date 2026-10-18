@@ -972,19 +972,46 @@ body .homepage-card-reveal.card-entered {
 /* Explicit per-pointer card press state: unlike :active, this can keep
    multiple cards pressed independently during simultaneous touch contacts. */
 body :where(.panel, .cover, .post, .feature, .contact-strip, .side-card, .profile-card, .contact-card).card-pointer-pressed {
-  transform: translate3d(0, -1px, 0) scale(.965) !important;
-  filter: brightness(1.20) saturate(1.15) !important;
-  border-color: rgba(210,198,255,.9) !important;
+  transform: translate3d(0, -1px, 0) scale(.965);
+  filter: brightness(1.20) saturate(1.15);
+  border-color: rgba(210,198,255,.9);
   box-shadow:
     0 0 0 2px rgba(190,178,255,.40),
     0 0 0 7px rgba(169,155,255,.13),
     0 12px 32px rgba(0,0,0,.22),
     0 0 30px rgba(122,111,255,.25),
-    inset 0 1px 0 rgba(255,255,255,.22) !important;
-  transition-duration: 640ms !important;
+    inset 0 1px 0 rgba(255,255,255,.22);
+  transition-duration: 640ms;
+}
+
+/* Each quick tap gets a complete press-to-release pulse on its own card. */
+body :where(.panel, .cover, .post, .feature, .contact-strip, .side-card, .profile-card, .contact-card).card-tap-pulse {
+  animation: cardTapPulse 850ms cubic-bezier(.16,.78,.22,1) both;
+}
+@keyframes cardTapPulse {
+  0%, 30% {
+    transform: translate3d(0, -1px, 0) scale(.965);
+    filter: brightness(1.20) saturate(1.15);
+    border-color: rgba(210,198,255,.9);
+    box-shadow:
+      0 0 0 2px rgba(190,178,255,.40),
+      0 0 0 7px rgba(169,155,255,.13),
+      0 12px 32px rgba(0,0,0,.22),
+      0 0 30px rgba(122,111,255,.25),
+      inset 0 1px 0 rgba(255,255,255,.22);
+  }
+  100% {
+    transform: translate3d(0, 0, 0) scale(1);
+    filter: brightness(1) saturate(1);
+    border-color: var(--card-border, rgba(255,255,255,.12));
+    box-shadow: var(--card-shadow, 0 10px 28px rgba(0,0,0,.18));
+  }
 }
 @media (prefers-reduced-motion: reduce) {
   body :where(.panel, .cover, .post, .feature, .contact-strip, .side-card, .profile-card, .contact-card).card-pointer-pressed {
     transition-duration: .01ms !important;
+  }
+  body :where(.panel, .cover, .post, .feature, .contact-strip, .side-card, .profile-card, .contact-card).card-tap-pulse {
+    animation: none !important;
   }
 }

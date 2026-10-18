@@ -1182,7 +1182,7 @@ body:not(.gallery-view-active) .name {
   background: linear-gradient(100deg, #fff0a8 0%, #ffbd8b 20%, #ff83b9 43%, #c2a1ff 66%, #7be4f0 88%, #fff0a8 100%);
   -webkit-background-clip: text; background-clip: text;
   text-shadow: 0 0 22px rgba(191, 130, 255, .12);
-  animation: name-spectrum 9s linear infinite;
+  animation: name-spectrum 4s linear infinite;
 }
 body:not(.gallery-view-active) .wordmark { color: #f4f2ff; }
 body:not(.gallery-view-active) .wordmark span {

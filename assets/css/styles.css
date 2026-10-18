@@ -1132,7 +1132,8 @@ body.gallery-view-active .top-nav a { padding:7px 9px; font-size:12px; }
 .social-action svg { width: 19px; height: 19px; fill: currentColor; }
 .social-action--qq { color: #a9c9ff; }
 .social-action--wechat { color: #8be6a0; }
-.social-action--bili { color: #fff; }
+.social-action--bili { color: #ff8fbd; }
+.social-action--bili:hover, .social-action--bili:focus-visible { color: #ffc2dc; border-color: rgba(255,143,189,.85); background: rgba(255,105,180,.2); box-shadow: 0 0 18px rgba(255,105,180,.14); }
 .social-action--email { color: #a8caff; }
 .social-action--qq:hover, .social-action--qq:focus-visible { border-color: rgba(130,184,255,.7); background: rgba(87,145,255,.13); }
 .social-action--wechat:hover, .social-action--wechat:focus-visible { border-color: rgba(139,230,160,.7); background: rgba(80,200,130,.12); }

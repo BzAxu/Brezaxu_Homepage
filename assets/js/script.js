@@ -295,6 +295,49 @@ import("https://cdn.jsdelivr.net/npm/@dpawlikowski/liquid-glass@0.3.0/dist/index
 })();
 
 
+// Track card presses independently from buttons/links. Each pointer owns one
+// card, so multi-touch and rapid finger changes do not share a global pressed state.
+(() => {
+  const cardSelector = ".panel, .cover, .post, .feature, .contact-strip, .side-card, .profile-card, .contact-card";
+  const pointers = new Map();
+
+  function refresh(card) {
+    if (!card) return;
+    card.classList.toggle("card-pointer-pressed", [...pointers.values()].includes(card));
+  }
+
+  document.addEventListener("pointerdown", (event) => {
+    if (event.pointerType === "mouse" && event.button !== 0) return;
+    const target = event.target;
+    if (!target || typeof target.closest !== "function") return;
+    const card = target.closest(cardSelector);
+    if (!card || card.closest(".external-dialog")) return;
+
+    const previous = pointers.get(event.pointerId);
+    if (previous && previous !== card) {
+      pointers.delete(event.pointerId);
+      refresh(previous);
+    }
+    pointers.set(event.pointerId, card);
+    card.classList.add("card-pointer-pressed");
+  }, { passive: true, capture: true });
+
+  function release(event) {
+    const card = pointers.get(event.pointerId);
+    if (!card) return;
+    pointers.delete(event.pointerId);
+    refresh(card);
+  }
+  function releaseAll() {
+    const cards = new Set(pointers.values());
+    pointers.clear();
+    cards.forEach((card) => card.classList.remove("card-pointer-pressed"));
+  }
+  document.addEventListener("pointerup", release, { passive: true, capture: true });
+  document.addEventListener("pointercancel", release, { passive: true, capture: true });
+  window.addEventListener("blur", releaseAll);
+})();
+
 // Soft glow only when the empty background of a card is tapped; no expanding ring.
 (() => {
   const cardSelector = ".panel, .cover, .post, .feature, .contact-strip, .side-card, .profile-card, .contact-card";

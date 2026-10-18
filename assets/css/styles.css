@@ -1165,3 +1165,12 @@ body::before {
     background-position: center, center, center, center center;
   }
 }
+
+
+/* More transparent top bar so the new wallpaper remains visible behind it. */
+body .topbar {
+  background: rgba(16, 18, 27, .42) !important;
+  -webkit-backdrop-filter: blur(22px) saturate(150%);
+  backdrop-filter: blur(22px) saturate(150%);
+  border-bottom-color: rgba(205, 214, 255, .12);
+}

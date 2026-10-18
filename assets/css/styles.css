@@ -470,13 +470,6 @@
   filter: brightness(1.08);
   background-color: rgba(8, 10, 18, .76);
 }
-@keyframes tactileRipple {
-  0% { opacity: 1; transform: translate(-50%, -50%) scale(0); }
-  18% { opacity: 1; }
-  55% { opacity: .78; }
-  82% { opacity: .38; }
-  100% { opacity: 0; transform: translate(-50%, -50%) scale(18); }
-}
 @keyframes tactileNudge {
   0% { transform: scale(1); }
   38% { transform: scale(.955); }
@@ -825,31 +818,6 @@ body .contact-strip {
   border-color: rgba(218,207,255,.95) !important;
   transition-duration: 280ms !important;
 }
-:where(button, a[href], [role="button"], input[type="button"], input[type="submit"]) .feedback-ripple {
-  z-index: 1;
-  width: 34px;
-  height: 34px;
-  border: 2px solid rgba(255,255,255,.98);
-  border-radius: 50%;
-  background: radial-gradient(circle,
-    rgba(255,255,255,1) 0%,
-    rgba(226,217,255,.92) 24%,
-    rgba(169,145,255,.64) 52%,
-    rgba(124,105,255,.12) 76%,
-    rgba(124,105,255,0) 82%);
-  box-shadow: 0 0 12px 3px rgba(225,215,255,.72), 0 0 34px 8px rgba(145,116,255,.56);
-  animation: tactileRipple 1050ms cubic-bezier(.12,.65,.25,1) forwards;
-}
-:where(button, a[href], [role="button"], input[type="button"], input[type="submit"]) .feedback-ripple::after {
-  content: "";
-  position: absolute;
-  inset: -2px;
-  border: 2px solid rgba(255,255,255,.98);
-  border-radius: 50%;
-  box-shadow: 0 0 14px 3px rgba(201,185,255,.72);
-  opacity: 0;
-  animation: tactileRippleRing 1050ms cubic-bezier(.12,.65,.25,1) forwards;
-}
 @media (hover: hover) and (pointer: fine) {
   :where(button, a[href], [role="button"], input[type="button"], input[type="submit"]):not(:disabled):not([aria-disabled="true"]):hover {
     filter: brightness(1.15) saturate(1.18) !important;
@@ -867,20 +835,14 @@ body .contact-strip {
   }
 }
 body :where(.panel, .cover, .post, .feature, .contact-strip, .side-card, .profile-card, .contact-card):active {
-  transform: translate3d(0, -1px, 0) scale(.965) !important;
-  filter: brightness(1.20) saturate(1.15) !important;
-  border-color: rgba(210,198,255,.9) !important;
-  box-shadow:
-    0 0 0 2px rgba(190,178,255,.40),
-    0 0 0 7px rgba(169,155,255,.13),
-    0 12px 32px rgba(0,0,0,.22),
-    0 0 30px rgba(122,111,255,.25),
-    inset 0 1px 0 rgba(255,255,255,.22) !important;
-  transition-duration: 480ms !important;
+  transform: translate3d(0, -1px, 0) scale(.99) !important;
+  filter: brightness(1.04) !important;
+  border-color: rgba(190,178,255,.32) !important;
+  box-shadow: 0 8px 22px rgba(0,0,0,.18) !important;
+  transition-duration: 140ms !important;
 }
 @media (prefers-reduced-motion: reduce) {
-  :where(button, a[href], [role="button"], input[type="button"], input[type="submit"]),
-  :where(button, a[href], [role="button"], input[type="button"], input[type="submit"]) .feedback-ripple {
+  :where(button, a[href], [role="button"], input[type="button"], input[type="submit"]) {
     animation-duration: .01ms !important;
     transition-duration: .01ms !important;
   }

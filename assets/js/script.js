@@ -320,7 +320,19 @@ import("https://cdn.jsdelivr.net/npm/@dpawlikowski/liquid-glass@0.3.0/dist/index
     }
     pointers.set(event.pointerId, card);
     card.classList.add("card-pointer-pressed");
+
+    // Give every tap its own complete press/release pulse, even if the
+    // finger is lifted quickly. Restart only this card's pulse.
+    card.classList.remove("card-tap-pulse");
+    void card.offsetWidth;
+    card.classList.add("card-tap-pulse");
   }, { passive: true, capture: true });
+
+  document.addEventListener("animationend", (event) => {
+    if (event.animationName === "cardTapPulse") {
+      event.target.classList.remove("card-tap-pulse");
+    }
+  }, true);
 
   function release(event) {
     const card = pointers.get(event.pointerId);

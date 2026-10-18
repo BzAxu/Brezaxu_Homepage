@@ -251,5 +251,25 @@
   })();
   </script>
   <script type="module" src="./assets/js/script.js"></script>
+
+  <script type="module">
+    import { injectLiquidGlassFilter } from "https://cdn.jsdelivr.net/npm/@dpawlikowski/liquid-glass@0.3.0/dist/index.js";
+
+    try {
+      injectLiquidGlassFilter({ scale: 12, animate: false });
+      const panels = document.querySelectorAll("body:not(.gallery-view-active) .panel");
+      panels.forEach((panel) => {
+        panel.classList.add("liquid-glass");
+        if (panel.matches(".profile, .cover")) {
+          const refraction = document.createElement("span");
+          refraction.className = "liquid-glass__refraction";
+          refraction.setAttribute("aria-hidden", "true");
+          panel.prepend(refraction);
+        }
+      });
+    } catch (error) {
+      console.warn("Liquid glass effect unavailable; translucent CSS fallback remains active.", error);
+    }
+  </script>
 </body>
 </html>

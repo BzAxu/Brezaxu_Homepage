@@ -300,7 +300,7 @@ import("https://cdn.jsdelivr.net/npm/@dpawlikowski/liquid-glass@0.3.0/dist/index
 // before the full 640ms press phase has been shown on that card.
 (() => {
   const cardSelector = ".panel, .cover, .post, .feature, .contact-strip, .side-card, .profile-card, .contact-card";
-  const pressPhaseMs = 640;
+  const pressPhaseMs = window.matchMedia("(prefers-reduced-motion: reduce)").matches ? 1 : 640;
   const activePointers = new Map();
   // Released pointers remain here until their card has shown the full press phase.
   const presses = new Set();

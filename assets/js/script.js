@@ -235,11 +235,13 @@ import("https://cdn.jsdelivr.net/npm/@dpawlikowski/liquid-glass@0.3.0/dist/index
   document.addEventListener("pointerdown", (event) => {
     const control = event.target.closest(selector);
     if (!control) return;
+    // Clicking the external-dialog backdrop only closes the dialog; it must not
+    // trigger the global press glow/ripple over the entire viewport.
+    if (control.matches(".external-dialog__backdrop")) return;
+    if (event.pointerType === "mouse" && event.button !== 0) return;
+
     activePointerTarget = control;
     control.classList.add("feedback-pressed");
-
-    if (event.pointerType === "mouse" && event.button !== 0) return;
-    if (control.matches(".external-dialog__backdrop")) return;
 
     const rect = control.getBoundingClientRect();
     const ripple = document.createElement("span");

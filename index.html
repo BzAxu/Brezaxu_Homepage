@@ -303,6 +303,39 @@
   </script>
   <script type="module" src="./assets/js/script.js"></script>
   <script type="module" src="./assets/js/guestbook.js"></script>
+  <script>
+    (() => {
+      const profileCard = document.querySelector(".panel.profile");
+      if (!profileCard) return;
+      const version = "v2026.10.18-K7M4";
+      let taps = 0;
+      let resetTimer = 0;
+      let noticeTimer = 0;
+      let notice = document.getElementById("buildVersionNotice");
+      if (!notice) {
+        notice = document.createElement("div");
+        notice.id = "buildVersionNotice";
+        notice.setAttribute("role", "status");
+        notice.setAttribute("aria-live", "polite");
+        notice.hidden = true;
+        profileCard.appendChild(notice);
+      }
+      profileCard.addEventListener("click", (event) => {
+        if (event.target.closest("a, button, input, textarea, select, [role='button']")) return;
+        taps += 1;
+        window.clearTimeout(resetTimer);
+        resetTimer = window.setTimeout(() => { taps = 0; }, 1800);
+        if (taps >= 5) {
+          taps = 0;
+          window.clearTimeout(noticeTimer);
+          notice.textContent = "页面版本：" + version;
+          notice.hidden = false;
+          noticeTimer = window.setTimeout(() => { notice.hidden = true; }, 5000);
+        }
+      });
+    })();
+  </script>
+
 
   <script type="module">
     import { injectLiquidGlassFilter } from "https://cdn.jsdelivr.net/npm/@dpawlikowski/liquid-glass@0.3.0/dist/index.js";

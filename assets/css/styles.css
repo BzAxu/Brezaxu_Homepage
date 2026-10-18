@@ -989,7 +989,7 @@ body :where(.panel, .cover, .post, .feature, .contact-strip, .side-card, .profil
   animation: cardTapPulse 850ms cubic-bezier(.16,.78,.22,1) both;
 }
 @keyframes cardTapPulse {
-  0%, 30% {
+  0%, 75% {
     transform: translate3d(0, -1px, 0) scale(.965);
     filter: brightness(1.20) saturate(1.15);
     border-color: rgba(210,198,255,.9);

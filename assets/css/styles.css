@@ -947,3 +947,23 @@ body :where(.panel, .cover, .post, .feature, .contact-strip, .side-card, .profil
   }
   .card-background-glow { animation: none !important; }
 }
+
+
+/* Once the entrance animation finishes, release its filled transform so
+   hover, press, and interruptible transitions can control the card normally. */
+body .homepage-card-reveal.card-entered {
+  opacity: 1;
+  transform: none;
+  filter: none;
+  animation: none;
+  will-change: auto;
+}
+@media (prefers-reduced-motion: reduce) {
+  body .homepage-card-reveal.card-entered {
+    opacity: 1;
+    transform: none;
+    filter: none;
+    animation: none !important;
+    will-change: auto;
+  }
+}

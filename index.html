@@ -31,6 +31,7 @@
       <div class="top-note">个人主页</div>
       <nav class="top-nav" aria-label="页面导航">
         <a href="#projects">兴趣</a>
+        <a href="#guestbook">留言板</a>
         <a href="#contact">联系</a>
       </nav>
     </div>
@@ -65,6 +66,7 @@
         <nav class="side-links" aria-label="空间导航">
           <a href="#projects">↳ 兴趣与项目</a>
           <a href="#about">↳ 关于本站</a>
+          <a href="#guestbook">↳ 留言板</a>
           <a href="#contact">↳ 留个联系方式</a>
         </nav>
       </section>
@@ -96,6 +98,39 @@
           <p>发现有趣的新事物。</p>
         </article>
       </div>
+
+
+      <section class="panel guestbook" id="guestbook" aria-labelledby="guestbookTitle">
+        <div class="guestbook-heading">
+          <div>
+            <div class="guestbook-eyebrow">LEAVE A NOTE</div>
+            <h2 id="guestbookTitle">留言板</h2>
+            <p>留下你的想法，简单聊两句就好。</p>
+          </div>
+          <span class="guestbook-count" id="guestbookCount">正在加载…</span>
+        </div>
+        <form class="guestbook-form" id="guestbookForm">
+          <div class="guestbook-field">
+            <label for="guestbookName">怎么称呼你</label>
+            <input id="guestbookName" name="name" type="text" maxlength="24" autocomplete="nickname" placeholder="输入名字或昵称" required>
+          </div>
+          <div class="guestbook-field">
+            <label for="guestbookMessage">想说的话</label>
+            <textarea id="guestbookMessage" name="message" maxlength="500" rows="4" placeholder="写下留言…（最多 500 字）" required></textarea>
+          </div>
+          <div class="guestbook-form-bottom">
+            <span class="guestbook-hint">免登录 · 请友善交流</span>
+            <button class="button guestbook-submit" id="guestbookSubmit" type="submit"><span>发送留言</span><span aria-hidden="true">↗</span></button>
+          </div>
+          <label class="guestbook-honeypot" aria-hidden="true">不要填写此项<input name="website" type="text" tabindex="-1" autocomplete="off"></label>
+          <p class="guestbook-status" id="guestbookStatus" role="status" aria-live="polite"></p>
+        </form>
+        <div class="guestbook-list-heading"><h3>最近的留言</h3><span>NEWEST FIRST</span></div>
+        <div class="guestbook-list" id="guestbookList" aria-live="polite">
+          <div class="guestbook-empty">正在读取留言…</div>
+        </div>
+        <button class="guestbook-more" id="guestbookMore" type="button" hidden>加载更早的留言</button>
+      </section>
 
       <section class="panel contact-strip" id="contact">
         <div><h2>联系我</h2><p>选择常用平台。</p></div>
@@ -256,6 +291,7 @@
   })();
   </script>
   <script type="module" src="./assets/js/script.js"></script>
+  <script type="module" src="./assets/js/guestbook.js"></script>
 
   <script type="module">
     import { injectLiquidGlassFilter } from "https://cdn.jsdelivr.net/npm/@dpawlikowski/liquid-glass@0.3.0/dist/index.js";

@@ -318,6 +318,12 @@ import("https://cdn.jsdelivr.net/npm/@dpawlikowski/liquid-glass@0.3.0/dist/index
   cards.forEach((card, index) => {
     card.classList.add("homepage-card-reveal");
     card.style.setProperty("--card-enter-delay", Math.min(index * 65, 390) + "ms");
+    card.addEventListener("animationend", (event) => {
+      if (event.target !== card || event.animationName !== "homepageCardEnter") return;
+      // Drop the finished animation so hover/press transitions can own transform again.
+      card.classList.remove("is-card-visible");
+      card.classList.add("card-entered");
+    });
   });
 
   if (reduceMotion || !("IntersectionObserver" in window)) {
@@ -337,7 +343,7 @@ import("https://cdn.jsdelivr.net/npm/@dpawlikowski/liquid-glass@0.3.0/dist/index
 
   function replayCard(card) {
     if (!card) return;
-    card.classList.remove("is-card-visible");
+    card.classList.remove("card-entered", "is-card-visible");
     // Force a style boundary so the entrance can replay even when the card is already visible.
     void card.offsetWidth;
     card.classList.add("is-card-visible");

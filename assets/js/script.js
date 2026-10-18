@@ -350,7 +350,18 @@ import("https://cdn.jsdelivr.net/npm/@dpawlikowski/liquid-glass@0.3.0/dist/index
     activePointers.set(event.pointerId, press);
     presses.add(press);
     card.classList.add("card-pointer-pressed");
+
+    // Every tap restarts a complete press/release pulse on this card only.
+    card.classList.remove("card-tap-pulse");
+    void card.offsetWidth;
+    card.classList.add("card-tap-pulse");
   }, { passive: true, capture: true });
+
+  document.addEventListener("animationend", (event) => {
+    if (event.animationName === "cardTapPulse") {
+      event.target.classList.remove("card-tap-pulse");
+    }
+  }, true);
 
   document.addEventListener("pointerup", (event) => finishPointer(event.pointerId), {
     passive: true,

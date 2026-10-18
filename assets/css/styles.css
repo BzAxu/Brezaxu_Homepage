@@ -490,14 +490,16 @@
 }
 @keyframes tactileRipple {
   0% { opacity: 1; transform: translate(-50%, -50%) scale(0); }
-  24% { opacity: .9; }
-  68% { opacity: .34; }
-  100% { opacity: 0; transform: translate(-50%, -50%) scale(15); }
+  18% { opacity: 1; }
+  55% { opacity: .78; }
+  82% { opacity: .38; }
+  100% { opacity: 0; transform: translate(-50%, -50%) scale(18); }
 }
 @keyframes tactileRippleRing {
-  0% { opacity: .9; transform: scale(.15); }
-  36% { opacity: .72; }
-  100% { opacity: 0; transform: scale(15); }
+  0% { opacity: 1; transform: scale(.12); }
+  42% { opacity: .92; }
+  72% { opacity: .58; }
+  100% { opacity: 0; transform: scale(18); }
 }
 @keyframes tactileNudge {
   0% { transform: scale(1); }
@@ -586,14 +588,14 @@
 }
 
 
-/* Card motion: gentle lift on hover, tactile press feedback on activation. */
+/* Card motion: deliberately slower, smoother lift and press response. */
 :where(.panel, .cover, .post, .feature, .contact-strip, .side-card, .profile-card, .contact-card) {
   transform: translate3d(0, 0, 0);
   transition:
-    transform 260ms cubic-bezier(.2,.75,.25,1),
-    box-shadow 280ms ease,
-    border-color 240ms ease,
-    filter 240ms ease;
+    transform 480ms cubic-bezier(.18,.72,.22,1),
+    box-shadow 480ms cubic-bezier(.18,.72,.22,1),
+    border-color 420ms ease,
+    filter 420ms ease;
   will-change: transform;
 }
 @media (hover: hover) and (pointer: fine) {
@@ -632,7 +634,7 @@
   overflow: hidden;
   color: inherit;
   text-decoration: none;
-  transition: transform 280ms cubic-bezier(.2,.75,.25,1), border-color 240ms ease, box-shadow 280ms ease, filter 240ms ease;
+  transition: transform 480ms cubic-bezier(.18,.72,.22,1), border-color 420ms ease, box-shadow 480ms cubic-bezier(.18,.72,.22,1), filter 420ms ease;
 }
 .gallery-promo-art {
   position: relative;
@@ -1360,26 +1362,28 @@ body:not(.gallery-view-active) .contact-strip {
 }
 :where(button, a[href], [role="button"], input[type="button"], input[type="submit"]) .feedback-ripple {
   z-index: 1;
-  width: 24px;
-  height: 24px;
-  border: 1px solid rgba(239,235,255,.76);
+  width: 34px;
+  height: 34px;
+  border: 2px solid rgba(255,255,255,.98);
   border-radius: 50%;
   background: radial-gradient(circle,
-    rgba(255,255,255,.96) 0%,
-    rgba(213,203,255,.68) 22%,
-    rgba(169,155,255,.34) 48%,
-    rgba(169,155,255,0) 74%);
-  box-shadow: 0 0 16px rgba(190,174,255,.38);
-  animation: tactileRipple 1250ms cubic-bezier(.12,.65,.25,1) forwards;
+    rgba(255,255,255,1) 0%,
+    rgba(226,217,255,.92) 24%,
+    rgba(169,145,255,.64) 52%,
+    rgba(124,105,255,.12) 76%,
+    rgba(124,105,255,0) 82%);
+  box-shadow: 0 0 12px 3px rgba(225,215,255,.72), 0 0 34px 8px rgba(145,116,255,.56);
+  animation: tactileRipple 1050ms cubic-bezier(.12,.65,.25,1) forwards;
 }
 :where(button, a[href], [role="button"], input[type="button"], input[type="submit"]) .feedback-ripple::after {
   content: "";
   position: absolute;
   inset: -2px;
-  border: 1.5px solid rgba(231,224,255,.86);
+  border: 2px solid rgba(255,255,255,.98);
   border-radius: 50%;
+  box-shadow: 0 0 14px 3px rgba(201,185,255,.72);
   opacity: 0;
-  animation: tactileRippleRing 1250ms cubic-bezier(.12,.65,.25,1) forwards;
+  animation: tactileRippleRing 1050ms cubic-bezier(.12,.65,.25,1) forwards;
 }
 @media (hover: hover) and (pointer: fine) {
   :where(button, a[href], [role="button"], input[type="button"], input[type="submit"]):not(:disabled):not([aria-disabled="true"]):hover {

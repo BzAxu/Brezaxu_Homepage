@@ -199,16 +199,11 @@
         ctx.beginPath(); ctx.moveTo(0, -p.size * .42); ctx.quadraticCurveTo(p.size * .12, p.size * .12, 0, p.size * .62); ctx.stroke();
         ctx.restore();
       }
-      if (!reduceMotion && !document.hidden && !document.body.classList.contains('gallery-view-active')) raf = requestAnimationFrame(paint);
+      if (!reduceMotion && !document.hidden) raf = requestAnimationFrame(paint);
     }
-    function start() { if (!reduceMotion && !document.hidden && !document.body.classList.contains('gallery-view-active') && !raf) raf = requestAnimationFrame(paint); }
+    function start() { if (!reduceMotion && !document.hidden && !raf) raf = requestAnimationFrame(paint); }
     function stop() { if (raf) cancelAnimationFrame(raf); raf = 0; }
     document.addEventListener('visibilitychange', () => { if (document.hidden) stop(); else start(); });
-    const observer = new MutationObserver(() => {
-      if (document.body.classList.contains('gallery-view-active')) { canvas.style.opacity = '0'; stop(); }
-      else { canvas.style.opacity = '1'; start(); }
-    });
-    observer.observe(document.body, { attributes: true, attributeFilter: ['class'] });
     window.addEventListener('resize', () => { stop(); resize(); start(); }, { passive: true });
     resize(); start();
   })();
@@ -220,7 +215,7 @@
 
     try {
       injectLiquidGlassFilter({ scale: 12, animate: false });
-      const panels = document.querySelectorAll("body:not(.gallery-view-active) .panel");
+      const panels = document.querySelectorAll("body .panel");
       panels.forEach((panel) => {
         panel.classList.add("liquid-glass");
         if (panel.matches(".profile, .cover")) {

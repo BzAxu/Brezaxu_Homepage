@@ -808,15 +808,11 @@ body .contact-strip {
 }
 :where(button, a[href], [role="button"], input[type="button"], input[type="submit"]):active,
 :where(button, a[href], [role="button"], input[type="button"], input[type="submit"]).feedback-pressed {
-  transform: scale(.90) !important;
-  filter: brightness(1.38) saturate(1.35) !important;
-  box-shadow:
-    0 0 0 2px rgba(204,190,255,.72),
-    0 0 0 7px rgba(169,155,255,.20),
-    0 0 30px rgba(145,116,255,.48),
-    inset 0 0 18px rgba(220,210,255,.20) !important;
-  border-color: rgba(218,207,255,.95) !important;
-  transition-duration: 280ms !important;
+  transform: scale(.98) !important;
+  filter: brightness(1.05) !important;
+  box-shadow: 0 0 0 1px rgba(190,178,255,.12) !important;
+  border-color: rgba(190,178,255,.28) !important;
+  transition-duration: 120ms !important;
 }
 @media (hover: hover) and (pointer: fine) {
   :where(button, a[href], [role="button"], input[type="button"], input[type="submit"]):not(:disabled):not([aria-disabled="true"]):hover {

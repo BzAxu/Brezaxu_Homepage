@@ -1319,24 +1319,38 @@ body .topbar {
 body .layout, body footer { position: relative; z-index: 2; }
 
 
-/* Hidden build-version check: appears after five quick taps on the profile card. */
+/* Build-version check as a fixed toast: it never changes card layout. */
 #buildVersionNotice {
-  margin-top: 14px;
-  padding: 10px 13px;
-  border: 1px solid rgba(169, 155, 255, .32);
-  border-radius: 12px;
-  color: #e6e1ff;
-  background: rgba(104, 84, 194, .16);
-  font: 600 12px/1.5 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  position: fixed;
+  z-index: 1000;
+  left: 50%;
+  bottom: calc(22px + env(safe-area-inset-bottom, 0px));
+  width: max-content;
+  max-width: min( calc(100vw - 32px), 420px );
+  box-sizing: border-box;
+  padding: 11px 16px;
+  border: 1px solid rgba(169, 155, 255, .38);
+  border-radius: 14px;
+  color: #eeeaff;
+  background: rgba(22, 19, 40, .88);
+  -webkit-backdrop-filter: blur(18px) saturate(145%);
+  backdrop-filter: blur(18px) saturate(145%);
+  box-shadow: 0 12px 36px rgba(0,0,0,.34), 0 0 0 1px rgba(169,155,255,.08), 0 0 28px rgba(122,111,255,.18);
+  font: 650 12px/1.5 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
   text-align: center;
   overflow-wrap: anywhere;
-  animation: versionNoticeIn .22s ease-out;
+  pointer-events: none;
+  opacity: 0;
+  transform: translate(-50%, 8px);
 }
 #buildVersionNotice[hidden] { display: none !important; }
-@keyframes versionNoticeIn {
-  from { opacity: 0; transform: translateY(4px); }
-  to { opacity: 1; transform: translateY(0); }
+#buildVersionNotice:not([hidden]) {
+  animation: versionToastIn .24s cubic-bezier(.2,.72,.22,1) both;
+}
+@keyframes versionToastIn {
+  from { opacity: 0; transform: translate(-50%, 8px) scale(.98); }
+  to { opacity: 1; transform: translate(-50%, 0) scale(1); }
 }
 @media (prefers-reduced-motion: reduce) {
-  #buildVersionNotice { animation: none; }
+  #buildVersionNotice:not([hidden]) { animation: none; opacity: 1; transform: translate(-50%, 0); }
 }

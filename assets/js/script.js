@@ -231,40 +231,62 @@ import("https://cdn.jsdelivr.net/npm/@dpawlikowski/liquid-glass@0.3.0/dist/index
 // browser exposes pointer events. Delegation also covers dynamically added UI.
 (() => {
   const selector = "button, a[href], [role='button'], input[type='button'], input[type='submit']";
-  let activePointerTarget = null;
+  // Track each active pointer independently so multi-touch cannot strand a
+  // control in its pressed state or release another finger's feedback early.
+  const activePointers = new Map();
+
+  const refreshPressedState = (control) => {
+    if (!control) return;
+    const stillPressed = [...activePointers.values()].includes(control);
+    control.classList.toggle("feedback-pressed", stillPressed);
+  };
 
   document.addEventListener("pointerdown", (event) => {
-    const control = event.target.closest(selector);
+    const target = event.target;
+    if (!target || typeof target.closest !== "function") return;
+    const control = target.closest(selector);
     if (!control) return;
     // Clicking the external-dialog backdrop only closes the dialog; it must not
     // trigger the global press glow/ripple over the entire viewport.
     if (control.matches(".external-dialog__backdrop")) return;
     if (event.pointerType === "mouse" && event.button !== 0) return;
 
-    activePointerTarget = control;
+    const previous = activePointers.get(event.pointerId);
+    if (previous && previous !== control) refreshPressedState(previous);
+    activePointers.set(event.pointerId, control);
     control.classList.add("feedback-pressed");
-
   }, { passive: true, capture: true });
 
-  const release = () => {
-    if (activePointerTarget) {
-      activePointerTarget.classList.remove("feedback-pressed");
-      activePointerTarget = null;
-    }
+  const release = (event) => {
+    const control = activePointers.get(event.pointerId);
+    if (!control) return;
+    activePointers.delete(event.pointerId);
+    refreshPressedState(control);
+  };
+  const releaseAll = () => {
+    const controls = new Set(activePointers.values());
+    activePointers.clear();
+    controls.forEach((control) => control.classList.remove("feedback-pressed"));
   };
   document.addEventListener("pointerup", release, { passive: true, capture: true });
   document.addEventListener("pointercancel", release, { passive: true, capture: true });
-  window.addEventListener("blur", release);
+  window.addEventListener("blur", releaseAll);
 
   // Keyboard activation gets an equivalent short pulse.
   document.addEventListener("keydown", (event) => {
     if (event.repeat || (event.key !== "Enter" && event.key !== " ")) return;
-    const control = event.target.closest(selector);
+    const target = event.target;
+    if (!target || typeof target.closest !== "function") return;
+    const control = target.closest(selector);
     if (!control) return;
     control.classList.remove("feedback-confirmed");
     void control.offsetWidth;
     control.classList.add("feedback-confirmed");
-    control.addEventListener("animationend", () => control.classList.remove("feedback-confirmed"), { once: true });
+    control.addEventListener("animationend", (animationEvent) => {
+      if (animationEvent.animationName === "tactileNudge") {
+        control.classList.remove("feedback-confirmed");
+      }
+    });
   }, true);
 })();
 

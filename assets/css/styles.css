@@ -460,6 +460,51 @@
   filter: brightness(1.22) saturate(1.12);
   box-shadow: 0 0 0 1px rgba(190,178,255,.18), 0 0 24px rgba(140,126,255,.16);
 }
+/* Purple click-position ripple, restored without the old bright white flash. */
+:where(button, a[href], [role="button"], input[type="button"], input[type="submit"]) {
+  position: relative;
+  isolation: isolate;
+}
+:where(button, a[href], [role="button"], input[type="button"], input[type="submit"]) > :not(.feedback-ripple) {
+  position: relative;
+}
+:where(button, a[href], [role="button"], input[type="button"], input[type="submit"]) .feedback-ripple {
+  position: absolute;
+  z-index: 0;
+  pointer-events: none;
+  width: 20px;
+  height: 20px;
+  border: 1px solid rgba(169,155,255,.42);
+  border-radius: 50%;
+  background: radial-gradient(circle,
+    rgba(169,155,255,.34) 0%,
+    rgba(145,126,255,.30) 35%,
+    rgba(122,111,255,.12) 58%,
+    rgba(122,111,255,0) 76%);
+  box-shadow: 0 0 14px rgba(145,116,255,.22);
+  transform: translate(-50%, -50%) scale(0);
+  animation: purpleClickRipple 780ms cubic-bezier(.12,.65,.25,1) forwards;
+}
+:where(button, a[href], [role="button"], input[type="button"], input[type="submit"]) .feedback-ripple::after {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  border: 1px solid rgba(169,155,255,.50);
+  border-radius: 50%;
+  animation: purpleClickRippleRing 780ms cubic-bezier(.12,.65,.25,1) forwards;
+}
+@keyframes purpleClickRipple {
+  0% { opacity: .95; transform: translate(-50%, -50%) scale(0); }
+  28% { opacity: .82; }
+  100% { opacity: 0; transform: translate(-50%, -50%) scale(12); }
+}
+@keyframes purpleClickRippleRing {
+  0% { opacity: .65; transform: scale(.2); }
+  100% { opacity: 0; transform: scale(12); }
+}
+@media (prefers-reduced-motion: reduce) {
+  :where(button, a[href], [role="button"], input[type="button"], input[type="submit"]) .feedback-ripple { animation: none; opacity: 0; }
+}
 :where(button, a[href], [role="button"], input[type="button"], input[type="submit"]):focus-visible {
   outline: 2px solid rgba(181,169,255,.92);
   outline-offset: 4px;

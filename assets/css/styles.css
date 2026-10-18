@@ -1167,6 +1167,7 @@ body:not(.gallery-view-active)::before {
 }
 body.gallery-view-active #ambientParticles { opacity: 0; }
 body:not(.gallery-view-active) .panel {
+  border-radius: 24px;
   background: linear-gradient(145deg, rgba(20, 23, 35, .94), rgba(13, 16, 25, .94));
   border: 1px solid rgba(164, 174, 220, .105);
   border-top-color: rgba(199, 205, 255, .16);
@@ -1246,15 +1247,15 @@ body:not(.gallery-view-active) .social-action { border-radius: 11px !important; 
 body:not(.gallery-view-active) .panel.liquid-glass {
   --lg-blur: 16px;
   --lg-saturate: 175%;
-  --lg-opacity: .10;
-  --lg-radius: 17px;
+  --lg-opacity: .08;
+  --lg-radius: 24px;
   --lg-border-opacity: .28;
   --lg-tint: 128 145 195;
   --lg-edge-red: rgb(169 137 255 / .34);
   --lg-edge-cyan: rgb(89 221 242 / .32);
   --lg-shadow: 0 18px 46px rgb(0 0 0 / .22);
   --lg-scene-background: url("../images/background.svg");
-  background: linear-gradient(145deg, rgb(30 35 56 / .32), rgb(12 16 28 / .22) 58%, rgb(38 39 70 / .20)) !important;
+  background: linear-gradient(145deg, rgb(30 35 56 / .26), rgb(12 16 28 / .17) 58%, rgb(38 39 70 / .16)) !important;
   border: 1px solid rgb(205 214 255 / .20);
   border-top-color: rgb(235 239 255 / .34);
   box-shadow: 0 18px 46px rgb(0 0 0 / .20), inset 0 1px 0 rgb(255 255 255 / .12);
@@ -1262,19 +1263,19 @@ body:not(.gallery-view-active) .panel.liquid-glass {
   backdrop-filter: blur(16px) saturate(175%);
 }
 body:not(.gallery-view-active) .profile.liquid-glass {
-  background: linear-gradient(145deg, rgb(29 34 54 / .42), rgb(12 16 28 / .30)) !important;
+  background: linear-gradient(145deg, rgb(29 34 54 / .35), rgb(12 16 28 / .24)) !important;
 }
 body:not(.gallery-view-active) .cover.liquid-glass {
   background:
-    linear-gradient(90deg, rgb(13 16 26 / .52) 0%, rgb(13 16 26 / .38) 48%, rgb(13 16 26 / .10) 100%),
+    linear-gradient(90deg, rgb(13 16 26 / .44) 0%, rgb(13 16 26 / .30) 48%, rgb(13 16 26 / .07) 100%),
     radial-gradient(ellipse at 85% 45%, rgb(110 103 195 / .13), transparent 58%) !important;
 }
 body:not(.gallery-view-active) .feature.liquid-glass {
-  background: linear-gradient(145deg, rgb(28 32 50 / .30), rgb(13 17 29 / .22)) !important;
+  background: linear-gradient(145deg, rgb(28 32 50 / .24), rgb(13 17 29 / .16)) !important;
 }
 body:not(.gallery-view-active) .post.liquid-glass,
 body:not(.gallery-view-active) .contact-strip.liquid-glass {
-  background: linear-gradient(145deg, rgb(28 32 50 / .32), rgb(13 17 29 / .24)) !important;
+  background: linear-gradient(145deg, rgb(28 32 50 / .26), rgb(13 17 29 / .18)) !important;
 }
 body:not(.gallery-view-active) .panel.liquid-glass .liquid-glass__refraction {
   opacity: .46;
@@ -1306,19 +1307,19 @@ body:not(.gallery-view-active) .panel {
   backdrop-filter: blur(16px) saturate(170%);
 }
 body:not(.gallery-view-active) .profile {
-  background: linear-gradient(145deg, rgb(29 34 54 / .42), rgb(12 16 28 / .30)) !important;
+  background: linear-gradient(145deg, rgb(29 34 54 / .35), rgb(12 16 28 / .24)) !important;
 }
 body:not(.gallery-view-active) .cover {
   background:
-    linear-gradient(90deg, rgb(13 16 26 / .52) 0%, rgb(13 16 26 / .38) 48%, rgb(13 16 26 / .10) 100%),
+    linear-gradient(90deg, rgb(13 16 26 / .44) 0%, rgb(13 16 26 / .30) 48%, rgb(13 16 26 / .07) 100%),
     radial-gradient(ellipse at 85% 45%, rgb(110 103 195 / .13), transparent 58%) !important;
 }
 body:not(.gallery-view-active) .feature {
-  background: linear-gradient(145deg, rgb(28 32 50 / .30), rgb(13 17 29 / .22)) !important;
+  background: linear-gradient(145deg, rgb(28 32 50 / .24), rgb(13 17 29 / .16)) !important;
 }
 body:not(.gallery-view-active) .post,
 body:not(.gallery-view-active) .contact-strip {
-  background: linear-gradient(145deg, rgb(28 32 50 / .32), rgb(13 17 29 / .24)) !important;
+  background: linear-gradient(145deg, rgb(28 32 50 / .26), rgb(13 17 29 / .18)) !important;
 }
 @media (max-width: 640px) {
   body:not(.gallery-view-active) .panel {

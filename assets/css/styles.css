@@ -1327,3 +1327,72 @@ body:not(.gallery-view-active) .contact-strip {
     backdrop-filter: blur(11px) saturate(155%);
   }
 }
+
+
+/* High-visibility interaction feedback: deliberately stronger on both touch and mouse. */
+:where(button, a[href], [role="button"], input[type="button"], input[type="submit"]) {
+  transition:
+    transform 150ms cubic-bezier(.2,.85,.25,1.35),
+    filter 150ms ease,
+    box-shadow 160ms ease,
+    border-color 160ms ease,
+    background-color 160ms ease !important;
+}
+:where(button, a[href], [role="button"], input[type="button"], input[type="submit"]):active,
+:where(button, a[href], [role="button"], input[type="button"], input[type="submit"]).feedback-pressed {
+  transform: scale(.90) !important;
+  filter: brightness(1.38) saturate(1.35) !important;
+  box-shadow:
+    0 0 0 2px rgba(204,190,255,.72),
+    0 0 0 7px rgba(169,155,255,.20),
+    0 0 30px rgba(145,116,255,.48),
+    inset 0 0 18px rgba(220,210,255,.20) !important;
+  border-color: rgba(218,207,255,.95) !important;
+  transition-duration: 70ms !important;
+}
+:where(button, a[href], [role="button"], input[type="button"], input[type="submit"]) .feedback-ripple {
+  z-index: 1;
+  width: 18px;
+  height: 18px;
+  background: radial-gradient(circle,
+    rgba(255,255,255,.92) 0%,
+    rgba(213,203,255,.72) 20%,
+    rgba(169,155,255,.48) 48%,
+    rgba(169,155,255,0) 74%);
+  animation: tactileRipple 720ms cubic-bezier(.12,.65,.25,1) forwards;
+}
+@media (hover: hover) and (pointer: fine) {
+  :where(button, a[href], [role="button"], input[type="button"], input[type="submit"]):not(:disabled):not([aria-disabled="true"]):hover {
+    filter: brightness(1.15) saturate(1.18) !important;
+    box-shadow: 0 0 0 1px rgba(190,178,255,.34), 0 0 22px rgba(140,126,255,.24) !important;
+  }
+  body:not(.gallery-view-active) :where(.panel, .cover, .post, .feature, .contact-strip, .side-card, .profile-card, .contact-card):hover {
+    transform: translate3d(0, -8px, 0) scale(1.012);
+    border-color: rgba(190,178,255,.72);
+    box-shadow:
+      0 28px 72px rgba(0,0,0,.32),
+      0 0 0 1px rgba(169,155,255,.22),
+      0 0 34px rgba(122,111,255,.22),
+      inset 0 1px 0 rgba(255,255,255,.24);
+    filter: brightness(1.10) saturate(1.12);
+  }
+}
+body:not(.gallery-view-active) :where(.panel, .cover, .post, .feature, .contact-strip, .side-card, .profile-card, .contact-card):active {
+  transform: translate3d(0, -1px, 0) scale(.965) !important;
+  filter: brightness(1.20) saturate(1.15) !important;
+  border-color: rgba(210,198,255,.9) !important;
+  box-shadow:
+    0 0 0 2px rgba(190,178,255,.40),
+    0 0 0 7px rgba(169,155,255,.13),
+    0 12px 32px rgba(0,0,0,.22),
+    0 0 30px rgba(122,111,255,.25),
+    inset 0 1px 0 rgba(255,255,255,.22) !important;
+  transition-duration: 70ms !important;
+}
+@media (prefers-reduced-motion: reduce) {
+  :where(button, a[href], [role="button"], input[type="button"], input[type="submit"]),
+  :where(button, a[href], [role="button"], input[type="button"], input[type="submit"]) .feedback-ripple {
+    animation-duration: .01ms !important;
+    transition-duration: .01ms !important;
+  }
+}

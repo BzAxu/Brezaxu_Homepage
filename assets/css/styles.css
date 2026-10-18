@@ -1239,3 +1239,59 @@ body:not(.gallery-view-active) .social-action { border-radius: 11px !important; 
   body:not(.gallery-view-active) .feature { transition: none; }
   #ambientParticles { transition: none; }
 }
+
+
+/* Open-source liquid-glass integration: transparent surfaces, readable content,
+   and restrained refraction to keep mobile rendering smooth. */
+body:not(.gallery-view-active) .panel.liquid-glass {
+  --lg-blur: 16px;
+  --lg-saturate: 175%;
+  --lg-opacity: .10;
+  --lg-radius: 17px;
+  --lg-border-opacity: .28;
+  --lg-tint: 128 145 195;
+  --lg-edge-red: rgb(169 137 255 / .34);
+  --lg-edge-cyan: rgb(89 221 242 / .32);
+  --lg-shadow: 0 18px 46px rgb(0 0 0 / .22);
+  --lg-scene-background: url("../images/background.svg");
+  background: linear-gradient(145deg, rgb(30 35 56 / .32), rgb(12 16 28 / .22) 58%, rgb(38 39 70 / .20)) !important;
+  border: 1px solid rgb(205 214 255 / .20);
+  border-top-color: rgb(235 239 255 / .34);
+  box-shadow: 0 18px 46px rgb(0 0 0 / .20), inset 0 1px 0 rgb(255 255 255 / .12);
+  -webkit-backdrop-filter: blur(16px) saturate(175%);
+  backdrop-filter: blur(16px) saturate(175%);
+}
+body:not(.gallery-view-active) .profile.liquid-glass {
+  background: linear-gradient(145deg, rgb(29 34 54 / .42), rgb(12 16 28 / .30)) !important;
+}
+body:not(.gallery-view-active) .cover.liquid-glass {
+  background:
+    linear-gradient(90deg, rgb(13 16 26 / .52) 0%, rgb(13 16 26 / .38) 48%, rgb(13 16 26 / .10) 100%),
+    radial-gradient(ellipse at 85% 45%, rgb(110 103 195 / .13), transparent 58%) !important;
+}
+body:not(.gallery-view-active) .feature.liquid-glass {
+  background: linear-gradient(145deg, rgb(28 32 50 / .30), rgb(13 17 29 / .22)) !important;
+}
+body:not(.gallery-view-active) .post.liquid-glass,
+body:not(.gallery-view-active) .contact-strip.liquid-glass {
+  background: linear-gradient(145deg, rgb(28 32 50 / .32), rgb(13 17 29 / .24)) !important;
+}
+body:not(.gallery-view-active) .panel.liquid-glass .liquid-glass__refraction {
+  opacity: .46;
+  pointer-events: none;
+}
+body:not(.gallery-view-active) .panel.liquid-glass::after {
+  pointer-events: none;
+}
+@supports not ((backdrop-filter: blur(1px))) {
+  body:not(.gallery-view-active) .panel.liquid-glass {
+    background: rgb(20 24 39 / .84) !important;
+  }
+}
+@media (max-width: 640px) {
+  body:not(.gallery-view-active) .panel.liquid-glass {
+    --lg-blur: 11px;
+    -webkit-backdrop-filter: blur(11px) saturate(155%);
+    backdrop-filter: blur(11px) saturate(155%);
+  }
+}

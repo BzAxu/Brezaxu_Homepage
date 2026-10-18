@@ -269,6 +269,23 @@ import("https://cdn.jsdelivr.net/npm/@dpawlikowski/liquid-glass@0.3.0/dist/index
 })();
 
 
+// Soft glow only when the empty background of a card is tapped; no expanding ring.
+(() => {
+  const cardSelector = ".panel, .cover, .post, .feature, .contact-strip, .side-card, .profile-card, .contact-card";
+  document.addEventListener("pointerdown", (event) => {
+    if (event.pointerType === "mouse" && event.button !== 0) return;
+    const card = event.target.closest(cardSelector);
+    if (!card || event.target !== card) return;
+    if (event.target.closest("a, button, input, [role='button']")) return;
+    card.classList.remove("card-background-glow");
+    void card.offsetWidth;
+    card.classList.add("card-background-glow");
+  }, { passive: true });
+  document.addEventListener("animationend", (event) => {
+    if (event.animationName === "cardBackgroundGlow") event.target.classList.remove("card-background-glow");
+  });
+})();
+
 // Homepage card entrances: reveal on initial load, scroll-in, and section navigation.
 (() => {
   const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;

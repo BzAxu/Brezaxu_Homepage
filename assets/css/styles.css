@@ -1130,3 +1130,38 @@ footer {
   .feature { padding: 15px; }
   .contact-strip { padding: 17px; }
 }
+
+
+/* Responsive fixed wallpaper: use the same scene on every orientation.
+   "cover" fills phones and ordinary displays; ultra-wide screens keep the
+   full image height to avoid sacrificing too much of the composition. */
+html {
+  background: #090b12;
+}
+body {
+  min-height: 100vh;
+  min-height: 100dvh;
+  background: #090b12;
+}
+body::before {
+  background-color: #090b12;
+  background-image:
+    radial-gradient(ellipse at 9% 8%, rgba(104, 84, 194, .14), transparent 39%),
+    radial-gradient(ellipse at 91% 26%, rgba(31, 111, 145, .11), transparent 36%),
+    linear-gradient(180deg, rgba(5, 7, 14, .16) 0%, rgba(5, 7, 14, .20) 48%, rgba(5, 7, 14, .42) 100%),
+    url("../images/site-background_dark2.jpg");
+  background-position: center, center, center, center center;
+  background-size: 100% 100%, 100% 100%, 100% 100%, cover;
+  background-repeat: no-repeat;
+}
+@media (min-aspect-ratio: 21/9) {
+  body::before {
+    background-size: 100% 100%, 100% 100%, 100% 100%, auto 100%;
+  }
+}
+/* On portrait phones, intentionally keep using the same wallpaper for now. */
+@media (max-aspect-ratio: 3/4) {
+  body::before {
+    background-position: center, center, center, center center;
+  }
+}

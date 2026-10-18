@@ -1267,17 +1267,25 @@ body::before {
 }
 
 
-/* Stable, independent background layers: keep their size tied to the large viewport.
-   Mobile browser bars and the virtual keyboard must not resize/reposition the wallpaper. */
+/* Unified fixed background stack: wallpaper and particles share one stable layer. */
 body::before { content: none !important; }
-#siteWallpaper {
+#backgroundLayers {
   position: fixed;
   inset: 0 auto auto 0;
-  z-index: 0;
   width: 100%;
   height: 100vh;
   height: 100lvh;
+  z-index: 0;
+  overflow: hidden;
   pointer-events: none;
+  isolation: isolate;
+  transform: translateZ(0);
+}
+#siteWallpaper {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
   background-color: #090b12;
   background-image:
     radial-gradient(ellipse at 9% 8%, rgba(104, 84, 194, .14), transparent 39%),
@@ -1287,23 +1295,25 @@ body::before { content: none !important; }
   background-position: center, center, center, center center;
   background-size: 100% 100%, 100% 100%, 100% 100%, cover;
   background-repeat: no-repeat;
-  transform: translateZ(0);
-  contain: paint;
 }
 @media (min-aspect-ratio: 21/9) {
   #siteWallpaper { background-size: 100% 100%, 100% 100%, 100% 100%, auto 100%; }
 }
-#ambientParticles {
-  position: fixed;
-  inset: 0 auto auto 0;
+#backgroundLayers #ambientParticles {
+  position: absolute;
+  inset: 0;
   width: 100%;
-  height: 100vh;
-  height: 100lvh;
+  height: 100%;
   z-index: 1;
   display: block;
   max-width: none;
   pointer-events: none;
   opacity: 1;
-  transform: translateZ(0);
+  transform: none;
 }
-body .topbar, body .layout, body footer { position: relative; z-index: 2; }
+body .topbar {
+  position: sticky !important;
+  top: 0;
+  z-index: 20 !important;
+}
+body .layout, body footer { position: relative; z-index: 2; }

@@ -1174,3 +1174,12 @@ body .topbar {
   backdrop-filter: blur(22px) saturate(150%);
   border-bottom-color: rgba(205, 214, 255, .12);
 }
+
+
+/* Slightly increase vertical spacing between homepage cards. */
+body .content {
+  row-gap: 20px;
+}
+body .layout {
+  row-gap: 18px;
+}

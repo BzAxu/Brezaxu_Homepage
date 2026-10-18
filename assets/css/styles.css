@@ -1329,14 +1329,14 @@ body:not(.gallery-view-active) .contact-strip {
 }
 
 
-/* High-visibility interaction feedback: deliberately stronger on both touch and mouse. */
+/* High-visibility interaction feedback: slower, smoother, and interruptible. */
 :where(button, a[href], [role="button"], input[type="button"], input[type="submit"]) {
   transition:
-    transform 150ms cubic-bezier(.2,.85,.25,1.35),
-    filter 150ms ease,
-    box-shadow 160ms ease,
-    border-color 160ms ease,
-    background-color 160ms ease !important;
+    transform 280ms cubic-bezier(.22,.75,.25,1),
+    filter 280ms ease,
+    box-shadow 300ms ease,
+    border-color 280ms ease,
+    background-color 280ms ease !important;
 }
 :where(button, a[href], [role="button"], input[type="button"], input[type="submit"]):active,
 :where(button, a[href], [role="button"], input[type="button"], input[type="submit"]).feedback-pressed {
@@ -1348,7 +1348,7 @@ body:not(.gallery-view-active) .contact-strip {
     0 0 30px rgba(145,116,255,.48),
     inset 0 0 18px rgba(220,210,255,.20) !important;
   border-color: rgba(218,207,255,.95) !important;
-  transition-duration: 70ms !important;
+  transition-duration: 280ms !important;
 }
 :where(button, a[href], [role="button"], input[type="button"], input[type="submit"]) .feedback-ripple {
   z-index: 1;
@@ -1359,7 +1359,7 @@ body:not(.gallery-view-active) .contact-strip {
     rgba(213,203,255,.72) 20%,
     rgba(169,155,255,.48) 48%,
     rgba(169,155,255,0) 74%);
-  animation: tactileRipple 720ms cubic-bezier(.12,.65,.25,1) forwards;
+  animation: tactileRipple 1050ms cubic-bezier(.12,.65,.25,1) forwards;
 }
 @media (hover: hover) and (pointer: fine) {
   :where(button, a[href], [role="button"], input[type="button"], input[type="submit"]):not(:disabled):not([aria-disabled="true"]):hover {

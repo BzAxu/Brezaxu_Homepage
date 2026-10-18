@@ -136,7 +136,7 @@
     const ctx = canvas.getContext('2d', { alpha: true });
     if (!ctx) return;
     const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    let width = 0, height = 0, stars = [], raf = 0;
+    let width = 0, height = 0, stars = [], snow = [], raf = 0;
     const random = (min, max) => min + Math.random() * (max - min);
     const palette = ['115, 190, 255', '151, 125, 255', '190, 164, 255', '111, 225, 255'];
     function makeStar() {
@@ -152,6 +152,21 @@
         sparkleSize: random(3, 6)
       };
     }
+    function makeSnow(fromTop = false) {
+      const coolTint = Math.random() > .7 ? '191, 207, 255' : (Math.random() > .5 ? '222, 232, 255' : '176, 210, 255');
+      return {
+        x: random(-10, width + 10),
+        y: fromTop ? random(-height * .3, -6) : random(0, height),
+        r: random(.9, 2.15),
+        vx: random(-.22, .2),
+        vy: random(.28, .82),
+        sway: random(0, Math.PI * 2),
+        swaySpeed: random(.004, .012),
+        alpha: random(.48, .84),
+        tint: coolTint,
+        glow: Math.random() > .68
+      };
+    }
     function resize() {
       const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
       width = window.innerWidth; height = window.innerHeight;
@@ -160,7 +175,9 @@
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
       const mobile = width < 600;
       const count = Math.min(mobile ? 125 : 205, Math.max(mobile ? 90 : 145, Math.round(width * height / (mobile ? 5400 : 4400))));
+      const snowCount = mobile ? 34 : 58;
       stars = Array.from({ length: count }, makeStar);
+      snow = Array.from({ length: snowCount }, () => makeSnow());
       paint(0);
     }
     function paint(time) {
@@ -180,7 +197,6 @@
         ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
         ctx.fillStyle = 'rgba(' + p.tint + ',' + alpha + ')';
         ctx.fill();
-        // A restrained glow makes the particles visible against the dark background.
         const glow = p.sparkle ? 8 : 4.5;
         const gradient = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, glow);
         gradient.addColorStop(0, 'rgba(' + p.tint + ',' + (alpha * (p.sparkle ? .34 : .2)) + ')');
@@ -195,6 +211,29 @@
           ctx.moveTo(p.x - len, p.y); ctx.lineTo(p.x + len, p.y);
           ctx.moveTo(p.x, p.y - len); ctx.lineTo(p.x, p.y + len);
           ctx.stroke();
+        }
+      }
+      // Small cool-white snow dots drift down in a gentle breeze, with only a few soft halos.
+      for (const p of snow) {
+        if (!reduceMotion && !document.hidden) {
+          p.sway += p.swaySpeed;
+          p.x += p.vx + Math.sin(p.sway) * .32;
+          p.y += p.vy;
+          if (p.y > height + 8) Object.assign(p, makeSnow(true), { y: random(-28, -5) });
+          if (p.x < -12) p.x = width + 12;
+          if (p.x > width + 12) p.x = -12;
+        }
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+        ctx.fillStyle = 'rgba(' + p.tint + ',' + p.alpha + ')';
+        ctx.fill();
+        if (p.glow) {
+          const glow = 5.5;
+          const gradient = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, glow);
+          gradient.addColorStop(0, 'rgba(' + p.tint + ',' + (p.alpha * .26) + ')');
+          gradient.addColorStop(1, 'rgba(' + p.tint + ',0)');
+          ctx.fillStyle = gradient;
+          ctx.fillRect(p.x - glow, p.y - glow, glow * 2, glow * 2);
         }
       }
       if (!reduceMotion && !document.hidden) raf = requestAnimationFrame(paint);

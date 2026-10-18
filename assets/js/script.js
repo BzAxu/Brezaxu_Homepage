@@ -303,10 +303,10 @@ import("https://cdn.jsdelivr.net/npm/@dpawlikowski/liquid-glass@0.3.0/dist/index
   const pressPhaseMs = 640;
   const activePointers = new Map();
   // Released pointers remain here until their card has shown the full press phase.
-  const presses = new Map();
+  const presses = new Set();
 
   function isCardPressed(card) {
-    for (const press of presses.values()) {
+    for (const press of presses) {
       if (press.card === card) return true;
     }
     return false;
@@ -326,7 +326,7 @@ import("https://cdn.jsdelivr.net/npm/@dpawlikowski/liquid-glass@0.3.0/dist/index
     const elapsed = press.releasedAt - press.startedAt;
     const remaining = Math.max(0, pressPhaseMs - elapsed);
     press.timer = window.setTimeout(() => {
-      presses.delete(pointerId);
+      presses.delete(press);
       refresh(press.card);
     }, remaining);
   }
@@ -348,7 +348,7 @@ import("https://cdn.jsdelivr.net/npm/@dpawlikowski/liquid-glass@0.3.0/dist/index
       timer: null
     };
     activePointers.set(event.pointerId, press);
-    presses.set(event.pointerId, press);
+    presses.add(press);
     card.classList.add("card-pointer-pressed");
   }, { passive: true, capture: true });
 
@@ -362,8 +362,8 @@ import("https://cdn.jsdelivr.net/npm/@dpawlikowski/liquid-glass@0.3.0/dist/index
   });
 
   function releaseAll() {
-    const cards = new Set([...presses.values()].map((press) => press.card));
-    for (const press of presses.values()) {
+    const cards = new Set([...presses].map((press) => press.card));
+    for (const press of presses) {
       if (press.timer !== null) window.clearTimeout(press.timer);
     }
     activePointers.clear();

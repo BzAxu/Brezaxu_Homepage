@@ -465,28 +465,10 @@
   outline-offset: 4px;
   box-shadow: 0 0 0 5px rgba(169,155,255,.12), 0 0 24px rgba(140,126,255,.15);
 }
-:where(button, a[href], [role="button"], input[type="button"], input[type="submit"]) .feedback-ripple {
-  position: absolute;
-  z-index: 0;
-  pointer-events: none;
-  width: 12px;
-  height: 12px;
-  border-radius: 50%;
-  background: radial-gradient(circle, rgba(231,226,255,.58) 0%, rgba(169,155,255,.28) 38%, rgba(169,155,255,0) 72%);
-  transform: translate(-50%, -50%) scale(0);
-  animation: tactileRipple 620ms cubic-bezier(.15,.65,.3,1) forwards;
-}
-:where(button, a[href], [role="button"], input[type="button"], input[type="submit"]):not(.external-dialog__backdrop) {
-  position: relative;
-  isolation: isolate;
-}
 .external-dialog__backdrop:active {
   transform: none;
   filter: brightness(1.08);
   background-color: rgba(8, 10, 18, .76);
-}
-:where(button, a[href], [role="button"], input[type="button"], input[type="submit"]) > :not(.feedback-ripple) {
-  position: relative;
 }
 @keyframes tactileRipple {
   0% { opacity: 1; transform: translate(-50%, -50%) scale(0); }
@@ -494,12 +476,6 @@
   55% { opacity: .78; }
   82% { opacity: .38; }
   100% { opacity: 0; transform: translate(-50%, -50%) scale(18); }
-}
-@keyframes tactileRippleRing {
-  0% { opacity: 1; transform: scale(.12); }
-  42% { opacity: .92; }
-  72% { opacity: .58; }
-  100% { opacity: 0; transform: scale(18); }
 }
 @keyframes tactileNudge {
   0% { transform: scale(1); }

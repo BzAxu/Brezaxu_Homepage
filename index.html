@@ -4,24 +4,6 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <script src="./assets/js/scroll-fix.js"></script>
-  <script>
-    (() => {
-      const root = document.documentElement;
-      const viewport = window.visualViewport;
-      let frame = 0;
-      const updateVisibleViewport = () => {
-        cancelAnimationFrame(frame);
-        frame = requestAnimationFrame(() => {
-          const height = viewport ? viewport.height : window.innerHeight;
-          if (height > 0) root.style.setProperty("--visual-viewport-height", height + "px");
-        });
-      };
-      updateVisibleViewport();
-      if (viewport) viewport.addEventListener("resize", updateVisibleViewport, { passive: true });
-      window.addEventListener("resize", updateVisibleViewport, { passive: true });
-      window.addEventListener("orientationchange", updateVisibleViewport, { passive: true });
-    })();
-  </script>
   <meta name="theme-color" content="#090b12">
   <meta name="description" content="BzAxu 的个人空间：记录项目、兴趣与日常灵感。">
   <title>BzAxu · 个人空间</title>
@@ -41,6 +23,7 @@
   <link rel="stylesheet" href="./assets/css/styles.css">
 </head>
 <body>
+  <div id="siteWallpaper" aria-hidden="true"></div>
   <canvas id="ambientParticles" aria-hidden="true"></canvas>
   
   <header class="topbar">
@@ -232,9 +215,9 @@
     }
     function resize() {
       const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
-      width = window.innerWidth; height = window.innerHeight;
+      width = canvas.clientWidth || window.innerWidth; height = canvas.clientHeight || window.innerHeight;
       canvas.width = Math.round(width * dpr); canvas.height = Math.round(height * dpr);
-      canvas.style.width = width + 'px'; canvas.style.height = height + 'px';
+      
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
       const mobile = width < 600;
       const count = Math.min(mobile ? 125 : 205, Math.max(mobile ? 90 : 145, Math.round(width * height / (mobile ? 5400 : 4400))));
@@ -304,7 +287,15 @@
     function start() { if (!reduceMotion && !document.hidden && !raf) raf = requestAnimationFrame(paint); }
     function stop() { if (raf) cancelAnimationFrame(raf); raf = 0; }
     document.addEventListener('visibilitychange', () => { if (document.hidden) stop(); else start(); });
-    window.addEventListener('resize', () => { stop(); resize(); start(); }, { passive: true });
+    let lastWidth = window.innerWidth;
+    window.addEventListener('resize', () => {
+      const nextWidth = window.innerWidth;
+      if (Math.abs(nextWidth - lastWidth) > 2) {
+        lastWidth = nextWidth;
+        stop(); resize(); start();
+      }
+    }, { passive: true });
+    window.addEventListener('orientationchange', () => { stop(); resize(); start(); }, { passive: true });
     resize(); start();
   })();
   </script>

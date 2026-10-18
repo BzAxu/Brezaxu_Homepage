@@ -1251,3 +1251,16 @@ body .layout {
   .guestbook-entry { padding: 12px; }
   .guestbook-submit { width: 100%; }
 }
+
+
+/* Keep the wallpaper sized to the large viewport while the mobile keyboard
+   shrinks the visual viewport. This prevents the background from zooming or
+   shifting by the keyboard height during focus/scroll adjustments. */
+@supports (height: 100lvh) {
+  body::before {
+    inset: 0 0 auto;
+    width: 100%;
+    height: 100lvh;
+    background-attachment: scroll;
+  }
+}

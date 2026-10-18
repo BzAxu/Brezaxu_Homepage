@@ -1396,3 +1396,24 @@ body:not(.gallery-view-active) :where(.panel, .cover, .post, .feature, .contact-
     transition-duration: .01ms !important;
   }
 }
+
+
+/* A blank click on the external-link dialog backdrop only dismisses it.
+   Keep global purple press/hover feedback off this full-screen layer. */
+.external-dialog__backdrop,
+.external-dialog__backdrop:hover,
+.external-dialog__backdrop:active,
+.external-dialog__backdrop.feedback-pressed {
+  transform: none !important;
+  filter: none !important;
+  box-shadow: none !important;
+  border-color: transparent !important;
+  outline: none !important;
+}
+.external-dialog__backdrop:hover {
+  background-color: rgba(4, 7, 16, .72) !important;
+}
+.external-dialog__backdrop:active {
+  background-color: rgba(8, 10, 18, .76) !important;
+  transition: none !important;
+}

@@ -134,16 +134,16 @@ form.addEventListener("submit", async (event) => {
 });
 moreButton.addEventListener("click", () => loadEntries(false));
 
-// 移动端键盘弹出后，自动将当前输入框移到可视区域内，避免被键盘遮挡。
+// 移动端键盘弹出后，只按可视视口的实际边界微调页面滚动，避免重复叠加 offsetTop。
 function keepFocusedFieldVisible() {
   const field = document.activeElement;
   if (!field || !form.contains(field) || !field.matches("input:not([name='website']), textarea")) return;
+
   const viewport = window.visualViewport;
-  const viewportTop = viewport ? viewport.offsetTop : 0;
-  const viewportBottom = viewport ? viewport.offsetTop + viewport.height : window.innerHeight;
+  const viewportHeight = viewport ? viewport.height : window.innerHeight;
   const rect = field.getBoundingClientRect();
-  const safeTop = viewportTop + 76;
-  const safeBottom = viewportBottom - 24;
+  const safeTop = 76;
+  const safeBottom = viewportHeight - 24;
   let shift = 0;
 
   if (rect.bottom > safeBottom) {
@@ -157,17 +157,21 @@ function keepFocusedFieldVisible() {
   }
 }
 
+let keyboardAdjustFrame = 0;
+function scheduleKeyboardAdjustment() {
+  cancelAnimationFrame(keyboardAdjustFrame);
+  keyboardAdjustFrame = requestAnimationFrame(() => {
+    keyboardAdjustFrame = requestAnimationFrame(keepFocusedFieldVisible);
+  });
+}
+
 form.addEventListener("focusin", (event) => {
   if (event.target.matches("input:not([name='website']), textarea")) {
-    requestAnimationFrame(() => requestAnimationFrame(keepFocusedFieldVisible));
+    scheduleKeyboardAdjustment();
   }
 });
 if (window.visualViewport) {
-  window.visualViewport.addEventListener("resize", () => {
-    requestAnimationFrame(keepFocusedFieldVisible);
-  }, { passive: true });
+  window.visualViewport.addEventListener("resize", scheduleKeyboardAdjustment, { passive: true });
 }
-window.addEventListener("orientationchange", () => {
-  requestAnimationFrame(() => requestAnimationFrame(keepFocusedFieldVisible));
-}, { passive: true });
+window.addEventListener("orientationchange", scheduleKeyboardAdjustment, { passive: true });
 loadEntries();

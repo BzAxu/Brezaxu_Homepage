@@ -1180,10 +1180,9 @@ body:not(.gallery-view-active) .name {
   width: fit-content; max-width: 100%;
   color: transparent;
   background: linear-gradient(100deg, #fff0a8 0%, #ffbd8b 20%, #ff83b9 43%, #c2a1ff 66%, #7be4f0 88%, #fff0a8 100%);
-  background-size: 240% auto;
   -webkit-background-clip: text; background-clip: text;
   text-shadow: 0 0 22px rgba(191, 130, 255, .12);
-  animation: name-spectrum 7s linear infinite;
+  animation: name-spectrum 9s linear infinite;
 }
 body:not(.gallery-view-active) .wordmark { color: #f4f2ff; }
 body:not(.gallery-view-active) .wordmark span {
@@ -1191,7 +1190,7 @@ body:not(.gallery-view-active) .wordmark span {
   background: linear-gradient(135deg, #ff9fc6, #b7a4ff 55%, #75e5ef);
   -webkit-background-clip: text; background-clip: text;
 }
-@keyframes name-spectrum { to { background-position: 240% center; } }
+@keyframes name-spectrum { from { filter: hue-rotate(0deg); } to { filter: hue-rotate(360deg); } }
 body:not(.gallery-view-active) .cover {
   min-height: 222px; padding: 31px 32px;
   display: flex; flex-direction: column; align-items: flex-start; justify-content: center;

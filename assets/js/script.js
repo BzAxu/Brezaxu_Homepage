@@ -252,7 +252,10 @@ import("https://cdn.jsdelivr.net/npm/@dpawlikowski/liquid-glass@0.3.0/dist/index
     if (event.pointerType === "mouse" && event.button !== 0) return;
 
     const previous = activePointers.get(event.pointerId);
-    if (previous && previous !== control) refreshPressedState(previous);
+    if (previous && previous !== control) {
+      activePointers.delete(event.pointerId);
+      refreshPressedState(previous);
+    }
     activePointers.set(event.pointerId, control);
     control.classList.add("feedback-pressed");
   }, { passive: true, capture: true });
@@ -282,11 +285,12 @@ import("https://cdn.jsdelivr.net/npm/@dpawlikowski/liquid-glass@0.3.0/dist/index
     control.classList.remove("feedback-confirmed");
     void control.offsetWidth;
     control.classList.add("feedback-confirmed");
-    control.addEventListener("animationend", (animationEvent) => {
-      if (animationEvent.animationName === "tactileNudge") {
-        control.classList.remove("feedback-confirmed");
-      }
-    });
+    const clearPulse = (animationEvent) => {
+      if (animationEvent.target !== control || animationEvent.animationName !== "tactileNudge") return;
+      control.classList.remove("feedback-confirmed");
+      control.removeEventListener("animationend", clearPulse);
+    };
+    control.addEventListener("animationend", clearPulse);
   }, true);
 })();
 

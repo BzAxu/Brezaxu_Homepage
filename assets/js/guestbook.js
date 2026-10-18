@@ -133,4 +133,41 @@ form.addEventListener("submit", async (event) => {
   }
 });
 moreButton.addEventListener("click", () => loadEntries(false));
+
+// 移动端键盘弹出后，自动将当前输入框移到可视区域内，避免被键盘遮挡。
+function keepFocusedFieldVisible() {
+  const field = document.activeElement;
+  if (!field || !form.contains(field) || !field.matches("input:not([name='website']), textarea")) return;
+  const viewport = window.visualViewport;
+  const viewportTop = viewport ? viewport.offsetTop : 0;
+  const viewportBottom = viewport ? viewport.offsetTop + viewport.height : window.innerHeight;
+  const rect = field.getBoundingClientRect();
+  const safeTop = viewportTop + 76;
+  const safeBottom = viewportBottom - 24;
+  let shift = 0;
+
+  if (rect.bottom > safeBottom) {
+    shift = rect.bottom - safeBottom;
+  } else if (rect.top < safeTop) {
+    shift = rect.top - safeTop;
+  }
+
+  if (Math.abs(shift) > 2) {
+    window.scrollBy({ top: shift, behavior: "smooth" });
+  }
+}
+
+form.addEventListener("focusin", (event) => {
+  if (event.target.matches("input:not([name='website']), textarea")) {
+    requestAnimationFrame(() => requestAnimationFrame(keepFocusedFieldVisible));
+  }
+});
+if (window.visualViewport) {
+  window.visualViewport.addEventListener("resize", () => {
+    requestAnimationFrame(keepFocusedFieldVisible);
+  }, { passive: true });
+}
+window.addEventListener("orientationchange", () => {
+  requestAnimationFrame(() => requestAnimationFrame(keepFocusedFieldVisible));
+}, { passive: true });
 loadEntries();

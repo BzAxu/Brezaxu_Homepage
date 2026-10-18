@@ -131,6 +131,7 @@ import("https://cdn.jsdelivr.net/npm/@dpawlikowski/liquid-glass@0.3.0/dist/index
         emailContactMenu.hidden = !isEmailMenu;
         copyExternalLink.hidden = isEmailMenu;
         continueButton.hidden = isEmailMenu;
+        dialog.querySelector(".external-dialog__actions").classList.toggle("email-menu-active", isEmailMenu);
         copyExternalLink.setAttribute("aria-label", info ? (info.copyLabel || "复制邮箱地址") : "复制完整链接");
         copyExternalLink.title = info ? info.copyLabel : "复制完整链接";
         continueButton.innerHTML = info ? (info.copyLabel || "复制邮箱地址") + ' <span aria-hidden="true">⧉</span>' : '继续访问 <span aria-hidden="true">↗</span>';

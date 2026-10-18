@@ -295,15 +295,40 @@ import("https://cdn.jsdelivr.net/npm/@dpawlikowski/liquid-glass@0.3.0/dist/index
 })();
 
 
-// Track card presses independently from buttons/links. Each pointer owns one
-// card, so multi-touch and rapid finger changes do not share a global pressed state.
+// Track card presses independently from buttons/links. Each pointer owns a
+// separate press lifecycle. A quick release cannot reverse the press transition
+// before the full 640ms press phase has been shown on that card.
 (() => {
   const cardSelector = ".panel, .cover, .post, .feature, .contact-strip, .side-card, .profile-card, .contact-card";
-  const pointers = new Map();
+  const pressPhaseMs = 640;
+  const activePointers = new Map();
+  // Released pointers remain here until their card has shown the full press phase.
+  const presses = new Map();
+
+  function isCardPressed(card) {
+    for (const press of presses.values()) {
+      if (press.card === card) return true;
+    }
+    return false;
+  }
 
   function refresh(card) {
     if (!card) return;
-    card.classList.toggle("card-pointer-pressed", [...pointers.values()].includes(card));
+    card.classList.toggle("card-pointer-pressed", isCardPressed(card));
+  }
+
+  function finishPointer(pointerId) {
+    const press = activePointers.get(pointerId);
+    if (!press) return;
+    activePointers.delete(pointerId);
+    press.releasedAt = performance.now();
+
+    const elapsed = press.releasedAt - press.startedAt;
+    const remaining = Math.max(0, pressPhaseMs - elapsed);
+    press.timer = window.setTimeout(() => {
+      presses.delete(pointerId);
+      refresh(press.card);
+    }, remaining);
   }
 
   document.addEventListener("pointerdown", (event) => {
@@ -313,40 +338,38 @@ import("https://cdn.jsdelivr.net/npm/@dpawlikowski/liquid-glass@0.3.0/dist/index
     const card = target.closest(cardSelector);
     if (!card || card.closest(".external-dialog")) return;
 
-    const previous = pointers.get(event.pointerId);
-    if (previous && previous !== card) {
-      pointers.delete(event.pointerId);
-      refresh(previous);
-    }
-    pointers.set(event.pointerId, card);
-    card.classList.add("card-pointer-pressed");
+    // Defensive cleanup in case a browser reuses an ID without a normal release.
+    if (activePointers.has(event.pointerId)) finishPointer(event.pointerId);
 
-    // Give every tap its own complete press/release pulse, even if the
-    // finger is lifted quickly. Restart only this card's pulse.
-    card.classList.remove("card-tap-pulse");
-    void card.offsetWidth;
-    card.classList.add("card-tap-pulse");
+    const press = {
+      card,
+      startedAt: performance.now(),
+      releasedAt: null,
+      timer: null
+    };
+    activePointers.set(event.pointerId, press);
+    presses.set(event.pointerId, press);
+    card.classList.add("card-pointer-pressed");
   }, { passive: true, capture: true });
 
-  document.addEventListener("animationend", (event) => {
-    if (event.animationName === "cardTapPulse") {
-      event.target.classList.remove("card-tap-pulse");
-    }
-  }, true);
+  document.addEventListener("pointerup", (event) => finishPointer(event.pointerId), {
+    passive: true,
+    capture: true
+  });
+  document.addEventListener("pointercancel", (event) => finishPointer(event.pointerId), {
+    passive: true,
+    capture: true
+  });
 
-  function release(event) {
-    const card = pointers.get(event.pointerId);
-    if (!card) return;
-    pointers.delete(event.pointerId);
-    refresh(card);
-  }
   function releaseAll() {
-    const cards = new Set(pointers.values());
-    pointers.clear();
+    const cards = new Set([...presses.values()].map((press) => press.card));
+    for (const press of presses.values()) {
+      if (press.timer !== null) window.clearTimeout(press.timer);
+    }
+    activePointers.clear();
+    presses.clear();
     cards.forEach((card) => card.classList.remove("card-pointer-pressed"));
   }
-  document.addEventListener("pointerup", release, { passive: true, capture: true });
-  document.addEventListener("pointercancel", release, { passive: true, capture: true });
   window.addEventListener("blur", releaseAll);
 })();
 

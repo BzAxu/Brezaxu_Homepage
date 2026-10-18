@@ -1417,3 +1417,6 @@ body:not(.gallery-view-active) :where(.panel, .cover, .post, .feature, .contact-
   background-color: rgba(8, 10, 18, .76) !important;
   transition: none !important;
 }
+
+/* Ensure the email contact dialog does not leave an empty destination card. */
+.external-dialog__destination[hidden] { display: none !important; }

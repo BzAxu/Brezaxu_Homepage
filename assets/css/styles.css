@@ -1085,3 +1085,48 @@ footer {
   .contact-strip { padding: 16px; }
 }
 
+
+
+/* Restore the previous card scale while increasing the corner radius further. */
+:root {
+  --radius: 36px;
+}
+body .panel,
+body .panel.liquid-glass {
+  border-radius: 36px !important;
+}
+.layout,
+.topbar-inner,
+footer {
+  width: min(1180px, calc(100% - 36px));
+}
+.layout {
+  grid-template-columns: clamp(220px, 25vw, 300px) minmax(0, 1fr);
+  gap: clamp(12px, 1.8vw, 22px);
+  margin-top: 28px;
+}
+.profile { padding: 24px; }
+.side-card { padding: 18px 20px; }
+.content { gap: 16px; }
+.cover {
+  min-height: 176px;
+  padding: 27px 30px;
+}
+.post { padding: 22px 24px; }
+.feature { padding: 19px; }
+.contact-strip { padding: 20px 23px; }
+@media (max-width: 850px) {
+  .layout { grid-template-columns: minmax(0, 1fr); gap: 15px; }
+  .profile { padding: 19px; }
+  .cover { padding: 24px; }
+  .post { padding: 19px; }
+}
+@media (max-width: 700px) {
+  .topbar-inner { width: min(100% - 28px, 560px); }
+  .layout { width: min(100% - 28px, 560px); margin-top: 16px; gap: 15px; }
+  .profile { padding: 20px; }
+  .cover { min-height: 160px; padding: 23px 21px; }
+  .post { padding: 16px; }
+  .feature { padding: 15px; }
+  .contact-strip { padding: 17px; }
+}

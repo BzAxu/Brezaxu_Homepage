@@ -13,8 +13,8 @@
       (() => {
         // Add future wallpapers to this list; paths are relative to the site root.
         const wallpapers = [
-          "./assets/images/site-background_dark1.jpg",
-          "./assets/images/site-background_dark2.jpg"
+          "/assets/images/site-background_dark1.jpg",
+          "/assets/images/site-background_dark2.jpg"
         ];
         const selected = wallpapers[Math.floor(Math.random() * wallpapers.length)];
         document.documentElement.style.setProperty("--wallpaper-image", 'url("' + selected + '")');

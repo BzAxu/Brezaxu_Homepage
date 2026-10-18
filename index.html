@@ -136,20 +136,21 @@
     const ctx = canvas.getContext('2d', { alpha: true });
     if (!ctx) return;
     const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    let width = 0, height = 0, stars = [], petals = [], raf = 0;
+    let width = 0, height = 0, stars = [], raf = 0;
     const random = (min, max) => min + Math.random() * (max - min);
+    const palette = ['115, 190, 255', '151, 125, 255', '190, 164, 255', '111, 225, 255'];
     function makeStar() {
-      return { x: random(0, width), y: random(0, height), r: random(.45, 1.65),
-        vx: random(-.16, .16), vy: random(-.18, .12), alpha: random(.22, .82),
-        tint: Math.random() > .68 ? '119, 213, 239' : (Math.random() > .5 ? '202, 164, 255' : '255, 191, 219'),
-        phase: random(0, Math.PI * 2), twinkle: random(.0008, .0025) };
-    }
-    function makePetal(fromTop) {
-      return { x: random(-10, width + 10), y: fromTop ? random(-height, -8) : random(-8, height + 8),
-        size: random(4, 9), vx: random(-.42, .36), vy: random(.34, 1.05),
-        rot: random(0, Math.PI * 2), spin: random(-.012, .012),
-        sway: random(0, Math.PI * 2), swaySpeed: random(.006, .018),
-        alpha: random(.42, .86), pink: Math.random() > .42 ? '#ffb7d4' : (Math.random() > .5 ? '#ffd8e8' : '#e99bc5') };
+      const bright = Math.random() > .86;
+      return {
+        x: random(0, width), y: random(0, height),
+        r: bright ? random(1.45, 2.15) : random(.8, 1.55),
+        vx: random(-.12, .12), vy: random(-.16, .1),
+        alpha: bright ? random(.78, .98) : random(.48, .82),
+        tint: palette[Math.floor(Math.random() * palette.length)],
+        phase: random(0, Math.PI * 2), twinkle: random(.001, .0028),
+        sparkle: bright && Math.random() > .35,
+        sparkleSize: random(3, 6)
+      };
     }
     function resize() {
       const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
@@ -158,10 +159,8 @@
       canvas.style.width = width + 'px'; canvas.style.height = height + 'px';
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
       const mobile = width < 600;
-      const starCount = Math.min(mobile ? 145 : 250, Math.max(mobile ? 110 : 180, Math.round(width * height / (mobile ? 4600 : 3600))));
-      const petalCount = mobile ? 30 : 58;
-      stars = Array.from({ length: starCount }, makeStar);
-      petals = Array.from({ length: petalCount }, () => makePetal(false));
+      const count = Math.min(mobile ? 125 : 205, Math.max(mobile ? 90 : 145, Math.round(width * height / (mobile ? 5400 : 4400))));
+      stars = Array.from({ length: count }, makeStar);
       paint(0);
     }
     function paint(time) {
@@ -170,35 +169,33 @@
       for (const p of stars) {
         if (!reduceMotion && !document.hidden) {
           p.x += p.vx; p.y += p.vy;
-          if (p.x < -3) p.x = width + 3; if (p.x > width + 3) p.x = -3;
-          if (p.y < -3) p.y = height + 3; if (p.y > height + 3) p.y = -3;
+          if (p.x < -8) p.x = width + 8;
+          if (p.x > width + 8) p.x = -8;
+          if (p.y < -8) p.y = height + 8;
+          if (p.y > height + 8) p.y = -8;
         }
-        const pulse = reduceMotion ? .9 : .55 + (Math.sin(t * p.twinkle + p.phase) + 1) * .225;
-        ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-        ctx.fillStyle = 'rgba(' + p.tint + ',' + (p.alpha * pulse) + ')'; ctx.fill();
-        if (p.r > 1.25) {
-          ctx.beginPath(); ctx.arc(p.x, p.y, p.r * 3.4, 0, Math.PI * 2);
-          ctx.fillStyle = 'rgba(' + p.tint + ',' + (p.alpha * pulse * .075) + ')'; ctx.fill();
-        }
-      }
-      for (const p of petals) {
-        if (!reduceMotion && !document.hidden) {
-          p.sway += p.swaySpeed; p.x += p.vx + Math.sin(p.sway) * .55; p.y += p.vy; p.rot += p.spin;
-          if (p.y > height + 16 || p.x < -24 || p.x > width + 24) Object.assign(p, makePetal(true), { y: random(-70, -8) });
-        }
-        ctx.save();
-        ctx.translate(p.x, p.y); ctx.rotate(p.rot);
-        ctx.globalAlpha = p.alpha;
-        ctx.fillStyle = p.pink;
+        const pulse = reduceMotion ? 1 : .72 + (Math.sin(t * p.twinkle + p.phase) + 1) * .14;
+        const alpha = p.alpha * pulse;
         ctx.beginPath();
-        ctx.moveTo(0, -p.size * .72);
-        ctx.bezierCurveTo(p.size * .78, -p.size * .72, p.size * .86, p.size * .28, 0, p.size);
-        ctx.bezierCurveTo(-p.size * .86, p.size * .28, -p.size * .78, -p.size * .72, 0, -p.size * .72);
+        ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+        ctx.fillStyle = 'rgba(' + p.tint + ',' + alpha + ')';
         ctx.fill();
-        ctx.globalAlpha = p.alpha * .42;
-        ctx.strokeStyle = '#fff0f7'; ctx.lineWidth = .55;
-        ctx.beginPath(); ctx.moveTo(0, -p.size * .42); ctx.quadraticCurveTo(p.size * .12, p.size * .12, 0, p.size * .62); ctx.stroke();
-        ctx.restore();
+        // A restrained glow makes the particles visible against the dark background.
+        const glow = p.sparkle ? 8 : 4.5;
+        const gradient = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, glow);
+        gradient.addColorStop(0, 'rgba(' + p.tint + ',' + (alpha * (p.sparkle ? .34 : .2)) + ')');
+        gradient.addColorStop(1, 'rgba(' + p.tint + ',0)');
+        ctx.fillStyle = gradient;
+        ctx.fillRect(p.x - glow, p.y - glow, glow * 2, glow * 2);
+        if (p.sparkle) {
+          const len = p.sparkleSize * (.8 + pulse * .2);
+          ctx.strokeStyle = 'rgba(' + p.tint + ',' + (alpha * .8) + ')';
+          ctx.lineWidth = .8;
+          ctx.beginPath();
+          ctx.moveTo(p.x - len, p.y); ctx.lineTo(p.x + len, p.y);
+          ctx.moveTo(p.x, p.y - len); ctx.lineTo(p.x, p.y + len);
+          ctx.stroke();
+        }
       }
       if (!reduceMotion && !document.hidden) raf = requestAnimationFrame(paint);
     }

@@ -924,3 +924,26 @@ body .homepage-card-reveal.is-card-visible {
     will-change: auto;
   }
 }
+
+
+/* Slower card feedback that remains interruptible by the next pointer state. */
+body :where(.panel, .cover, .post, .feature, .contact-strip, .side-card, .profile-card, .contact-card) {
+  transition:
+    transform 640ms cubic-bezier(.16,.78,.22,1),
+    box-shadow 640ms cubic-bezier(.16,.78,.22,1),
+    border-color 560ms ease,
+    filter 560ms ease;
+}
+body :where(.panel, .cover, .post, .feature, .contact-strip, .side-card, .profile-card, .contact-card):active {
+  transition-duration: 640ms !important;
+}
+/* Restart the ambient halo on a fresh tap; a new tap replaces the running animation. */
+.card-background-glow {
+  animation: cardBackgroundGlow 1250ms cubic-bezier(.16,.72,.22,1) both;
+}
+@media (prefers-reduced-motion: reduce) {
+  body :where(.panel, .cover, .post, .feature, .contact-strip, .side-card, .profile-card, .contact-card) {
+    transition-duration: .01ms !important;
+  }
+  .card-background-glow { animation: none !important; }
+}

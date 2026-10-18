@@ -1149,7 +1149,7 @@ body::before {
     radial-gradient(ellipse at 9% 8%, rgba(104, 84, 194, .14), transparent 39%),
     radial-gradient(ellipse at 91% 26%, rgba(31, 111, 145, .11), transparent 36%),
     linear-gradient(180deg, rgba(5, 7, 14, .16) 0%, rgba(5, 7, 14, .20) 48%, rgba(5, 7, 14, .42) 100%),
-    url("../images/site-background_dark2.jpg");
+    url("../images/site-background_dark1.jpg");
   background-position: center, center, center, center center;
   background-size: 100% 100%, 100% 100%, 100% 100%, cover;
   background-repeat: no-repeat;

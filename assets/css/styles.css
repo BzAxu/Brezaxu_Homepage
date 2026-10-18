@@ -1317,3 +1317,26 @@ body .topbar {
   z-index: 20 !important;
 }
 body .layout, body footer { position: relative; z-index: 2; }
+
+
+/* Hidden build-version check: appears after five quick taps on the profile card. */
+#buildVersionNotice {
+  margin-top: 14px;
+  padding: 10px 13px;
+  border: 1px solid rgba(169, 155, 255, .32);
+  border-radius: 12px;
+  color: #e6e1ff;
+  background: rgba(104, 84, 194, .16);
+  font: 600 12px/1.5 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  text-align: center;
+  overflow-wrap: anywhere;
+  animation: versionNoticeIn .22s ease-out;
+}
+#buildVersionNotice[hidden] { display: none !important; }
+@keyframes versionNoticeIn {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@media (prefers-reduced-motion: reduce) {
+  #buildVersionNotice { animation: none; }
+}

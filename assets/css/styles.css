@@ -845,6 +845,31 @@ body :where(.panel, .cover, .post, .feature, .contact-strip, .side-card, .profil
 }
 
 
+/* A gentle ambient halo for taps on empty card backgrounds; intentionally no white ring. */
+@keyframes cardBackgroundGlow {
+  0% {
+    box-shadow: var(--card-shadow, 0 14px 42px rgba(0,0,0,.20));
+    filter: brightness(1);
+  }
+  32% {
+    box-shadow:
+      0 0 0 1px rgba(169,155,255,.16),
+      0 0 24px rgba(145,126,255,.20),
+      0 14px 42px rgba(0,0,0,.20);
+    filter: brightness(1.035);
+  }
+  100% {
+    box-shadow: var(--card-shadow, 0 14px 42px rgba(0,0,0,.20));
+    filter: brightness(1);
+  }
+}
+.card-background-glow {
+  animation: cardBackgroundGlow 900ms ease-out both;
+}
+@media (prefers-reduced-motion: reduce) {
+  .card-background-glow { animation: none; }
+}
+
 /* A blank click on the external-link dialog backdrop only dismisses it.
    Keep global purple press/hover feedback off this full-screen layer. */
 .external-dialog__backdrop,

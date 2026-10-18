@@ -244,15 +244,6 @@ import("https://cdn.jsdelivr.net/npm/@dpawlikowski/liquid-glass@0.3.0/dist/index
     activePointerTarget = control;
     control.classList.add("feedback-pressed");
 
-    const rect = control.getBoundingClientRect();
-    const ripple = document.createElement("span");
-    ripple.className = "feedback-ripple";
-    ripple.setAttribute("aria-hidden", "true");
-    ripple.style.left = (event.clientX - rect.left) + "px";
-    ripple.style.top = (event.clientY - rect.top) + "px";
-    control.append(ripple);
-    ripple.addEventListener("animationend", () => ripple.remove(), { once: true });
-
   }, { passive: true, capture: true });
 
   const release = () => {

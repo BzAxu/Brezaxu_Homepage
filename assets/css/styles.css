@@ -1015,3 +1015,73 @@ body :where(.panel, .cover, .post, .feature, .contact-strip, .side-card, .profil
     animation: none !important;
   }
 }
+
+/* Visual refinement: let the fixed background show through more clearly. */
+:root {
+  --radius: 28px;
+}
+.topbar {
+  background: rgba(16, 18, 27, .58);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+}
+.layout,
+.topbar-inner,
+footer {
+  width: min(1080px, calc(100% - 48px));
+}
+.layout {
+  grid-template-columns: 280px minmax(0, 1fr);
+  gap: 18px;
+  margin-top: 22px;
+}
+.panel {
+  background:
+    linear-gradient(135deg, rgba(255,255,255,.065), rgba(255,255,255,.012) 42%, rgba(150,165,220,.025)),
+    linear-gradient(155deg, rgba(34, 39, 59, .42), rgba(17, 21, 34, .36));
+  backdrop-filter: blur(16px) saturate(145%);
+  -webkit-backdrop-filter: blur(16px) saturate(145%);
+}
+.profile { padding: 20px; }
+.side-card { padding: 15px 17px; }
+.content { gap: 14px; }
+.cover {
+  min-height: 158px;
+  padding: 23px 26px;
+  background:
+    radial-gradient(ellipse at 85% 10%, rgba(159, 148, 255, .20), transparent 45%),
+    radial-gradient(ellipse at 100% 110%, rgba(107, 182, 235, .15), transparent 42%),
+    linear-gradient(120deg, rgba(42, 45, 72, .56), rgba(27, 32, 49, .48) 60%, rgba(27, 37, 53, .50));
+  backdrop-filter: blur(18px) saturate(145%);
+  -webkit-backdrop-filter: blur(18px) saturate(145%);
+}
+.post { padding: 18px 20px; }
+.feature {
+  padding: 16px;
+  background:
+    linear-gradient(145deg, rgba(255,255,255,.05), rgba(255,255,255,.009)),
+    rgba(25, 29, 45, .30);
+}
+.contact-strip { padding: 17px 20px; }
+.repo-card { padding: 12px; border-radius: 18px; }
+.social-link { border-radius: 15px; }
+.tag { border-radius: 11px; }
+.top-nav a { border-radius: 14px; }
+
+@media (max-width: 850px) {
+  .layout { grid-template-columns: 250px minmax(0, 1fr); gap: 14px; }
+  .layout, .topbar-inner, footer { width: min(100% - 32px, 1080px); }
+  .profile { padding: 17px; }
+  .cover { padding: 21px; }
+  .post { padding: 17px 18px; }
+}
+@media (max-width: 700px) {
+  .topbar-inner { width: min(100% - 28px, 560px); }
+  .layout { width: min(100% - 28px, 560px); margin-top: 13px; gap: 12px; }
+  .profile { padding: 17px; }
+  .cover { min-height: 148px; padding: 20px 18px; }
+  .post { padding: 16px; }
+  .feature { padding: 13px; }
+  .contact-strip { padding: 16px; }
+}
+

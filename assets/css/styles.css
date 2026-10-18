@@ -1300,7 +1300,7 @@ body:not(.gallery-view-active) .panel.liquid-glass::after {
 
 /* CSS-only glass fallback: transparency still works if the optional filter CDN is unavailable. */
 body:not(.gallery-view-active) .panel {
-  background: linear-gradient(145deg, rgb(30 35 56 / .32), rgb(12 16 28 / .22) 58%, rgb(38 39 70 / .20)) !important;
+  background: linear-gradient(145deg, rgb(30 35 56 / .26), rgb(12 16 28 / .17) 58%, rgb(38 39 70 / .16)) !important;
   border: 1px solid rgb(205 214 255 / .20);
   border-top-color: rgb(235 239 255 / .34);
   -webkit-backdrop-filter: blur(16px) saturate(170%);

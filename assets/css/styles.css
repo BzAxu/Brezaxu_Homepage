@@ -1594,3 +1594,7 @@ body .layout, body footer { position: relative; z-index: 2; }
   .guestbook-reply-submit { min-height: 38px; }
 }
 
+
+/* Preserve version toast centering during press feedback. */
+#buildVersionNotice:active,
+#buildVersionNotice.feedback-pressed { transform: translate(-50%, 0) !important; }

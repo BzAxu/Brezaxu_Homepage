@@ -1,6 +1,6 @@
 const API = "/api/guestbook";
 const ADMIN_REPLY_API = "/api/admin/replies";
-const PAGE_SIZE = 20;
+const PAGE_SIZE = 5;
 const form = document.querySelector("#guestbookForm");
 const nameInput = document.querySelector("#guestbookName");
 const messageInput = document.querySelector("#guestbookMessage");
@@ -8,8 +8,10 @@ const submitButton = document.querySelector("#guestbookSubmit");
 const statusNode = document.querySelector("#guestbookStatus");
 const listNode = document.querySelector("#guestbookList");
 const countNode = document.querySelector("#guestbookCount");
-const moreButton = document.querySelector("#guestbookMore");
-let offset = 0;
+const previousButton = document.querySelector("#guestbookPrevious");
+const nextButton = document.querySelector("#guestbookNext");
+const pageNode = document.querySelector("#guestbookPage");
+let currentPage = 0;
 let total = 0;
 let loading = false;
 let adminAuthenticated = false;
@@ -209,9 +211,9 @@ async function loadEntries(reset = true) {
     return;
   }
   loading = true;
-  moreButton.disabled = true;
+  previousButton.disabled = true;
+  nextButton.disabled = true;
   if (reset) {
-    offset = 0;
     total = 0;
     listNode.replaceChildren();
     const placeholder = document.createElement("div");
@@ -220,7 +222,7 @@ async function loadEntries(reset = true) {
     listNode.append(placeholder);
   }
   try {
-    const response = await fetch(`${API}?limit=${PAGE_SIZE}&offset=${offset}`, {
+    const response = await fetch(`${API}?limit=${PAGE_SIZE}&offset=${currentPage * PAGE_SIZE}`, {
       headers: { Accept: "application/json" },
       credentials: "same-origin",
       cache: "no-store"
@@ -237,9 +239,11 @@ async function loadEntries(reset = true) {
     } else {
       data.entries.forEach(entry => listNode.append(createEntry(entry)));
     }
-    offset += data.entries?.length || 0;
+    const pageCount = Math.max(1, Math.ceil(total / PAGE_SIZE));
+    pageNode.textContent = total === 0 ? "第 0 / 0 页" : `第 ${currentPage + 1} / ${pageCount} 页`;
     countNode.textContent = `${total} 条留言`;
-    moreButton.hidden = offset >= total || total === 0;
+    previousButton.hidden = total === 0 || currentPage === 0;
+    nextButton.hidden = total === 0 || currentPage >= pageCount - 1;
     setStatus("");
   } catch (error) {
     if (reset) {
@@ -251,10 +255,13 @@ async function loadEntries(reset = true) {
     }
     countNode.textContent = "暂不可用";
     setStatus(error.message || "暂时无法连接留言板。", "error");
-    moreButton.hidden = true;
+    previousButton.hidden = true;
+    nextButton.hidden = true;
+    pageNode.textContent = "暂不可用";
   } finally {
     loading = false;
-    moreButton.disabled = false;
+    previousButton.disabled = false;
+    nextButton.disabled = false;
   }
 }
 form.addEventListener("submit", async event => {
@@ -290,7 +297,17 @@ form.addEventListener("submit", async event => {
     submitButton.querySelector("span").textContent = "发送留言";
   }
 });
-moreButton.addEventListener("click", () => loadEntries(false));
+previousButton.addEventListener("click", () => {
+  if (currentPage <= 0 || loading) return;
+  currentPage -= 1;
+  loadEntries(true);
+});
+nextButton.addEventListener("click", () => {
+  const pageCount = Math.ceil(total / PAGE_SIZE);
+  if (currentPage >= pageCount - 1 || loading) return;
+  currentPage += 1;
+  loadEntries(true);
+});
 window.addEventListener("admin-session-changed", async () => {
   await refreshAdminState();
   await loadEntries(true);

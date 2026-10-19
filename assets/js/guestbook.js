@@ -195,8 +195,22 @@ function createEntry(entry) {
   toggleMessage.setAttribute("aria-expanded", "false");
   toggleMessage.textContent = "展开全文 ↓";
   toggleMessage.addEventListener("click", () => {
-    const expanded = messageWrap.classList.toggle("is-expanded");
+    const expanded = !messageWrap.classList.contains("is-expanded");
+
+    // Animate between the actual content height and the two-line collapsed height.
+    // Using the measured height avoids the artificially fast effect caused by
+    // transitioning to a much larger fixed max-height (such as 1200px).
+    message.style.maxHeight = `${message.clientHeight}px`;
+    void message.offsetHeight;
+
+    messageWrap.classList.toggle("is-expanded", expanded);
     messageWrap.classList.toggle("is-collapsed", !expanded);
+
+    const lineHeight = Number.parseFloat(getComputedStyle(message).lineHeight) || 23.4;
+    message.style.maxHeight = expanded
+      ? `${message.scrollHeight}px`
+      : `${lineHeight * 2}px`;
+
     toggleMessage.setAttribute("aria-expanded", String(expanded));
     toggleMessage.textContent = expanded ? "收起 ↑" : "展开全文 ↓";
   });

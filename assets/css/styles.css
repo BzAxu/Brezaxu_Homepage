@@ -1235,7 +1235,31 @@ body .layout {
 .guestbook-entry-meta { display: grid; min-width: 0; gap: 1px; }
 .guestbook-entry-name { overflow: hidden; color: var(--text); font-size: 13px; font-weight: 700; text-overflow: ellipsis; white-space: nowrap; }
 .guestbook-entry-date { color: var(--muted); font-size: 10px; }
-.guestbook-entry-message { margin: 10px 0 0; color: var(--soft); font-size: 13px; line-height: 1.8; overflow-wrap: anywhere; white-space: pre-wrap; }
+.guestbook-message-wrap { min-width: 0; margin-top: 10px; }
+.guestbook-entry-message {
+  margin: 0; color: var(--soft); font-size: 13px; line-height: 1.8;
+  overflow-wrap: anywhere; white-space: pre-wrap;
+  max-height: 0; overflow: hidden;
+  transition: max-height .32s cubic-bezier(.2,.72,.22,1);
+}
+.guestbook-message-wrap.is-collapsed .guestbook-entry-message {
+  max-height: calc(1.8em * 5);
+}
+.guestbook-message-wrap.is-expanded .guestbook-entry-message {
+  max-height: 1200px;
+}
+.guestbook-message-toggle {
+  display: inline-flex; align-items: center; justify-content: center;
+  margin-top: 7px; padding: 4px 0; border: 0;
+  color: var(--accent-2); background: transparent;
+  font: inherit; font-size: 11px; cursor: pointer;
+  transition: color .2s, opacity .2s;
+}
+.guestbook-message-toggle:hover { color: var(--text); }
+.guestbook-message-toggle[hidden] { display: none !important; }
+@media (prefers-reduced-motion: reduce) {
+  .guestbook-entry-message, .guestbook-message-toggle { transition: none; }
+}
 .guestbook-empty { padding: 24px 12px; color: var(--muted); text-align: center; font-size: 12px; }
 .guestbook-pagination { display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: 10px; margin-top: 14px; }
 .guestbook-page { color: var(--muted); font-size: 11px; font-variant-numeric: tabular-nums; }

@@ -3,7 +3,7 @@ import {
   adminJson,
   checkSameOrigin,
   clearAdminCookie
-} from "../../../_shared/admin-auth.js";
+} from "../../_shared/admin-auth.js";
 
 export async function onRequestPost({ request }) {
   if (!checkSameOrigin(request)) {

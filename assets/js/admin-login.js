@@ -19,6 +19,7 @@
       </label>
       <p id="adminLoginStatus" role="status" aria-live="polite"></p>
       <div class="admin-login-actions">
+        <button type="button" id="adminLogoutButton" hidden>退出登录</button>
         <button type="button" id="adminLoginCancel">取消</button>
         <button type="submit" id="adminLoginSubmit">登录</button>
       </div>
@@ -31,6 +32,15 @@
   const status = dialog.querySelector("#adminLoginStatus");
   const submit = dialog.querySelector("#adminLoginSubmit");
   const cancel = dialog.querySelector("#adminLoginCancel");
+  const logout = dialog.querySelector("#adminLogoutButton");
+
+  function setAuthenticated(authenticated) {
+    logout.hidden = !authenticated;
+    submit.hidden = authenticated;
+    password.disabled = authenticated;
+    password.required = !authenticated;
+    password.placeholder = authenticated ? "当前已登录" : "输入管理员密码";
+  }
 
   function openDialog() {
     status.textContent = "";
@@ -40,11 +50,12 @@
     fetch("/api/admin/session", { credentials: "same-origin", cache: "no-store" })
       .then(response => response.ok ? response.json() : null)
       .then(data => {
-        if (data?.authenticated) {
+        const authenticated = data?.authenticated === true;
+        setAuthenticated(authenticated);
+        if (authenticated) {
           status.textContent = "当前浏览器已登录管理员会话。";
-          password.placeholder = "已登录；重新输入密码可重新登录";
         } else {
-          password.placeholder = "输入管理员密码";
+          status.textContent = "";
         }
       })
       .catch(() => {
@@ -60,6 +71,34 @@
     }
   });
   cancel.addEventListener("click", () => dialog.close());
+  logout.addEventListener("click", async () => {
+    if (logout.disabled) return;
+    logout.disabled = true;
+    logout.textContent = "正在退出…";
+    status.textContent = "";
+    try {
+      const response = await fetch("/api/admin/logout", {
+        method: "POST",
+        credentials: "same-origin",
+        cache: "no-store",
+        headers: { Accept: "application/json" }
+      });
+      const data = await response.json().catch(() => ({}));
+      if (!response.ok || !data.ok) {
+        status.textContent = data.error || "退出登录失败，请稍后重试。";
+        return;
+      }
+      password.value = "";
+      setAuthenticated(false);
+      status.textContent = "已退出管理员登录。";
+      window.dispatchEvent(new CustomEvent("admin-session-changed", { detail: { authenticated: false } }));
+    } catch {
+      status.textContent = "网络请求失败，请检查网络后重试。";
+    } finally {
+      logout.disabled = false;
+      logout.textContent = "退出登录";
+    }
+  });
   dialog.addEventListener("click", event => {
     if (event.target === dialog) dialog.close();
   });
@@ -85,6 +124,7 @@
         return;
       }
       password.value = "";
+      setAuthenticated(true);
       status.textContent = "登录成功。管理员会话有效期为 24 小时。";
       window.dispatchEvent(new CustomEvent("admin-session-changed", { detail: { authenticated: true } }));
       window.setTimeout(() => dialog.close(), 900);

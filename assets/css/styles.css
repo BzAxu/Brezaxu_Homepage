@@ -1370,3 +1370,89 @@ body .layout, body footer { position: relative; z-index: 2; }
 @media (prefers-reduced-motion: reduce) {
   #buildVersionNotice:not([hidden]) { animation: none; opacity: 1; transform: translate(-50%, 0); }
 }
+
+
+/* Hidden guestbook administrator login */
+#adminLoginDialog {
+  width: min(420px, calc(100vw - 32px));
+  max-width: 420px;
+  padding: 0;
+  color: var(--text, #f4f5ff);
+  background: rgba(14, 16, 30, .96);
+  border: 1px solid rgba(154, 145, 255, .28);
+  border-radius: 22px;
+  box-shadow: 0 24px 80px rgba(0, 0, 0, .55), 0 0 36px rgba(109, 94, 255, .16);
+}
+#adminLoginDialog::backdrop {
+  background: rgba(3, 5, 14, .72);
+  backdrop-filter: blur(8px);
+}
+#adminLoginDialog .admin-login-inner {
+  display: grid;
+  gap: 14px;
+  padding: 24px;
+}
+#adminLoginDialog h2 {
+  margin: 0;
+  font-size: 1.2rem;
+}
+#adminLoginDialog p {
+  margin: 0;
+  color: var(--muted, #a7acc6);
+  font-size: .9rem;
+  line-height: 1.6;
+}
+#adminLoginDialog label {
+  display: grid;
+  gap: 7px;
+  font-size: .9rem;
+}
+#adminLoginDialog input {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 12px 14px;
+  border-radius: 12px;
+  border: 1px solid rgba(167, 163, 255, .25);
+  background: rgba(255, 255, 255, .055);
+  color: inherit;
+  font: inherit;
+}
+#adminLoginDialog input:focus-visible,
+#adminLoginDialog button:focus-visible {
+  outline: 2px solid #9a91ff;
+  outline-offset: 3px;
+}
+#adminLoginDialog .admin-login-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+#adminLoginDialog button {
+  border: 1px solid rgba(167, 163, 255, .24);
+  border-radius: 12px;
+  padding: 10px 14px;
+  color: inherit;
+  background: rgba(255, 255, 255, .07);
+  font: inherit;
+  cursor: pointer;
+}
+#adminLoginDialog button[type="submit"] {
+  background: linear-gradient(135deg, #675cf5, #8b5cf6);
+  border-color: transparent;
+}
+#adminLoginDialog button:disabled {
+  opacity: .6;
+  cursor: wait;
+}
+#adminLoginStatus {
+  min-height: 1.4em;
+  overflow-wrap: anywhere;
+}
+#buildVersionNotice {
+  pointer-events: auto;
+  cursor: pointer;
+}
+#buildVersionNotice:focus-visible {
+  outline: 2px solid #9a91ff;
+  outline-offset: 4px;
+}

@@ -204,7 +204,10 @@ function createEntry(entry) {
   return article;
 }
 async function loadEntries(reset = true) {
-  if (loading) return;
+  if (loading) {
+    if (reset) window.setTimeout(() => loadEntries(true), 150);
+    return;
+  }
   loading = true;
   moreButton.disabled = true;
   if (reset) {

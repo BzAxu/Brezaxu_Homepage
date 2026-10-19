@@ -1,10 +1,14 @@
 /* On refresh, discard the previous fragment and scroll position.
    Keep normal in-page anchor navigation on non-reload visits. */
 (() => {
-  if ("scrollRestoration" in history) history.scrollRestoration = "manual";
-
   const navigation = performance.getEntriesByType("navigation")[0];
   const isReload = navigation && navigation.type === "reload";
+
+  // Only override native scroll restoration for an actual reload. Back/forward
+  // navigation should retain the browser's normal scroll-position behavior.
+  if ("scrollRestoration" in history) {
+    history.scrollRestoration = isReload ? "manual" : "auto";
+  }
 
   if (isReload) {
     // Replace the URL without reloading so a stale #contact/#projects fragment

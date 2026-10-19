@@ -26,8 +26,30 @@ export async function onRequest(context) {
       const result = await env.DB.prepare(
         "SELECT id, name, message, created_at FROM guestbook_entries ORDER BY id DESC LIMIT ? OFFSET ?"
       ).bind(limit, offset).all();
+      const entries = result.results || [];
       const count = await env.DB.prepare("SELECT COUNT(*) AS total FROM guestbook_entries").first();
-      return json({ entries: result.results || [], total: count?.total || 0 });
+
+      // Replies are returned only for this page of entries to keep the response bounded.
+      let repliesByEntry = new Map();
+      if (entries.length) {
+        const placeholders = entries.map(() => "?").join(", ");
+        const replyResult = await env.DB.prepare(
+          "SELECT id, entry_id, name, message, created_at, is_developer FROM guestbook_replies " +
+          "WHERE entry_id IN (" + placeholders + ") ORDER BY id ASC"
+        ).bind(...entries.map(entry => entry.id)).all();
+        for (const reply of replyResult.results || []) {
+          if (!repliesByEntry.has(reply.entry_id)) repliesByEntry.set(reply.entry_id, []);
+          repliesByEntry.get(reply.entry_id).push(reply);
+        }
+      }
+
+      return json({
+        entries: entries.map(entry => ({
+          ...entry,
+          replies: repliesByEntry.get(entry.id) || []
+        })),
+        total: count?.total || 0
+      });
     } catch (error) {
       return json({ error: "留言板数据表还未初始化，请稍后再试。" }, 503);
     }

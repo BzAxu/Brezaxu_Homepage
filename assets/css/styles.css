@@ -1237,12 +1237,22 @@ body .layout {
 .guestbook-entry-date { color: var(--muted); font-size: 10px; }
 .guestbook-entry-message { margin: 10px 0 0; color: var(--soft); font-size: 13px; line-height: 1.8; overflow-wrap: anywhere; white-space: pre-wrap; }
 .guestbook-empty { padding: 24px 12px; color: var(--muted); text-align: center; font-size: 12px; }
+.guestbook-pagination { display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: 10px; margin-top: 14px; }
+.guestbook-page { color: var(--muted); font-size: 11px; font-variant-numeric: tabular-nums; }
 .guestbook-more {
-  display: block; margin: 14px auto 0; padding: 8px 13px; border: 1px solid var(--line); border-radius: 10px;
+  display: block; margin: 0; padding: 8px 13px; border: 1px solid var(--line); border-radius: 10px;
   color: var(--soft); background: rgba(255,255,255,.035); cursor: pointer; font-size: 12px;
 }
 .guestbook-more:hover { border-color: rgba(169,155,255,.35); color: var(--text); }
 .guestbook-more[hidden] { display: none; }
+.guestbook-more:disabled { cursor: wait; opacity: .55; }
+.guestbook-entry { animation: guestbookEntryIn .24s ease both; }
+.guestbook-entry:nth-child(2) { animation-delay: .035s; }
+.guestbook-entry:nth-child(3) { animation-delay: .07s; }
+.guestbook-entry:nth-child(4) { animation-delay: .105s; }
+.guestbook-entry:nth-child(5) { animation-delay: .14s; }
+@keyframes guestbookEntryIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+@media (prefers-reduced-motion: reduce) { .guestbook-entry { animation: none; } }
 @media (max-width: 600px) {
   .guestbook { padding: 18px; }
   .guestbook-form { padding: 13px; }

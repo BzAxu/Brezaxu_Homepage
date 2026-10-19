@@ -6,7 +6,7 @@ import {
   hashClientAddress,
   hasAdminConfig,
   verifyAdminPassword
-} from "../../../_shared/admin-auth.js";
+} from "../../_shared/admin-auth.js";
 
 export async function onRequestPost({ request, env }) {
   if (!checkSameOrigin(request)) {

@@ -82,6 +82,10 @@ export async function onRequest(context) {
     return json({ error: "提交内容格式不正确。" }, 400);
   }
 
+  if (!body || typeof body !== "object" || Array.isArray(body)) {
+    return json({ error: "提交内容格式不正确。" }, 400);
+  }
+
   // A hidden honeypot field quietly rejects most automated form spam.
   if (typeof body.website === "string" && body.website.trim()) return json({ ok: true });
   const name = typeof body.name === "string" ? body.name.trim() : "";

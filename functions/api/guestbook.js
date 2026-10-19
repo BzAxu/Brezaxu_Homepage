@@ -65,9 +65,19 @@ export async function onRequest(context) {
     return json({ error: "留言内容太长了。" }, 413);
   }
 
+  let rawBody;
+  try {
+    rawBody = await request.text();
+  } catch {
+    return json({ error: "提交内容格式不正确。" }, 400);
+  }
+  if (new TextEncoder().encode(rawBody).byteLength > 6000) {
+    return json({ error: "留言内容太长了。" }, 413);
+  }
+
   let body;
   try {
-    body = await request.json();
+    body = JSON.parse(rawBody);
   } catch {
     return json({ error: "提交内容格式不正确。" }, 400);
   }

@@ -182,11 +182,34 @@ function createEntry(entry) {
   meta.append(name, date);
   head.append(avatar, meta);
 
+  const messageWrap = document.createElement("div");
+  messageWrap.className = "guestbook-message-wrap is-collapsed";
   const message = document.createElement("p");
   message.className = "guestbook-entry-message";
   message.textContent = entry.message;
 
-  article.append(head, message);
+  const toggleMessage = document.createElement("button");
+  toggleMessage.className = "guestbook-message-toggle";
+  toggleMessage.type = "button";
+  toggleMessage.hidden = true;
+  toggleMessage.setAttribute("aria-expanded", "false");
+  toggleMessage.textContent = "展开全文 ↓";
+  toggleMessage.addEventListener("click", () => {
+    const expanded = messageWrap.classList.toggle("is-expanded");
+    messageWrap.classList.toggle("is-collapsed", !expanded);
+    toggleMessage.setAttribute("aria-expanded", String(expanded));
+    toggleMessage.textContent = expanded ? "收起 ↑" : "展开全文 ↓";
+  });
+
+  messageWrap.append(message, toggleMessage);
+  article.append(head, messageWrap);
+  requestAnimationFrame(() => {
+    if (message.scrollHeight > message.clientHeight + 1) {
+      toggleMessage.hidden = false;
+    } else {
+      messageWrap.classList.remove("is-collapsed");
+    }
+  });
 
   const replies = Array.isArray(entry.replies) ? entry.replies : [];
   if (replies.length || adminAuthenticated) {

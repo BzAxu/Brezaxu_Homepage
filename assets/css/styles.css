@@ -1239,7 +1239,7 @@ body .layout {
 .guestbook-entry-message {
   margin: 0; color: var(--soft); font-size: 13px; line-height: 1.8;
   overflow-wrap: anywhere; white-space: pre-wrap;
-  max-height: 0; overflow: hidden;
+  max-height: 1200px; overflow: hidden;
   transition: max-height .32s cubic-bezier(.2,.72,.22,1);
 }
 .guestbook-message-wrap.is-collapsed .guestbook-entry-message {

@@ -21,7 +21,6 @@ export async function onRequest(context) {
   upstream.search = incoming.search;
 
   const headers = new Headers(context.request.headers);
-  headers.set("Host", upstream.host);
   const proxyRequest = new Request(upstream.toString(), {
     method: context.request.method,
     headers,

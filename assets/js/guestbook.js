@@ -287,6 +287,7 @@ form.addEventListener("submit", async event => {
     const data = await response.json().catch(() => ({}));
     if (!response.ok) throw new Error(data.error || "发送失败，请稍后再试。");
     messageInput.value = "";
+    currentPage = 0;
     setStatus("留言已发布，谢谢你来留言！", "success");
     await loadEntries(true);
     setStatus("留言已发布，谢谢你来留言！", "success");

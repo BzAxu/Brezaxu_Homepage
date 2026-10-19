@@ -8,6 +8,7 @@
 2. 进入 **Storage & databases → D1 SQL Database**（界面名称可能略有不同）。
 3. 创建数据库，名称可用 `brezaxu-guestbook`。
 4. 打开数据库的 SQL Console，将仓库根目录的 `schema.sql` 全部内容粘贴执行。
+5. **继续执行管理员功能迁移**：将 `migrations/20261019_guestbook_admin.sql` 全部内容粘贴到同一数据库的 SQL Console 中执行。当前留言接口会读取回复表，因此新数据库必须执行这一步。
 
 ## 2. 绑定到 Pages
 
@@ -16,7 +17,10 @@
 3. 添加绑定：
    - **Variable name**：`DB`
    - **D1 database**：选择刚创建的 `brezaxu-guestbook`
-4. 保存设置，然后在 **Deployments** 中重新部署最新的 `main`。
+4. 在 **Settings → Variables and Secrets**（界面名称可能略有不同）中配置以下生产环境变量：
+   - `ADMIN_PASSWORD`：管理员密码，至少 12 个字符，建议使用唯一的高强度随机密码，并设为 Secret。
+   - `SESSION_SECRET`：至少 32 个字符的高熵随机密钥，也必须设为 Secret；不要写进仓库或前端代码。
+5. 保存设置，然后在 **Deployments** 中重新部署最新的 `main`。
 
 ## 3. 验证
 

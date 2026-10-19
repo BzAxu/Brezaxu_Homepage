@@ -23,9 +23,19 @@ export async function onRequestPost({ request, env }) {
     return adminJson({ ok: false, error: "请求格式无效" }, 415);
   }
 
+  let rawBody;
+  try {
+    rawBody = await request.text();
+  } catch {
+    return adminJson({ ok: false, error: "请求格式无效" }, 400);
+  }
+  if (new TextEncoder().encode(rawBody).byteLength > 4096) {
+    return adminJson({ ok: false, error: "请求内容过大" }, 413);
+  }
+
   let body;
   try {
-    body = await request.json();
+    body = JSON.parse(rawBody);
   } catch {
     return adminJson({ ok: false, error: "请求格式无效" }, 400);
   }

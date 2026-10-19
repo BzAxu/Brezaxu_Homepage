@@ -180,7 +180,7 @@ import("https://cdn.jsdelivr.net/npm/@dpawlikowski/liquid-glass@0.3.0/dist/index
       });
 
       document.querySelector("[data-bili-contact]").addEventListener("click", (event) => {
-        openDialog({ url: "https://space.bilibili.com/1389725434", trigger: event.currentTarget });
+        openDialog({ url: "https://b23.tv/cNg72Py", trigger: event.currentTarget });
       });
 
       document.addEventListener("click", (event) => {

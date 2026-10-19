@@ -1340,7 +1340,8 @@ body .layout, body footer { position: relative; z-index: 2; }
   position: fixed;
   z-index: 1000;
   left: 50%;
-  bottom: calc(22px + env(safe-area-inset-bottom, 0px));
+  top: calc(14px + env(safe-area-inset-top, 0px));
+  bottom: auto;
   width: max-content;
   max-width: min( calc(100vw - 32px), 420px );
   box-sizing: border-box;

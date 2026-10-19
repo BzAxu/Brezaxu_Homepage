@@ -86,6 +86,7 @@
       }
       password.value = "";
       status.textContent = "登录成功。管理员会话有效期为 24 小时。";
+      window.dispatchEvent(new CustomEvent("admin-session-changed", { detail: { authenticated: true } }));
       window.setTimeout(() => dialog.close(), 900);
     } catch {
       status.textContent = "网络请求失败，请检查网络后重试。";

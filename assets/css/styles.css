@@ -1356,7 +1356,8 @@ body .layout, body footer { position: relative; z-index: 2; }
   font: 650 12px/1.5 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
   text-align: center;
   overflow-wrap: anywhere;
-  pointer-events: none;
+  cursor: pointer;
+  pointer-events: auto;
   opacity: 0;
   transform: translate(-50%, 8px);
 }

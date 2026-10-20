@@ -1240,7 +1240,7 @@ body .layout {
   margin: 0; color: var(--soft); font-size: 13px; line-height: 1.8;
   overflow-wrap: anywhere; white-space: pre-wrap;
   max-height: 1200px; overflow: hidden;
-  transition: max-height .65s cubic-bezier(.22,.61,.36,1);
+  transition: max-height .78s cubic-bezier(.4, 0, .2, 1);
 }
 .guestbook-message-wrap.is-collapsed .guestbook-entry-message {
   max-height: calc(1.8em * 2);

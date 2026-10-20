@@ -404,7 +404,7 @@ import("https://cdn.jsdelivr.net/npm/@dpawlikowski/liquid-glass@0.3.0/dist/index
 // Homepage card entrances: reveal on initial load, scroll-in, and section navigation.
 (() => {
   const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  const cards = [...document.querySelectorAll(".layout .panel:not(.profile), .layout .feature-grid > .feature")]
+  const cards = [...document.querySelectorAll(".layout .panel, .layout .feature-grid > .feature")]
     .filter((card) => !card.closest(".external-dialog"));
   if (!cards.length) return;
 

@@ -1649,3 +1649,50 @@ body .layout, body footer { position: relative; z-index: 2; }
     filter: brightness(1.025);
   }
 }
+
+
+/* One shared motion system for profile, interest, and content cards.
+   This intentionally outranks the legacy .feature hover rule above. */
+body .panel.profile,
+body .panel.side-card,
+body .panel.feature,
+body .panel.guestbook,
+body .panel.contact-strip,
+body .panel.post,
+body .cover,
+body .repo-card,
+body .repo-link,
+body .contact-card,
+body .profile-card,
+body .guestbook-entry {
+  transition:
+    transform 480ms cubic-bezier(.18,.72,.22,1),
+    box-shadow 480ms cubic-bezier(.18,.72,.22,1),
+    border-color 420ms ease,
+    filter 420ms ease,
+    background 420ms cubic-bezier(.18,.72,.22,1);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  body .panel.profile:hover,
+  body .panel.side-card:hover,
+  body .panel.feature:hover,
+  body .panel.guestbook:hover,
+  body .panel.contact-strip:hover,
+  body .panel.post:hover,
+  body .cover:hover,
+  body .repo-card:hover,
+  body .repo-link:hover,
+  body .contact-card:hover,
+  body .profile-card:hover,
+  body .guestbook-entry:hover {
+    transform: translate3d(0, -3px, 0) !important;
+    border-color: rgba(151, 145, 231, .28) !important;
+    box-shadow:
+      0 18px 48px rgba(0, 0, 0, .22),
+      0 0 0 1px rgba(169, 155, 255, .035),
+      0 0 22px rgba(122, 111, 255, .065),
+      inset 0 1px 0 rgba(255, 255, 255, .09) !important;
+    filter: brightness(1.025);
+  }
+}

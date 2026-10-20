@@ -1,0 +1,10 @@
+/* Isolated cache-busted easing override for the guestbook expand/collapse motion. */
+.guestbook-entry-message {
+  transition: max-height .78s cubic-bezier(.4, 0, .2, 1);
+}
+@media (prefers-reduced-motion: reduce) {
+  .guestbook-entry-message,
+  .guestbook-message-toggle {
+    transition: none !important;
+  }
+}

@@ -8,3 +8,33 @@
     transition: none !important;
   }
 }
+
+/* Unified, restrained interaction feedback for the profile contact icons. */
+body .social-actions .social-action {
+  transition:
+    transform 420ms cubic-bezier(.22, .61, .36, 1),
+    box-shadow 420ms cubic-bezier(.22, .61, .36, 1),
+    filter 360ms ease,
+    background-color 360ms ease,
+    border-color 360ms ease !important;
+}
+@media (hover: hover) and (pointer: fine) {
+  body .social-actions .social-action:hover {
+    transform: translate3d(0, -3px, 0) scale(1.025) !important;
+    filter: brightness(1.07) saturate(1.06) !important;
+    box-shadow: 0 5px 16px rgba(122, 111, 255, .16) !important;
+    border-color: rgba(190, 178, 255, .42) !important;
+  }
+}
+body .social-actions .social-action:active,
+body .social-actions .social-action.feedback-pressed {
+  transform: translate3d(0, 0, 0) scale(.96) !important;
+  filter: brightness(1.08) saturate(1.04) !important;
+  box-shadow: 0 0 0 1px rgba(190, 178, 255, .18) !important;
+  transition-duration: 220ms !important;
+}
+@media (prefers-reduced-motion: reduce) {
+  body .social-actions .social-action {
+    transition: none !important;
+  }
+}

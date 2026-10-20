@@ -1634,3 +1634,18 @@ body .layout, body footer { position: relative; z-index: 2; }
 /* Preserve version toast centering during press feedback. */
 #buildVersionNotice:active,
 #buildVersionNotice.feedback-pressed { transform: translate(-50%, 0) !important; }
+
+
+/* Consistent restrained hover treatment for every primary homepage card. */
+@media (hover: hover) and (pointer: fine) {
+  body :where(.panel, .cover, .post, .feature, .contact-strip, .side-card, .profile-card, .contact-card, .repo-card, .repo-link, .guestbook-entry):not(.external-dialog__backdrop):hover {
+    transform: translate3d(0, -3px, 0) !important;
+    border-color: rgba(169, 155, 255, .30);
+    box-shadow:
+      0 18px 48px rgba(0, 0, 0, .22),
+      0 0 0 1px rgba(169, 155, 255, .035),
+      0 0 22px rgba(122, 111, 255, .065),
+      inset 0 1px 0 rgba(255, 255, 255, .09);
+    filter: brightness(1.025);
+  }
+}

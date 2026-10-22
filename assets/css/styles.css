@@ -1797,3 +1797,15 @@ html.no-effects .effects-toggle {
     font-size: 10px;
   }
 }
+
+
+/* Low-effects mode must not preserve the hidden initial state of an in-flight card reveal. */
+html.no-effects body .homepage-card-reveal,
+html.no-effects body .homepage-card-reveal.is-card-visible,
+html.no-effects body .homepage-card-reveal.card-entered {
+  opacity: 1 !important;
+  transform: none !important;
+  animation: none !important;
+  filter: none !important;
+  will-change: auto !important;
+}

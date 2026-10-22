@@ -20,7 +20,17 @@
         document.documentElement.style.setProperty("--wallpaper-image", 'url("' + selected + '")');
       })();
     </script>
-  <link rel="stylesheet" href="./assets/css/styles.css?v=20261020-A3R25">
+  <script>
+    // Restore the visitor's low-effects preference before styles/animations initialise.
+    (() => {
+      try {
+        if (localStorage.getItem("bzaxu-no-effects") === "1") {
+          document.documentElement.classList.add("no-effects");
+        }
+      } catch (_) {}
+    })();
+  </script>
+  <link rel="stylesheet" href="./assets/css/styles.css?v=20261020-A3R26">
   <link rel="stylesheet" href="./assets/css/guestbook-motion.css?v=20261020-A3R22">
 </head>
 <body>
@@ -37,6 +47,7 @@
         <a href="#projects">兴趣</a>
         <a href="#guestbook">留言板</a>
         <a href="#contact">联系</a>
+        <button class="effects-toggle" id="effectsToggle" type="button" aria-pressed="false" title="开启无特效模式，降低页面性能占用">无特效：关</button>
       </nav>
     </div>
   </header>
@@ -189,6 +200,7 @@
     const ctx = canvas.getContext('2d', { alpha: true });
     if (!ctx) return;
     const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    let effectsDisabled = document.documentElement.classList.contains('no-effects');
     let width = 0, height = 0, stars = [], snow = [], raf = 0;
     const random = (min, max) => min + Math.random() * (max - min);
     const palette = ['115, 190, 255', '151, 125, 255', '190, 164, 255', '111, 225, 255'];
@@ -235,6 +247,7 @@
     }
     function paint(time) {
       ctx.clearRect(0, 0, width, height);
+      if (effectsDisabled) return;
       const t = time || 0;
       for (const p of stars) {
         if (!reduceMotion && !document.hidden) {
@@ -289,10 +302,21 @@
           ctx.fillRect(p.x - glow, p.y - glow, glow * 2, glow * 2);
         }
       }
-      if (!reduceMotion && !document.hidden) raf = requestAnimationFrame(paint);
+      if (!reduceMotion && !effectsDisabled && !document.hidden) raf = requestAnimationFrame(paint);
     }
-    function start() { if (!reduceMotion && !document.hidden && !raf) raf = requestAnimationFrame(paint); }
+    function start() { if (!reduceMotion && !effectsDisabled && !document.hidden && !raf) raf = requestAnimationFrame(paint); }
     function stop() { if (raf) cancelAnimationFrame(raf); raf = 0; }
+    function syncEffectsMode() {
+      effectsDisabled = document.documentElement.classList.contains('no-effects');
+      if (effectsDisabled) {
+        stop();
+        ctx.clearRect(0, 0, width, height);
+      } else {
+        resize();
+        start();
+      }
+    }
+    document.addEventListener('no-effects-change', syncEffectsMode);
     document.addEventListener('visibilitychange', () => { if (document.hidden) stop(); else start(); });
     let lastWidth = window.innerWidth;
     window.addEventListener('resize', () => {
@@ -306,13 +330,13 @@
     resize(); start();
   })();
   </script>
-  <script type="module" src="./assets/js/script.js?v=20261020-A3R25"></script>
+  <script type="module" src="./assets/js/script.js?v=20261020-A3R26"></script>
   <script type="module" src="./assets/js/guestbook.js?v=20261019-A3R19"></script>
   <script>
     (() => {
       const profileCard = document.querySelector(".panel.profile");
       if (!profileCard) return;
-      const version = "v2026.10.20-A3R25";
+      const version = "v2026.10.22-A3R26";
       let taps = 0;
       let resetTimer = 0;
       let noticeTimer = 0;
@@ -341,6 +365,37 @@
     })();
   </script>
   <script src="./assets/js/admin-login.js?v=20261019-A3R18" defer></script>
+
+  <script>
+    // User-facing performance mode. The choice is local to this browser/device.
+    (() => {
+      const root = document.documentElement;
+      const button = document.getElementById("effectsToggle");
+      if (!button) return;
+
+      function refreshToggle() {
+        const active = root.classList.contains("no-effects");
+        button.setAttribute("aria-pressed", String(active));
+        button.textContent = active ? "无特效：开" : "无特效：关";
+        button.title = active
+          ? "关闭无特效模式，恢复动态视觉效果"
+          : "开启无特效模式，降低页面性能占用";
+      }
+
+      refreshToggle();
+      button.addEventListener("click", () => {
+        const active = !root.classList.contains("no-effects");
+        root.classList.toggle("no-effects", active);
+        try {
+          localStorage.setItem("bzaxu-no-effects", active ? "1" : "0");
+        } catch (_) {}
+        refreshToggle();
+        document.dispatchEvent(new CustomEvent("no-effects-change", {
+          detail: { enabled: active }
+        }));
+      });
+    })();
+  </script>
 
 </body>
 </html>

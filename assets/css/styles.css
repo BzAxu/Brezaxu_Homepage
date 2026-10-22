@@ -1696,3 +1696,104 @@ body .guestbook-entry {
     filter: brightness(1.025);
   }
 }
+
+
+/* User-selectable low-effects mode: prioritise lower GPU/CPU use over decoration. */
+html.no-effects {
+  scroll-behavior: auto !important;
+}
+html.no-effects *,
+html.no-effects *::before,
+html.no-effects *::after {
+  animation: none !important;
+  transition: none !important;
+  filter: none !important;
+  box-shadow: none !important;
+  text-shadow: none !important;
+}
+html.no-effects #ambientParticles {
+  display: none !important;
+  visibility: hidden !important;
+}
+html.no-effects #siteWallpaper {
+  background-color: #090b12 !important;
+  background-image: var(--wallpaper-image, url("../images/site-background_dark1.jpg")) !important;
+  background-position: center center !important;
+  background-size: cover !important;
+}
+html.no-effects .panel,
+html.no-effects .cover,
+html.no-effects .post,
+html.no-effects .contact-strip,
+html.no-effects .side-card,
+html.no-effects .feature,
+html.no-effects .guestbook-entry,
+html.no-effects .repo-card,
+html.no-effects .repo-link,
+html.no-effects .contact-card,
+html.no-effects .profile-card {
+  background: rgba(17, 21, 35, .94) !important;
+  -webkit-backdrop-filter: none !important;
+  backdrop-filter: none !important;
+}
+html.no-effects .liquid-glass__refraction,
+html.no-effects .cover-art {
+  display: none !important;
+}
+html.no-effects body .name {
+  color: #f1f2fa !important;
+  background: none !important;
+  -webkit-background-clip: border-box !important;
+  background-clip: border-box !important;
+}
+html.no-effects .external-dialog__backdrop,
+html.no-effects .external-dialog__card {
+  -webkit-backdrop-filter: none !important;
+  backdrop-filter: none !important;
+}
+html.no-effects :where(.panel, .cover, .post, .feature, .contact-strip, .side-card, .profile-card, .contact-card, .repo-card, .repo-link, .guestbook-entry):hover,
+html.no-effects :where(.panel, .cover, .post, .feature, .contact-strip, .side-card, .profile-card, .contact-card, .repo-card, .repo-link, .guestbook-entry):active,
+html.no-effects :where(button, a[href], [role="button"], input[type="button"], input[type="submit"]):hover,
+html.no-effects :where(button, a[href], [role="button"], input[type="button"], input[type="submit"]):active,
+html.no-effects :where(button, a[href], [role="button"], input[type="button"], input[type="submit"]).feedback-pressed {
+  transform: none !important;
+  filter: none !important;
+  box-shadow: none !important;
+}
+html.no-effects .effects-toggle {
+  color: #dcd8ff;
+  background: rgba(126, 106, 255, .16);
+  border-color: rgba(169, 155, 255, .42);
+}
+
+/* Small, plain top-bar toggle that remains usable in low-effects mode. */
+.effects-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  min-height: 32px;
+  margin-left: 5px;
+  padding: 6px 9px;
+  border: 1px solid rgba(220, 228, 255, .14);
+  border-radius: 10px;
+  color: var(--muted);
+  background: rgba(255, 255, 255, .035);
+  font: inherit;
+  font-size: 11px;
+  line-height: 1.2;
+  white-space: nowrap;
+  cursor: pointer;
+}
+.effects-toggle:focus-visible {
+  outline: 2px solid var(--accent-2);
+  outline-offset: 3px;
+}
+@media (max-width: 560px) {
+  .effects-toggle {
+    min-height: 30px;
+    margin-left: 2px;
+    padding: 6px 7px;
+    font-size: 10px;
+  }
+}

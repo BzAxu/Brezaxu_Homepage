@@ -1,31 +1,48 @@
 // Main page interactions and optional liquid-glass enhancement.
-// External-link confirmation must keep working even if the CDN is unavailable.
-import("https://cdn.jsdelivr.net/npm/@dpawlikowski/liquid-glass@0.3.0/dist/index.js")
-  .then(({ injectLiquidGlassFilter }) => {
-    // Static optics: no animated turbulence and no moving page background.
-    try {
-      injectLiquidGlassFilter({ animate: false, scale: 18 });
-    } catch (error) {
-      console.warn("Liquid-glass filter unavailable; continuing without refraction.", error);
-    }
+// Skip the expensive visual integration in low-effects mode; it can be activated later.
+let liquidGlassLoading = false;
+let liquidGlassApplied = false;
 
-    document.querySelectorAll(".panel").forEach((panel) => {
-      panel.classList.add("liquid-glass", "liquid-glass--vivid", "liquid-glass--static");
-      const refraction = document.createElement("span");
-      refraction.className = "liquid-glass__refraction";
-      refraction.setAttribute("aria-hidden", "true");
+function applyLiquidGlassEnhancement() {
+  if (document.documentElement.classList.contains("no-effects") || liquidGlassLoading || liquidGlassApplied) return;
+  liquidGlassLoading = true;
+  import("https://cdn.jsdelivr.net/npm/@dpawlikowski/liquid-glass@0.3.0/dist/index.js")
+    .then(({ injectLiquidGlassFilter }) => {
+      liquidGlassLoading = false;
+      // The visitor may have enabled low-effects mode while the module was loading.
+      if (document.documentElement.classList.contains("no-effects")) return;
 
-      const content = document.createElement("div");
-      content.className = "liquid-glass__content";
-      while (panel.firstChild) content.append(panel.firstChild);
-      panel.append(refraction, content);
+      try {
+        injectLiquidGlassFilter({ animate: false, scale: 18 });
+      } catch (error) {
+        console.warn("Liquid-glass filter unavailable; continuing without refraction.", error);
+      }
+
+      document.querySelectorAll(".panel").forEach((panel) => {
+        if (panel.classList.contains("liquid-glass--static")) return;
+        panel.classList.add("liquid-glass", "liquid-glass--vivid", "liquid-glass--static");
+        const refraction = document.createElement("span");
+        refraction.className = "liquid-glass__refraction";
+        refraction.setAttribute("aria-hidden", "true");
+
+        const content = document.createElement("div");
+        content.className = "liquid-glass__content";
+        while (panel.firstChild) content.append(panel.firstChild);
+        panel.append(refraction, content);
+      });
+      liquidGlassApplied = true;
+    })
+    .catch((error) => {
+      liquidGlassLoading = false;
+      // Core interactions remain functional without the optional visual-effects CDN.
+      console.warn("Liquid-glass enhancement failed; core interactions remain active.", error);
     });
-  })
-  .catch((error) => {
-    // The confirmation dialog, QQ prompt, copy buttons and tactile feedback
-    // do not depend on the optional visual-effects CDN.
-    console.warn("Liquid-glass enhancement failed; core interactions remain active.", error);
-  });
+}
+
+document.addEventListener("no-effects-change", (event) => {
+  if (!event.detail?.enabled) applyLiquidGlassEnhancement();
+});
+applyLiquidGlassEnhancement();
 
 // Copy buttons and toast notifications.
 "use strict";
@@ -332,6 +349,7 @@ import("https://cdn.jsdelivr.net/npm/@dpawlikowski/liquid-glass@0.3.0/dist/index
   }
 
   document.addEventListener("pointerdown", (event) => {
+    if (document.documentElement.classList.contains("no-effects")) return;
     if (event.pointerType === "mouse" && event.button !== 0) return;
     const target = event.target;
     if (!target || typeof target.closest !== "function") return;
@@ -388,6 +406,7 @@ import("https://cdn.jsdelivr.net/npm/@dpawlikowski/liquid-glass@0.3.0/dist/index
 (() => {
   const cardSelector = ".panel, .cover, .post, .feature, .contact-strip, .side-card, .profile-card, .contact-card";
   document.addEventListener("pointerdown", (event) => {
+    if (document.documentElement.classList.contains("no-effects")) return;
     if (event.pointerType === "mouse" && event.button !== 0) return;
     const card = event.target.closest(cardSelector);
     if (!card || event.target !== card) return;
@@ -403,6 +422,7 @@ import("https://cdn.jsdelivr.net/npm/@dpawlikowski/liquid-glass@0.3.0/dist/index
 
 // Homepage card entrances: reveal on initial load, scroll-in, and section navigation.
 (() => {
+  if (document.documentElement.classList.contains("no-effects")) return;
   const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   const cards = [...document.querySelectorAll(".layout .panel, .layout .feature-grid > .feature")]
     .filter((card) => !card.closest(".external-dialog"));
